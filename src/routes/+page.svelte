@@ -1,20 +1,23 @@
 <script lang="ts">
   import type { DialogueTree } from "../lib/types";
   import Dialogue from "../lib/Dialogue.svelte";
-  import { fly } from "svelte/transition";
+  import { fly, scale } from "svelte/transition";
 
   let inventory = ["🥧", "🍕", "🥣"];
   let orderedItem = "";
 
-  function checkOrderedItem(item: string) {
+  function checkItem(item: string): BranchKey {
     orderedItem = item;
     return inventory.includes(item) ? "success" : "failure";
   }
 
   function consumeOrderedItem() {
     inventory = inventory.filter((x) => x != orderedItem);
-    console.log(inventory);
   }
+
+  function listAvailableItems() {}
+
+  // TODO: Fix variable coupling
 
   function bringOrderedItem() {
     return {
@@ -23,19 +26,26 @@
     };
   }
 
-  let dialogueTree: DialogueTree = {
+  type BranchKey = "start" | "success" | "failure";
+  // type BranchKey = keyof typeof dialogueTree;
+  // TODO: Nested branches
+  // TODO: Characters
+  // TODO: Generate choices
+  // TODO: Disabled buttons with explanations
+
+  let dialogueTree: DialogueTree<BranchKey> = {
     start: [
       "What would you like to have?",
       [
         {
           header: "Soup",
           text: "Soup",
-          next: () => checkOrderedItem("🥣"),
+          next: () => checkItem("🥣"),
         },
         {
           header: "Pie",
           text: "Pie",
-          next: () => checkOrderedItem("🥧"),
+          next: () => checkItem("🥧"),
         },
       ],
     ],
@@ -48,7 +58,7 @@
           text: "I would like to make an order",
           next: "start",
         },
-        { header: "Leave", text: "**You leave**", next: [""] },
+        { header: "Leave", text: "**You leave**" },
       ],
     ],
     failure: [
@@ -59,31 +69,24 @@
           text: "I would like to make an order",
           next: "start",
         },
-        { header: "Leave", text: "**You leave**", next: [""] },
+        { header: "Leave", text: "**You leave**" },
       ],
     ],
   };
-
-  function reset() {
-    location.reload();
-  }
 </script>
 
 <main class="w-screen h-screen flex items-start justify-center p-4">
   <Dialogue
     {dialogueTree}
-    containerClass="w-full h-full"
-    on:dialogueEnd={reset}
-    npcClass="bg-blue-50"
-    userClass="bg-green-50"
     transitions={{
+      container: {
+        in: scale,
+      },
       user: {
         in: fly,
-        out: fly,
       },
-      reply: {
+      npc: {
         in: fly,
-        out: fly,
       },
     }}
   />

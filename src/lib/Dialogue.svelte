@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Choice, DialogueTree } from "./types";
+  import type { BranchElement, Choice, DialogueTree } from "./types";
   import { createEventDispatcher, onMount } from "svelte";
   import type { EasingFunction, TransitionConfig } from "svelte/transition";
   const dispatch = createEventDispatcher();
@@ -20,7 +20,7 @@
     if (autoscroll) container.scrollTo(0, container.scrollHeight);
   });
 
-  export let dialogueTree: DialogueTree;
+  export let dialogueTree: DialogueTree<string>;
   export let containerClass = "";
   export let choiceContainerClass = "";
   export let choiceClass = "";
@@ -31,60 +31,58 @@
     index++;
   };
 
-  type DialogueTransitionsKey = "npc" | "user" | "choice" | "choiceContainer";
+  type DialogueTransitionsKey =
+    | "container"
+    | "npc"
+    | "user"
+    | "choice"
+    | "choiceContainer";
 
   type DialogueTransitions = {
     [key in DialogueTransitionsKey]: {
       in: EasingFunction;
-      out: EasingFunction;
       options: TransitionConfig;
     };
   };
 
-  export let transitions: DialogueTransitions = {
-    npc: { in: () => 1, out: () => 1, options: {} },
-    user: { in: () => 1, out: () => 1, options: {} },
-    choice: { in: () => 1, out: () => 1, options: {} },
-    choiceContainer: { in: () => 1, out: () => 1, options: {} },
-  };
+  export let transitions: DialogueTransitions;
 
   // TEXT TRANSITION
-  let npcInTransition = transitions?.npc?.in || (() => 1);
-  let npcOutTransition = transitions?.npc?.out || (() => 1);
+  let npcTransition = transitions?.npc?.transition || (() => 1);
   let npcTransitionOpts = transitions?.npc?.options || {};
 
   // TEXT TRANSITION
-  let userInTransition = transitions?.user?.in || (() => 1);
-  let userOutTransition = transitions?.user?.out || (() => 1);
+  let userTransition = transitions?.user?.transition || (() => 1);
   let userTransitionOpts = transitions?.user?.options || {};
 
   // TEXT TRANSITION
-  let choiceInTransition = transitions?.choice?.in || (() => 1);
-  let choiceOutTransition = transitions?.choice?.out || (() => 1);
+  let containerTransition = transitions?.container?.transition || (() => 1);
+  let containerTransitionOpts = transitions?.container?.options || {};
+
+  // TEXT TRANSITION
+  let choiceTransition = transitions?.choice?.transition || (() => 1);
   let choiceTransitionOpts = transitions?.choice?.options || {};
 
   // TEXT TRANSITION
-  let choiceContainerInTransition =
-    transitions?.choiceContainer?.in || (() => 1);
-  let choiceContainerOutTransition =
-    transitions?.choiceContainer?.out || (() => 1);
+  let choiceContainerTransition =
+    transitions?.choiceContainer?.transition || (() => 1);
   let choiceContainerTransitionOpts =
     transitions?.choiceContainer?.options || {};
 
   let choosing = false;
   let index = 0;
   let key = "";
-  let currentDialogue: Array<string | Array<Choice>> = [""];
+  let currentBranchElements: Array<BranchElement> = [""];
   let userTextIndexes: Array<number> = [];
 
   onMount(() => {
     key = Object.keys(dialogueTree)[0];
-    currentDialogue = new Array(...dialogueTree[key]);
+    currentBranchElements = new Array(...dialogueTree[key]);
   });
 
   function checkForEnd() {
-    console.log(currentDialogue[index]);
-    if (!currentDialogue[index]) {
+    console.log(currentBranchElements[index]);
+    if (!currentBranchElements[index]) {
       dispatch("dialogueEnd");
     }
   }
@@ -94,11 +92,14 @@
     let userIndex = +(e.submitter?.dataset.userIndex || -1);
     let siblingIndex = +(e.submitter?.dataset.siblingIndex || 0);
 
+    // TODO: TYPESAFE STUFF
+    // FIXME: Transitions not working properly
+
     let onSelect = dialogueTree[key]?.at(-1)[siblingIndex]?.onSelect;
     let next = dialogueTree[key]?.at(-1)[siblingIndex]?.next;
 
     if (next) {
-      currentDialogue.pop(); // removing choices from the view
+      currentBranchElements.pop(); // removing choices from the view
 
       console.log(onSelect);
       console.log(next);
@@ -112,24 +113,37 @@
       }
 
       key = next;
-      currentDialogue = [...currentDialogue, text, ...dialogueTree[key]];
+      console.log(dialogueTree[key]);
+      currentBranchElements.push(text);
+      if (dialogueTree[key]) {
+        currentBranchElements.push(...dialogueTree[key]);
+      }
+      currentBranchElements = currentBranchElements;
+
+      // currentDialogue = [...currentDialogue, text, ...dialogueTree[key]];
       choosing = false;
       userTextIndexes.push(userIndex);
+    } else {
+      dispatch("dialogueEnd");
     }
 
-    if (!dialogueTree[next || ""]) {
-      currentDialogue = [
-        ...currentDialogue,
-        `<b style="color: red;">SVELTE-DIALOGUE-TREE ERROR: </b> The dialogue tree does not have a key named ${next}`,
-      ];
-      nextLine();
-    }
+    // if (!dialogueTree[key || ""]) {
+    //   currentBranchElements = [
+    //     ...currentBranchElements,
+    //     `<b style="color: red;">SVELTE-DIALOGUE-TREE ERROR: </b> The dialogue tree does not have a key named ${next}`,
+    //   ];
+    //   nextLine();
+    // }
+  }
+
+  function spawned(node, fn) {
+    fn();
   }
 </script>
 
 <svelte:window
   on:keydown={(e) => {
-    if (choosing || Array.isArray(currentDialogue[index])) {
+    if (choosing || Array.isArray(currentBranchElements[index])) {
       choosing = true;
       return;
     }
@@ -142,50 +156,46 @@
   }}
 />
 
-<!-- class={classes.container || "sdt-container"} -->
-<article
-  bind:this={container}
-  class="bg-slate-100 p-4 rounded-2xl flex flex-col items-start gap-2 w-1/2 h-full overflow-y-auto"
->
-  {#each currentDialogue as item, i}
+<article bind:this={container} class={containerClass || "sdt-container"}>
+  {#each currentBranchElements as item, i}
     {@const isUserReply = userTextIndexes.includes(i)}
     {#if index >= i}
       {#if Array.isArray(item)}
-        <!-- class={choiceContainerClass || "sdt-choiceContainer"} -->
         <form
-          class="flex flex-wrap gap-2 w-full"
+          class={choiceContainerClass || "sdt-choiceContainer"}
+          in:choiceContainerTransition={choiceContainerTransitionOpts}
           on:submit|preventDefault={makeChoice}
         >
           {#each item as choice, siblingIndex}
-            <!-- class={choiceClass || "sdt-choice"} -->
             <button
               type="submit"
-              class="p-2 bg-amber-200 rounded-xl w-full hover:bg-amber-300"
+              class={choiceClass || "sdt-choice"}
               data-user-index={i}
               data-sibling-index={siblingIndex}
               data-text={choice.text}
-              data-next={choice.next}
             >
               {@html choice.header}
             </button>
           {/each}
         </form>
       {:else if isUserReply}
-        <!-- class={userClass || "sdt-user"} -->
         <p
-          class="bg-blue-200 p-4 rounded-xl self-end text-end max-w-xs"
-          in:userInTransition={userTransitionOpts}
-          out:userOutTransition={userTransitionOpts}
+          class={userClass || "sdt-user"}
+          in:userTransition={userTransitionOpts}
         >
           {@html item}
         </p>
-      {:else}
-        <!-- class={textClass || "sdt-text"} -->
+      {:else if typeof item == "function"}
+        {@const { text, onSpawn } = item()}
         <p
-          class="bg-blue-200 p-4 rounded-xl max-w-xs"
-          in:npcInTransition={npcTransitionOpts}
-          out:npcOutTransition={npcTransitionOpts}
+          use:spawned={onSpawn}
+          class={npcClass || "sdt-npc"}
+          in:npcTransition={npcTransitionOpts}
         >
+          {@html text}
+        </p>
+      {:else}
+        <p class={npcClass || "sdt-npc"} in:npcTransition={npcTransitionOpts}>
           {@html item}
         </p>
       {/if}
@@ -194,19 +204,55 @@
 </article>
 
 <style>
-  /* .sdt-container {
-
+  /* class="bg-slate-100 p-4 rounded-2xl flex flex-col items-start gap-2 w-1/2 h-full overflow-y-auto" */
+  .sdt-container {
+    --tw-bg-opacity: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(241 245 249 / var(--tw-bg-opacity));
+    padding: 1rem;
+    border-radius: 1rem;
+    overflow-y: auto;
+    gap: 0.5rem;
   }
 
-  .sdt-text {
+  /* class="bg-blue-200 p-4 rounded-xl max-w-xs" */
+  .sdt-npc {
+    padding: 1rem;
+    background-color: #bfdbfe;
+    max-width: 20rem;
+    border-radius: 0.75rem;
   }
 
+  /* class="bg-blue-200 p-4 rounded-xl self-end text-end max-w-xs" */
   .sdt-user {
+    padding: 1rem;
+    background-color: #bfdbfe;
+    align-self: flex-end;
+    max-width: 20rem;
+    border-radius: 0.75rem;
   }
 
+  /* class="p-2 bg-amber-200 rounded-xl w-full hover:bg-amber-300" */
   .sdt-choice {
+    background-color: #fde68a;
+    padding: 0.5rem;
+    width: 100%;
+    border-radius: 0.75rem;
   }
 
+  .sdt-choice:hover {
+    background-color: #fcd34d;
+  }
+
+  /* class="flex flex-wrap gap-2 w-full" */
   .sdt-choiceContainer {
-  } */
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 0.5rem;
+  }
 </style>
