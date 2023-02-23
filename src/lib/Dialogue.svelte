@@ -95,18 +95,11 @@
     // TODO: TYPESAFE STUFF
     // FIXME: Transitions not working properly
 
-    let onSelect = dialogueTree[key]?.at(-1)[siblingIndex]?.onSelect;
     let next = dialogueTree[key]?.at(-1)[siblingIndex]?.next;
+    console.log(next);
 
     if (next) {
       currentBranchElements.pop(); // removing choices from the view
-
-      console.log(onSelect);
-      console.log(next);
-
-      if (typeof onSelect == "function") {
-        onSelect();
-      }
 
       if (typeof next == "function") {
         next = next();
@@ -137,8 +130,12 @@
   }
 
   function spawned(node, fn) {
+    console.log("spawned");
+
     fn();
   }
+
+  let cachedResults = new Map<number, any>();
 </script>
 
 <svelte:window
@@ -186,7 +183,8 @@
           {@html item}
         </p>
       {:else if typeof item == "function"}
-        {@const { text, onSpawn } = item()}
+        {@const { text, onSpawn } =
+          cachedResults.get(i) || cachedResults.set(i, item()).get(i)}
         <p
           use:spawned={onSpawn}
           class={npcClass || "sdt-npc"}

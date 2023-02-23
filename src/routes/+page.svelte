@@ -1,93 +1,38 @@
 <script lang="ts">
-  import type { DialogueTree } from "../lib/types";
-  import Dialogue from "../lib/Dialogue.svelte";
-  import { fly, scale } from "svelte/transition";
+  import Restaurant from "./Restaurant.svelte";
+  import Nested from "./Nested.svelte";
 
-  let inventory = ["🥧", "🍕", "🥣"];
-  let orderedItem = "";
-
-  function checkItem(item: string): BranchKey {
-    orderedItem = item;
-    return inventory.includes(item) ? "success" : "failure";
-  }
-
-  function consumeOrderedItem() {
-    inventory = inventory.filter((x) => x != orderedItem);
-  }
-
-  function listAvailableItems() {}
-
-  // TODO: Fix variable coupling
-
-  function bringOrderedItem() {
-    return {
-      text: `Your order is ready. Bon appetite! **Puts ${orderedItem} on the table**`,
-      onSpawn: consumeOrderedItem,
-    };
-  }
-
-  type BranchKey = "start" | "success" | "failure";
   // type BranchKey = keyof typeof dialogueTree;
-  // TODO: Nested branches
   // TODO: Characters
   // TODO: Generate choices
   // TODO: Disabled buttons with explanations
-
-  let dialogueTree: DialogueTree<BranchKey> = {
-    start: [
-      "What would you like to have?",
-      [
-        {
-          header: "Soup",
-          text: "Soup",
-          next: () => checkItem("🥣"),
-        },
-        {
-          header: "Pie",
-          text: "Pie",
-          next: () => checkItem("🥧"),
-        },
-      ],
-    ],
-    success: [
-      "Coming right up!",
-      bringOrderedItem,
-      [
-        {
-          header: "Order another one",
-          text: "I would like to make an order",
-          next: "start",
-        },
-        { header: "Leave", text: "**You leave**" },
-      ],
-    ],
-    failure: [
-      "We are fresh out of that, Would you like to have something else",
-      [
-        {
-          header: "Order another one",
-          text: "I would like to make an order",
-          next: "start",
-        },
-        { header: "Leave", text: "**You leave**" },
-      ],
-    ],
-  };
+  let currentExample = "restaurant";
 </script>
 
-<main class="w-screen h-screen flex items-start justify-center p-4">
-  <Dialogue
-    {dialogueTree}
-    transitions={{
-      container: {
-        in: scale,
-      },
-      user: {
-        in: fly,
-      },
-      npc: {
-        in: fly,
-      },
-    }}
+<label>
+  <input
+    type="radio"
+    bind:group={currentExample}
+    name="examples"
+    value="restaurant"
   />
+  Restaurant
+</label>
+
+<label>
+  <input
+    type="radio"
+    bind:group={currentExample}
+    name="examples"
+    value="nested"
+  />
+  Nested
+</label>
+
+<main class="w-full h-[600px] flex items-start justify-center p-4">
+  {#if currentExample == "restaurant"}
+    <Restaurant />
+  {:else if currentExample == "nested"}
+    <Nested />
+  {/if}
 </main>

@@ -1,15 +1,19 @@
-export type BranchElement<Keys> =
+export type BranchTextElement =
   | string
-  | Array<Choice<Keys>>
   | { text: string; onSpawn: Function }
   | (() => string)
-  | (() => Array<Choice<Keys>>)
   | (() => { text: string; onSpawn: Function });
 
-export type Branch<BranchKey> = [
-  ...texts: Array<BranchElement<BranchKey>>,
-  lastItem: BranchElement<BranchKey>
-];
+export type BranchChoiceElement<BranchKey> =
+  | Array<Choice<BranchKey>>
+  | (() => Array<Choice<BranchKey>>);
+
+export type Branch<BranchKey> =
+  | Array<BranchTextElement>
+  | [
+      ...texts: Array<BranchTextElement>,
+      lastItem: BranchChoiceElement<BranchKey>
+    ];
 
 export type DialogueTree<BranchKey extends string | number | symbol> = {
   [key in BranchKey]: Branch<BranchKey>;
