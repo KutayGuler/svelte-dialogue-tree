@@ -22,7 +22,7 @@
 
   function bringOrderedItem() {
     return {
-      text: `Your order is ready. Bon appetite! **Puts ${orderedItem} on the table**`,
+      text: `Your order is ready. Bon appetite! **Puts ${orderedItem} on the table** ** You inhale the intense flavor ** ** blablala ** ** bllalba **`,
       onSpawn: consumeOrderedItem,
     };
   }
@@ -71,11 +71,4 @@
   };
 </script>
 
-<Dialogue
-  {dialogueTree}
-  userIn={scale}
-  npcIn={scale}
-  choiceIn={scale}
-  choiceInOptions={{}}
-  choiceStaggerGap={100}
-/>
+<Dialogue {dialogueTree} on:dialogueEnd={() => console.log("dialogue ended")} />

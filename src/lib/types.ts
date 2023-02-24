@@ -22,7 +22,7 @@ export type DialogueTree<BranchKey extends string | number | symbol = string> =
 export type NextBranch<BranchKey> =
   | BranchKey
   | Branch<BranchKey>
-  | (() => Branch<BranchKey>) // todo:
+  // | (() => Branch<BranchKey>) // todo:
   | (() => BranchKey);
 
 export interface Choice<BranchKey> {

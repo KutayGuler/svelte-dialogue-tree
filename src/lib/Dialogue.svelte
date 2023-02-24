@@ -15,9 +15,12 @@
     type FlyParams,
     type ScaleParams,
     type SlideParams,
+    type TransitionConfig,
   } from "svelte/transition";
   import { createEventDispatcher, onMount } from "svelte";
   const dispatch = createEventDispatcher();
+
+  const narrationRegex = /\*\*(.*?)\*\*/g;
 
   type TransitionParams =
     | ScaleParams
@@ -25,6 +28,11 @@
     | BlurParams
     | FlyParams
     | SlideParams;
+
+  type TransitionFunction = (
+    node: Element,
+    params?: TransitionParams
+  ) => TransitionConfig;
 
   let container: HTMLElement;
   let autoscroll = false;
@@ -49,99 +57,93 @@
   export let choiceClass = "";
   export let userClass = "";
   export let npcClass = "";
+  export let narrationClass = "";
   export let nextLineKey = "Space";
   export const nextLine = () => {
     index += 1;
   };
 
   // NPC TEXT TRANSITION
-  export let npcIn = fly;
+  export let npcIn: TransitionFunction = fly;
   export let npcInOptions: TransitionParams = { x: -200 };
 
   // USER TEXT TRANSITION
-  export let userIn = fly;
+  export let userIn: TransitionFunction = fly;
   export let userInOptions: TransitionParams = { x: 200 };
 
-  export let choiceIn = scale;
+  export let choiceIn: TransitionFunction = scale;
   export let choiceInOptions: TransitionParams = {};
   export let choiceStaggerGap: number = 200;
 
   let choosing = false;
   let index = -1;
   let key = "";
-  let currentBranchElements: Branch<any> = [""];
+  let history: Branch<any> = [""];
   let userTextIndexes: Array<number> = [];
 
   onMount(() => {
     key = Object.keys(dialogueTree)[0];
-    currentBranchElements = new Array(...dialogueTree[key]) as Branch<any>;
+    history = new Array(...dialogueTree[key]) as Branch<any>;
     nextLine();
   });
 
   function checkForEnd() {
-    console.log(currentBranchElements[index]);
-    if (!currentBranchElements[index]) {
-      console.log("dialogueEnd");
+    if (!history[index]) {
       dispatch("dialogueEnd");
     }
   }
 
   function makeChoice(e: SubmitEvent) {
-    let text = e.submitter?.dataset.text;
+    let text = e.submitter?.dataset.text as string;
     let userIndex = +(e.submitter?.dataset.userIndex || -1);
     let siblingIndex = +(e.submitter?.dataset.siblingIndex || 0);
 
-    if (!dialogueTree[key]) return;
+    let choicesArray = dialogueTree[key].at(
+      -1
+    ) as BranchChoiceElement<BranchKey>;
 
-    let lastItem: BranchTextElement | BranchChoiceElement<BranchKey> =
-      dialogueTree[key].at(-1) as any & undefined;
-
-    if (!lastItem) return;
-
-    // TODO: complete this
-
-    // it's of type BranchChoiceElement
-    if (Array.isArray(lastItem)) {
-    }
-
-    let next: NextBranch<BranchKey> = lastItem[siblingIndex]?.next;
+    let { next } = choicesArray[siblingIndex];
     console.log(next);
 
-    if (next) {
-      currentBranchElements.pop(); // removing choices from the view
+    if (!next) {
+      dispatch("dialogueEnd");
+    }
 
-      if (typeof next == "function") {
-        next = next();
-      }
+    /**
+     * Unmounts the choices from the DOM
+     */
+    history.pop();
 
+    if (typeof next == "string") {
       key = next;
-      console.log(dialogueTree[key]);
-      currentBranchElements.push(text);
-      if (dialogueTree[key]) {
-        currentBranchElements.push(...dialogueTree[key]);
-      }
-      // currentDialogue = [...currentDialogue, text, ...dialogueTree[key]];
-      choosing = false;
-      userTextIndexes.push(userIndex);
-      console.log(userTextIndexes);
-
-      currentBranchElements = currentBranchElements;
+      history.push(text, ...dialogueTree[key]);
+    } else if (typeof next == "function") {
+      key = next();
+      history.push(text, ...dialogueTree[key]);
+    } else if (Array.isArray(next)) {
+      history.push(text, ...next);
     } else {
       dispatch("dialogueEnd");
     }
 
-    // if (!dialogueTree[key || ""]) {
-    // // use console.warn() instead
-    //   currentBranchElements = [
-    //     ...currentBranchElements,
-    //     `<b style="color: red;">SVELTE-DIALOGUE-TREE ERROR: </b> The dialogue tree does not have a key named ${next}`,
-    //   ];
-    //   nextLine();
-    // }
+    userTextIndexes.push(userIndex);
+    choosing = false;
+    history = history;
   }
 
-  function spawned(node: Element, fn: Function) {
-    fn();
+  function spawned(
+    node: Element,
+    {
+      onSpawn,
+      text,
+      historyIndex,
+    }: { onSpawn: Function; text: string; historyIndex: number }
+  ) {
+    onSpawn();
+
+    let narrations = text.match(narrationRegex);
+    if (!narrations) return;
+    history.splice(historyIndex + 1, 0, ...narrations);
   }
 
   let cachedResults = new Map<number, any>();
@@ -149,7 +151,7 @@
 
 <svelte:window
   on:keydown={(e) => {
-    if (choosing || Array.isArray(currentBranchElements[index])) {
+    if (choosing || Array.isArray(history[index])) {
       choosing = true;
       return;
     }
@@ -167,9 +169,9 @@
   bind:this={container}
   class={containerClass || "sdt-container"}
 >
-  {#each currentBranchElements as item, i (i)}
-    {@const isUser = userTextIndexes.includes(i)}
-    {#if index >= i}
+  {#each history as item, historyIndex (historyIndex)}
+    {@const isUser = userTextIndexes.includes(historyIndex)}
+    {#if index >= historyIndex}
       {#if Array.isArray(item)}
         <form
           class={choiceContainerClass || "sdt-choiceContainer"}
@@ -183,7 +185,7 @@
               }}
               type="submit"
               class={choiceClass || "sdt-choice"}
-              data-user-index={i}
+              data-user-index={historyIndex}
               data-sibling-index={siblingIndex}
               data-text={choice.text}
             >
@@ -197,18 +199,27 @@
         </p>
       {:else if typeof item == "function"}
         {@const { text, onSpawn } =
-          cachedResults.get(i) || cachedResults.set(i, item()).get(i)}
+          cachedResults.get(historyIndex) ||
+          cachedResults.set(historyIndex, item()).get(historyIndex)}
+        {@const trimmed = text.split("**")[0]}
         <p
-          use:spawned={onSpawn}
+          use:spawned={{ onSpawn, text, historyIndex }}
           class={npcClass || "sdt-npc"}
           in:npcIn={npcInOptions}
         >
-          {@html text}
+          {@html trimmed}
         </p>
-      {:else}
-        <p class={npcClass || "sdt-npc"} in:npcIn={npcInOptions}>
-          {@html item}
-        </p>
+      {:else if typeof item == "string"}
+        {@const isNarration = item[0] == "*" && item.at(-1) == "*"}
+        {#if isNarration}
+          <p in:fly={{ y: -50 }} class={narrationClass || "sdt-narration"}>
+            {@html item.replaceAll("*", "")}
+          </p>
+        {:else}
+          <p class={npcClass || "sdt-npc"} in:npcIn={npcInOptions}>
+            {@html item}
+          </p>
+        {/if}
       {/if}
     {/if}
   {/each}
@@ -266,5 +277,11 @@
     flex-direction: row;
     width: 100%;
     gap: 0.5rem;
+  }
+
+  .sdt-narration {
+    align-self: center;
+    padding: 0.5rem;
+    font-weight: 700;
   }
 </style>
