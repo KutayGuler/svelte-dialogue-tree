@@ -22,7 +22,7 @@
                     {
                       header: "xd",
                       text: "xd",
-                      next: [[{ header: "xd", text: "xd", next: [] }]],
+                      next: [[{ header: "xd", text: "xd", next: ["The end"] }]],
                     },
                   ],
                 ],

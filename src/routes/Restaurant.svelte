@@ -2,6 +2,7 @@
   import type { DialogueTree } from "../lib/types";
   import Dialogue from "../lib/Dialogue.svelte";
   import { fly, scale } from "svelte/transition";
+  import { bounceInOut, quintInOut } from "svelte/easing";
 
   let inventory = ["🥧", "🍕", "🥣"];
   let orderedItem = "";
@@ -72,15 +73,9 @@
 
 <Dialogue
   {dialogueTree}
-  transitions={{
-    container: {
-      in: scale,
-    },
-    user: {
-      in: fly,
-    },
-    npc: {
-      in: fly,
-    },
-  }}
+  userIn={scale}
+  npcIn={scale}
+  choiceIn={scale}
+  choiceInOptions={{}}
+  choiceStaggerGap={100}
 />
