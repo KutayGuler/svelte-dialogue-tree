@@ -79,10 +79,35 @@
   let history: Branch<any> = [""];
   let userTextIndexes: Array<number> = [];
 
+  function generateKey(): string {
+    let key = "_" + Math.random().toString(36).substring(7);
+    if (dialogueTree[key]) {
+      return generateKey();
+    }
+    return key;
+  }
+
+  function flatten(key: BranchKey) {
+    let choices = dialogueTree[key].at(-1);
+
+    // confirming that it's a BranchChoiceElement
+    if (Array.isArray(choices)) {
+      for (let choice of choices) {
+        if (!Array.isArray(choice.next)) continue;
+        let generatedKey = generateKey();
+        dialogueTree[generatedKey] = choice.next;
+        choice.next = generatedKey;
+        flatten(generatedKey);
+      }
+    }
+  }
+
   onMount(() => {
     key = Object.keys(dialogueTree)[0];
     history = new Array(...dialogueTree[key]) as Branch<any>;
+    flatten(key);
     nextLine();
+    console.log(dialogueTree);
   });
 
   function checkForEnd() {
@@ -99,6 +124,12 @@
     let choicesArray = dialogueTree[key].at(
       -1
     ) as BranchChoiceElement<BranchKey>;
+
+    console.log(choicesArray);
+
+    if (typeof choicesArray == "function") {
+      choicesArray = choicesArray();
+    }
 
     let { next } = choicesArray[siblingIndex];
     console.log(next);
@@ -134,8 +165,14 @@
     history = history;
   }
 
-  const narrationRegex = /\*\*(.*?)\*\*/g;
-  function spawned(
+  function parseNarrations(historyIndex: number, text: string) {
+    const narrationRegex = /\*\*(.*?)\*\*/g;
+    let narrations = text.match(narrationRegex);
+    if (!narrations) return;
+    history.splice(historyIndex + 1, 0, ...narrations);
+  }
+
+  function spawnedTextElement(
     node: Element,
     {
       onSpawn,
@@ -144,10 +181,21 @@
     }: { onSpawn: Function; text: string; historyIndex: number }
   ) {
     onSpawn();
+    parseNarrations(historyIndex, text);
+  }
 
-    let narrations = text.match(narrationRegex);
-    if (!narrations) return;
-    history.splice(historyIndex + 1, 0, ...narrations);
+  function spawnedChoiceElement(
+    node: Element,
+    {
+      next,
+      label,
+      historyIndex,
+    }: { next: Function; label: string; historyIndex: number }
+  ) {
+    console.log(next);
+    console.log(label);
+
+    next();
   }
 
   let cachedResults = new Map<number, any>();
@@ -175,6 +223,8 @@
 >
   {#each history as item, historyIndex (historyIndex)}
     {@const isUser = userTextIndexes.includes(historyIndex)}
+    {@const isNarration =
+      typeof item == "string" && item[0] == "*" && item.at(-1) == "*"}
     {#if index >= historyIndex}
       {#if Array.isArray(item)}
         <form
@@ -193,37 +243,65 @@
               data-sibling-index={siblingIndex}
               data-text={choice.text}
             >
-              {@html choice.header}
+              {@html choice.label}
             </button>
           {/each}
         </form>
+      {:else if isNarration}
+        <p in:fly={{ y: -50 }} class={narrationClass || "sdt-narration"}>
+          {@html item.replaceAll("*", "")}
+        </p>
       {:else if isUser}
-        <p class={userClass || "sdt-user"} transition:userIn={userInOptions}>
+        <p
+          class={userClass || "sdt-user"}
+          in:userIn={userInOptions}
+          out:userIn={{ duration: 0 }}
+        >
           {@html item}
         </p>
       {:else if typeof item == "function"}
         {@const { text, onSpawn } =
           cachedResults.get(historyIndex) ||
           cachedResults.set(historyIndex, item()).get(historyIndex)}
-        {@const trimmed = text.split("**")[0]}
-        <p
-          use:spawned={{ onSpawn, text, historyIndex }}
-          class={npcClass || "sdt-npc"}
-          in:npcIn={npcInOptions}
-        >
-          {@html trimmed}
-        </p>
-      {:else if typeof item == "string"}
-        {@const isNarration = item[0] == "*" && item.at(-1) == "*"}
-        {#if isNarration}
-          <p in:fly={{ y: -50 }} class={narrationClass || "sdt-narration"}>
-            {@html item.replaceAll("*", "")}
+        {#if onSpawn}
+          {@const trimmed = text?.split("**")[0]}
+          <p
+            use:spawnedTextElement={{ onSpawn, text, historyIndex }}
+            class={npcClass || "sdt-npc"}
+            in:npcIn={npcInOptions}
+          >
+            {@html trimmed}
           </p>
         {:else}
-          <p class={npcClass || "sdt-npc"} in:npcIn={npcInOptions}>
-            {@html item}
-          </p>
+          {@const choices =
+            cachedResults.get(historyIndex) ||
+            cachedResults.set(historyIndex, item()).get(historyIndex)}
+
+          <form
+            class={choiceContainerClass || "sdt-choiceContainer"}
+            on:submit|preventDefault={makeChoice}
+          >
+            {#each choices as choice, siblingIndex}
+              <button
+                in:choiceIn={{
+                  ...choiceInOptions,
+                  delay: siblingIndex * choiceStaggerGap,
+                }}
+                type="submit"
+                class={choiceClass || "sdt-choice"}
+                data-user-index={historyIndex}
+                data-sibling-index={siblingIndex}
+                data-text={choice.text}
+              >
+                {@html choice.label}
+              </button>
+            {/each}
+          </form>
         {/if}
+      {:else}
+        <p class={npcClass || "sdt-npc"} in:npcIn={npcInOptions}>
+          {@html item}
+        </p>
       {/if}
     {/if}
   {/each}

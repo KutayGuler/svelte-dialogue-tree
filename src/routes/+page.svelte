@@ -2,9 +2,7 @@
   import Restaurant from "./Restaurant.svelte";
   import Nested from "./Nested.svelte";
 
-  // type BranchKey = keyof typeof dialogueTree;
   // TODO: Characters
-  // TODO: Generate choices
   // TODO: Disabled buttons with explanations
   let currentExample = "restaurant";
 </script>
