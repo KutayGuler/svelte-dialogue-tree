@@ -20,8 +20,6 @@
   import { createEventDispatcher, onMount } from "svelte";
   const dispatch = createEventDispatcher();
 
-  const narrationRegex = /\*\*(.*?)\*\*/g;
-
   type TransitionParams =
     | ScaleParams
     | FadeParams
@@ -110,7 +108,7 @@
     }
 
     /**
-     * Unmounts the choices from the DOM
+     * unmounts the choices from the DOM
      */
     history.pop();
 
@@ -124,13 +122,19 @@
       history.push(text, ...next);
     } else {
       dispatch("dialogueEnd");
+      return;
     }
 
     userTextIndexes.push(userIndex);
     choosing = false;
+
+    /**
+     * required to rerender the dom
+     */
     history = history;
   }
 
+  const narrationRegex = /\*\*(.*?)\*\*/g;
   function spawned(
     node: Element,
     {
