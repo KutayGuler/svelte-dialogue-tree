@@ -63,6 +63,8 @@ export interface Choice<BranchKey, CharacterKey extends string> {
   label: string;
   text: string;
   next: BranchKey | Branch<BranchKey, CharacterKey> | (() => BranchKey);
+  title?: string | (() => string);
+  disabled?: boolean | (() => boolean);
 }
 
 // TRANSITION TYPES

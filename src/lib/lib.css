@@ -47,6 +47,14 @@
   background-color: #fcd34d;
 }
 
+.sdt-choice:disabled {
+  opacity: 50%;
+}
+
+.sdt-choice:disabled:hover {
+  background-color: #fde68a;
+}
+
 /* class="flex flex-wrap gap-2 w-full" */
 .sdt-choiceContainer {
   display: flex;

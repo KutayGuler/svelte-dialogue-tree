@@ -10,12 +10,22 @@
   export let choiceStaggerGap: number;
 </script>
 
+<!-- TODO: What if all options are disabled? -->
+
 <form
   class={choiceContainerClass || "sdt-choiceContainer"}
   on:submit|preventDefault={makeChoice}
 >
   {#each choices as choice, siblingIndex}
+    {@const title =
+      typeof choice.title == "function" ? choice.title() : choice.title}
+    {@const disabled =
+      typeof choice.disabled == "function"
+        ? choice.disabled()
+        : choice.disabled}
     <button
+      {title}
+      {disabled}
       in:choiceIn={{
         ...choiceInOptions,
         delay: siblingIndex * choiceStaggerGap,

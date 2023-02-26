@@ -2,25 +2,35 @@
   import type { Choice, DialogueData } from "../lib/types";
   import Dialogue from "../lib/Dialogue.svelte";
 
+  let menu = ["🥧", "🍕", "🥣", "🍔"];
   let inventory = ["🥧", "🍕", "🥣", "🍔"];
   let orderedItem = "";
 
-  function checkItem(item: string): BranchKey {
-    orderedItem = item;
-    return inventory.includes(item) ? "success" : "failure";
+  function itemExists(item: string): boolean {
+    return inventory.includes(item);
   }
 
   function consumeOrderedItem() {
     inventory = inventory.filter((x) => x != orderedItem);
   }
 
+  function generateTitle() {}
+
   function listAvailableItems(): Array<Choice<BranchKey, CharacterKey>> {
     let choices: Array<Choice<BranchKey, CharacterKey>> = [];
-    for (let item of inventory) {
+    for (let item of menu) {
       choices.push({
         label: item,
         text: `I would like to have a ${item}`,
-        next: () => checkItem(item),
+        title: () =>
+          !itemExists(item)
+            ? `The restaurant does not have any ${item}s left`
+            : `Click to order ${item}`,
+        disabled: () => !itemExists(item),
+        next: () => {
+          orderedItem = item;
+          return itemExists(item) ? "success" : "failure";
+        },
       });
     }
     return choices;

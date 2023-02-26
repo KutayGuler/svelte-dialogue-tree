@@ -186,6 +186,8 @@
   }}
 />
 
+<!-- TODO: Minigame component and Minigame event handler -->
+
 <article
   in:scale|local
   bind:this={container}
