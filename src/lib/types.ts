@@ -1,5 +1,5 @@
-export type CharacterCollection = {
-  [id: string]: Character;
+export type CharacterCollection<CharacterKey extends string> = {
+  [id in CharacterKey]: Character;
 };
 
 export interface Character {
@@ -10,40 +10,49 @@ export interface Character {
   };
 }
 
-export type TextObject =
-  | {
-      text: string;
-      onSpawn: Function;
-    }
-  | {
-      text: string;
-      characterID: keyof CharacterCollection;
-    };
+export type TextWithOnSpawn = {
+  text: string;
+  onSpawn: Function;
+};
 
-export type BranchTextElement =
+export type TextWithCharacterID<CharacterKey> = {
+  text: string;
+  characterID: CharacterKey;
+};
+
+export type TextLeaf<CharacterKey extends string> =
   | string
-  | TextObject
+  | TextWithOnSpawn
+  | TextWithCharacterID<CharacterKey>
   | (() => string)
-  | (() => TextObject);
+  | (() => TextWithOnSpawn)
+  | (() => TextWithCharacterID<CharacterKey>);
 
-export type BranchChoiceElement<BranchKey> =
-  | Array<Choice<BranchKey>>
-  | (() => Array<Choice<BranchKey>>);
+export type ChoiceLeaf<BranchKey, CharacterKey extends string> =
+  | Array<Choice<BranchKey, CharacterKey>>
+  | (() => Array<Choice<BranchKey, CharacterKey>>);
 
-export type Branch<BranchKey> =
-  | Array<BranchTextElement>
+export type Branch<BranchKey, CharacterKey extends string> =
+  | Array<TextLeaf<CharacterKey>>
   | [
-      ...texts: Array<BranchTextElement>,
-      lastItem: BranchChoiceElement<BranchKey>
+      ...texts: Array<TextLeaf<CharacterKey>>,
+      lastItem: ChoiceLeaf<BranchKey, CharacterKey>
     ];
 
-export type DialogueTree<BranchKey extends string | number | symbol = string> =
-  {
-    [key in BranchKey]: Branch<BranchKey>;
-  };
+export interface DialogueData<
+  BranchKey extends string = string,
+  CharacterKey extends string = string
+> {
+  characters?: CharacterCollection<CharacterKey>;
+  tree: Tree<BranchKey, CharacterKey>;
+}
 
-export interface Choice<BranchKey> {
+export type Tree<BranchKey extends string, CharacterKey extends string> = {
+  [key in BranchKey]: Branch<BranchKey, CharacterKey>;
+};
+
+export interface Choice<BranchKey, CharacterKey extends string> {
   label: string;
   text: string;
-  next: BranchKey | Branch<BranchKey> | (() => BranchKey);
+  next: BranchKey | Branch<BranchKey, CharacterKey> | (() => BranchKey);
 }

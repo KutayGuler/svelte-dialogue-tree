@@ -1,10 +1,11 @@
 <script lang="ts">
   import type {
     Branch,
-    BranchChoiceElement,
-    BranchTextElement,
-    DialogueTree,
-    NextBranch,
+    DialogueData,
+    Tree,
+    CharacterCollection,
+    ChoiceLeaf,
+    TextLeaf,
   } from "./types";
   import { beforeUpdate, afterUpdate } from "svelte";
   import {
@@ -46,9 +47,13 @@
     if (autoscroll) container.scrollTo(0, container.scrollHeight);
   });
 
-  export let dialogueTree: DialogueTree;
+  export let dialogue: DialogueData;
+  type BranchKey = keyof typeof dialogue.tree;
+  type CharacterKey = keyof typeof dialogue.characters;
 
-  type BranchKey = keyof typeof dialogueTree;
+  let tree: Tree<BranchKey, CharacterKey | string> = dialogue.tree;
+  let characters: CharacterCollection<CharacterKey | string> | undefined =
+    dialogue.characters;
 
   export let containerClass = "";
   export let choiceContainerClass = "";
@@ -76,26 +81,26 @@
   let choosing = false;
   let index = -1;
   let key = "";
-  let history: Branch<any> = [""];
+  let history: Branch<BranchKey, CharacterKey> = [""];
   let userTextIndexes: Array<number> = [];
 
   function generateKey(): string {
     let key = "_" + Math.random().toString(36).substring(7);
-    if (dialogueTree[key]) {
+    if (tree[key]) {
       return generateKey();
     }
     return key;
   }
 
   function flatten(key: BranchKey) {
-    let choices = dialogueTree[key].at(-1);
+    let choices = tree[key].at(-1);
 
     // confirming that it's a BranchChoiceElement
     if (Array.isArray(choices)) {
       for (let choice of choices) {
         if (!Array.isArray(choice.next)) continue;
         let generatedKey = generateKey();
-        dialogueTree[generatedKey] = choice.next;
+        tree[generatedKey] = choice.next;
         choice.next = generatedKey;
         flatten(generatedKey);
       }
@@ -103,11 +108,11 @@
   }
 
   onMount(() => {
-    key = Object.keys(dialogueTree)[0];
-    history = new Array(...dialogueTree[key]) as Branch<any>;
+    key = Object.keys(tree)[0];
+    history = new Array(...tree[key]) as Branch<BranchKey, CharacterKey>;
     flatten(key);
     nextLine();
-    console.log(dialogueTree);
+    console.log(tree);
   });
 
   function checkForEnd() {
@@ -121,9 +126,7 @@
     let userIndex = +(e.submitter?.dataset.userIndex || -1);
     let siblingIndex = +(e.submitter?.dataset.siblingIndex || 0);
 
-    let choicesArray = dialogueTree[key].at(
-      -1
-    ) as BranchChoiceElement<BranchKey>;
+    let choicesArray = tree[key].at(-1) as ChoiceLeaf<BranchKey, CharacterKey>;
 
     console.log(choicesArray);
 
@@ -145,12 +148,12 @@
 
     if (typeof next == "string") {
       key = next;
-      history.push(text, ...dialogueTree[key]);
+      history.push(text, ...(tree[key] as any));
     } else if (typeof next == "function") {
       key = next();
-      history.push(text, ...dialogueTree[key]);
+      history.push(text, ...(tree[key] as any));
     } else if (Array.isArray(next)) {
-      history.push(text, ...next);
+      history.push(text, ...(next as any));
     } else {
       dispatch("dialogueEnd");
       return;
@@ -247,18 +250,6 @@
             </button>
           {/each}
         </form>
-      {:else if isNarration}
-        <p in:fly={{ y: -50 }} class={narrationClass || "sdt-narration"}>
-          {@html item.replaceAll("*", "")}
-        </p>
-      {:else if isUser}
-        <p
-          class={userClass || "sdt-user"}
-          in:userIn={userInOptions}
-          out:userIn={{ duration: 0 }}
-        >
-          {@html item}
-        </p>
       {:else if typeof item == "function"}
         {@const { text, onSpawn } =
           cachedResults.get(historyIndex) ||
@@ -298,6 +289,19 @@
             {/each}
           </form>
         {/if}
+      {:else if typeof item == "string" && isNarration}
+        {@const trimmed = item.replaceAll("*", "")}
+        <p in:fly={{ y: -50 }} class={narrationClass || "sdt-narration"}>
+          {@html trimmed}
+        </p>
+      {:else if isUser}
+        <p
+          class={userClass || "sdt-user"}
+          in:userIn={userInOptions}
+          out:userIn={{ duration: 0 }}
+        >
+          {@html item}
+        </p>
       {:else}
         <p class={npcClass || "sdt-npc"} in:npcIn={npcInOptions}>
           {@html item}

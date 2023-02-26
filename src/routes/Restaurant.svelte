@@ -1,16 +1,6 @@
 <script lang="ts">
-  import type { CharacterCollection, Choice, DialogueTree } from "../lib/types";
+  import type { Choice, DialogueData } from "../lib/types";
   import Dialogue from "../lib/Dialogue.svelte";
-
-  const characters: CharacterCollection = {
-    cook: {
-      name: "Jordan",
-      avatar: {
-        type: "string",
-        data: "👩‍🍳",
-      },
-    },
-  };
 
   let inventory = ["🥧", "🍕", "🥣", "🍔"];
   let orderedItem = "";
@@ -24,8 +14,8 @@
     inventory = inventory.filter((x) => x != orderedItem);
   }
 
-  function listAvailableItems(): Array<Choice<BranchKey>> {
-    let choices: Array<Choice<BranchKey>> = [];
+  function listAvailableItems(): Array<Choice<BranchKey, CharacterKey>> {
+    let choices: Array<Choice<BranchKey, CharacterKey>> = [];
     for (let item of inventory) {
       choices.push({
         label: item,
@@ -43,7 +33,7 @@
     };
   }
 
-  function orderOrLeave(): Array<Choice<BranchKey>> {
+  function orderOrLeave(): Array<Choice<BranchKey, CharacterKey>> {
     return [
       {
         label: "Order another one",
@@ -55,22 +45,30 @@
   }
 
   type BranchKey = "start" | "success" | "failure";
+  type CharacterKey = "cook";
 
-  let dialogueTree: DialogueTree<BranchKey> = {
-    start: ["What would you like to have?", listAvailableItems],
-    success: [
-      { text: "Coming right up!", characterID: "cook" },
-      bringOrderedItem,
-      orderOrLeave,
-    ],
-    failure: [
-      {
-        text: "We are fresh out of that, Would you like to have something else",
-        characterID: "cook",
+  let dialogue: DialogueData<BranchKey, CharacterKey> = {
+    characters: {
+      cook: {
+        name: "cook",
       },
-      orderOrLeave,
-    ],
+    },
+    tree: {
+      start: ["What would you like to have?", listAvailableItems],
+      success: [
+        { text: "Coming right up!", characterID: "cook" },
+        bringOrderedItem,
+        orderOrLeave,
+      ],
+      failure: [
+        {
+          text: "We are fresh out of that, Would you like to have something else",
+          characterID: "cook",
+        },
+        orderOrLeave,
+      ],
+    },
   };
 </script>
 
-<Dialogue {dialogueTree} on:dialogueEnd={() => console.log("dialogue ended")} />
+<Dialogue {dialogue} on:dialogueEnd={() => console.log("dialogue ended")} />
