@@ -5,34 +5,16 @@
     Tree,
     CharacterCollection,
     ChoiceLeaf,
-    TextLeaf,
+    TransitionFunction,
+    TransitionParams,
   } from "./types";
   import { beforeUpdate, afterUpdate } from "svelte";
-  import {
-    fly,
-    scale,
-    type BlurParams,
-    type FadeParams,
-    type FlyParams,
-    type ScaleParams,
-    type SlideParams,
-    type TransitionConfig,
-  } from "svelte/transition";
+  import { fly, scale } from "svelte/transition";
   import { createEventDispatcher, onMount } from "svelte";
+  import TextObjectRenderer from "./TextObjectRenderer.svelte";
+  import ChoiceRenderer from "./ChoiceRenderer.svelte";
+
   const dispatch = createEventDispatcher();
-
-  type TransitionParams =
-    | ScaleParams
-    | FadeParams
-    | BlurParams
-    | FlyParams
-    | SlideParams;
-
-  type TransitionFunction = (
-    node: Element,
-    params?: TransitionParams
-  ) => TransitionConfig;
-
   let container: HTMLElement;
   let autoscroll = false;
 
@@ -112,7 +94,6 @@
     history = new Array(...tree[key]) as Branch<BranchKey, CharacterKey>;
     flatten(key);
     nextLine();
-    console.log(tree);
   });
 
   function checkForEnd() {
@@ -125,17 +106,13 @@
     let text = e.submitter?.dataset.text as string;
     let userIndex = +(e.submitter?.dataset.userIndex || -1);
     let siblingIndex = +(e.submitter?.dataset.siblingIndex || 0);
-
     let choicesArray = tree[key].at(-1) as ChoiceLeaf<BranchKey, CharacterKey>;
-
-    console.log(choicesArray);
 
     if (typeof choicesArray == "function") {
       choicesArray = choicesArray();
     }
 
     let { next } = choicesArray[siblingIndex];
-    console.log(next);
 
     if (!next) {
       dispatch("dialogueEnd");
@@ -187,21 +164,11 @@
     parseNarrations(historyIndex, text);
   }
 
-  function spawnedChoiceElement(
-    node: Element,
-    {
-      next,
-      label,
-      historyIndex,
-    }: { next: Function; label: string; historyIndex: number }
-  ) {
-    console.log(next);
-    console.log(label);
-
-    next();
-  }
-
   let cachedResults = new Map<number, any>();
+
+  function choicesGenerated(node: Element) {
+    choosing = true;
+  }
 </script>
 
 <svelte:window
@@ -229,66 +196,55 @@
     {@const isNarration =
       typeof item == "string" && item[0] == "*" && item.at(-1) == "*"}
     {#if index >= historyIndex}
-      {#if Array.isArray(item)}
-        <form
-          class={choiceContainerClass || "sdt-choiceContainer"}
-          on:submit|preventDefault={makeChoice}
-        >
-          {#each item as choice, siblingIndex}
-            <button
-              in:choiceIn={{
-                ...choiceInOptions,
-                delay: siblingIndex * choiceStaggerGap,
-              }}
-              type="submit"
-              class={choiceClass || "sdt-choice"}
-              data-user-index={historyIndex}
-              data-sibling-index={siblingIndex}
-              data-text={choice.text}
-            >
-              {@html choice.label}
-            </button>
-          {/each}
-        </form>
+      {#if Array.isArray(item) && item.length != 0}
+        <ChoiceRenderer
+          choices={item}
+          {choiceIn}
+          {makeChoice}
+          {choiceClass}
+          {historyIndex}
+          {choiceInOptions}
+          {choiceStaggerGap}
+          {choiceContainerClass}
+        />
       {:else if typeof item == "function"}
-        {@const { text, onSpawn } =
+        {@const params =
           cachedResults.get(historyIndex) ||
           cachedResults.set(historyIndex, item()).get(historyIndex)}
-        {#if onSpawn}
-          {@const trimmed = text?.split("**")[0]}
-          <p
-            use:spawnedTextElement={{ onSpawn, text, historyIndex }}
-            class={npcClass || "sdt-npc"}
-            in:npcIn={npcInOptions}
+        {#if Array.isArray(params)}
+          <ChoiceRenderer
+            choices={params}
+            {choiceIn}
+            {makeChoice}
+            {choiceClass}
+            {historyIndex}
+            {choiceInOptions}
+            {choiceStaggerGap}
+            {choiceContainerClass}
           >
-            {@html trimmed}
-          </p>
+            <span slot="generated" use:choicesGenerated />
+          </ChoiceRenderer>
         {:else}
-          {@const choices =
-            cachedResults.get(historyIndex) ||
-            cachedResults.set(historyIndex, item()).get(historyIndex)}
-
-          <form
-            class={choiceContainerClass || "sdt-choiceContainer"}
-            on:submit|preventDefault={makeChoice}
-          >
-            {#each choices as choice, siblingIndex}
-              <button
-                in:choiceIn={{
-                  ...choiceInOptions,
-                  delay: siblingIndex * choiceStaggerGap,
-                }}
-                type="submit"
-                class={choiceClass || "sdt-choice"}
-                data-user-index={historyIndex}
-                data-sibling-index={siblingIndex}
-                data-text={choice.text}
-              >
-                {@html choice.label}
-              </button>
-            {/each}
-          </form>
+          <TextObjectRenderer
+            {...params}
+            {npcIn}
+            {npcClass}
+            {characters}
+            {npcInOptions}
+            {historyIndex}
+            {spawnedTextElement}
+          />
         {/if}
+      {:else if typeof item == "object"}
+        <TextObjectRenderer
+          {...item}
+          {npcIn}
+          {npcClass}
+          {characters}
+          {npcInOptions}
+          {historyIndex}
+          {spawnedTextElement}
+        />
       {:else if typeof item == "string" && isNarration}
         {@const trimmed = item.replaceAll("*", "")}
         <p in:fly={{ y: -50 }} class={narrationClass || "sdt-narration"}>
@@ -310,64 +266,3 @@
     {/if}
   {/each}
 </article>
-
-<style>
-  /* class="bg-slate-100 p-4 rounded-2xl flex flex-col items-start gap-2 w-1/2 h-full overflow-y-auto" */
-  .sdt-container {
-    --tw-bg-opacity: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
-    height: 100%;
-    background-color: rgb(241 245 249 / var(--tw-bg-opacity));
-    padding: 1rem;
-    border-radius: 1rem;
-    overflow-y: auto;
-    overflow-x: hidden;
-    gap: 0.5rem;
-  }
-
-  /* class="bg-blue-200 p-4 rounded-xl max-w-xs" */
-  .sdt-npc {
-    padding: 1rem;
-    background-color: #bfdbfe;
-    max-width: 20rem;
-    border-radius: 0.75rem;
-  }
-
-  /* class="bg-blue-200 p-4 rounded-xl self-end text-end max-w-xs" */
-  .sdt-user {
-    padding: 1rem;
-    background-color: #bfdbfe;
-    align-self: flex-end;
-    max-width: 20rem;
-    border-radius: 0.75rem;
-  }
-
-  /* class="p-2 bg-amber-200 rounded-xl w-full hover:bg-amber-300" */
-  .sdt-choice {
-    background-color: #fde68a;
-    padding: 0.5rem;
-    width: 100%;
-    border-radius: 0.75rem;
-  }
-
-  .sdt-choice:hover {
-    background-color: #fcd34d;
-  }
-
-  /* class="flex flex-wrap gap-2 w-full" */
-  .sdt-choiceContainer {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    gap: 0.5rem;
-  }
-
-  .sdt-narration {
-    align-self: center;
-    padding: 0.5rem;
-    font-weight: 700;
-  }
-</style>

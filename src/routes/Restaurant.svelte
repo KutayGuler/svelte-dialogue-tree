@@ -54,7 +54,10 @@
       },
     },
     tree: {
-      start: ["What would you like to have?", listAvailableItems],
+      start: [
+        { text: "What would you like to have?", characterID: "cook" },
+        listAvailableItems,
+      ],
       success: [
         { text: "Coming right up!", characterID: "cook" },
         bringOrderedItem,

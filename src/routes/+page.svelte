@@ -2,7 +2,6 @@
   import Restaurant from "./Restaurant.svelte";
   import Nested from "./Nested.svelte";
 
-  // TODO: Characters
   // TODO: Disabled buttons with explanations
   let currentExample = "restaurant";
 </script>

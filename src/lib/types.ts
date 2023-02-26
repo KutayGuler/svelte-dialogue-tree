@@ -1,3 +1,12 @@
+import type {
+  ScaleParams,
+  FadeParams,
+  BlurParams,
+  FlyParams,
+  SlideParams,
+  TransitionConfig,
+} from "svelte/types/runtime/transition";
+
 export type CharacterCollection<CharacterKey extends string> = {
   [id in CharacterKey]: Character;
 };
@@ -10,23 +19,19 @@ export interface Character {
   };
 }
 
-export type TextWithOnSpawn = {
-  text: string;
-  onSpawn: Function;
-};
-
-export type TextWithCharacterID<CharacterKey> = {
-  text: string;
-  characterID: CharacterKey;
-};
+export type TextObject = { text: string };
+export type WithOnSpawn = { onSpawn: Function };
+export type WithCharacterID<CharacterKey> = { characterID: CharacterKey };
 
 export type TextLeaf<CharacterKey extends string> =
   | string
-  | TextWithOnSpawn
-  | TextWithCharacterID<CharacterKey>
+  | (TextObject & WithOnSpawn)
+  | (TextObject & WithCharacterID<CharacterKey>)
+  | (TextObject & WithOnSpawn & WithCharacterID<CharacterKey>)
   | (() => string)
-  | (() => TextWithOnSpawn)
-  | (() => TextWithCharacterID<CharacterKey>);
+  | (() => TextObject & WithOnSpawn)
+  | (() => TextObject & WithCharacterID<CharacterKey>)
+  | (() => TextObject & WithOnSpawn & WithCharacterID<CharacterKey>);
 
 export type ChoiceLeaf<BranchKey, CharacterKey extends string> =
   | Array<Choice<BranchKey, CharacterKey>>
@@ -47,7 +52,10 @@ export interface DialogueData<
   tree: Tree<BranchKey, CharacterKey>;
 }
 
-export type Tree<BranchKey extends string, CharacterKey extends string> = {
+export type Tree<
+  BranchKey extends string = string,
+  CharacterKey extends string = string
+> = {
   [key in BranchKey]: Branch<BranchKey, CharacterKey>;
 };
 
@@ -56,3 +64,17 @@ export interface Choice<BranchKey, CharacterKey extends string> {
   text: string;
   next: BranchKey | Branch<BranchKey, CharacterKey> | (() => BranchKey);
 }
+
+// TRANSITION TYPES
+
+export type TransitionParams =
+  | ScaleParams
+  | FadeParams
+  | BlurParams
+  | FlyParams
+  | SlideParams;
+
+export type TransitionFunction = (
+  node: Element,
+  params?: TransitionParams
+) => TransitionConfig;
