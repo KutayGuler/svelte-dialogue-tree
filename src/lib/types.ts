@@ -13,10 +13,7 @@ export type CharacterCollection<CharacterKey extends string> = {
 
 export interface Character {
   name: string;
-  avatar?: {
-    type: "img" | "svg" | "string" | "gif";
-    data: any; // todo: replace
-  };
+  avatarURL?: string;
 }
 
 export interface ComponentLeaf {

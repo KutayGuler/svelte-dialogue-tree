@@ -11,7 +11,7 @@
   import { beforeUpdate, afterUpdate } from "svelte";
   import { fly, scale } from "svelte/transition";
   import { createEventDispatcher, onMount } from "svelte";
-  import TextObjectRenderer from "./TextObjectRenderer.svelte";
+  import TextRenderer from "./TextRenderer.svelte";
   import ChoiceRenderer from "./ChoiceRenderer.svelte";
 
   const dispatch = createEventDispatcher();
@@ -49,6 +49,10 @@
   };
 
   // NPC TEXT TRANSITION
+  export let dialogueIn: TransitionFunction = scale;
+  export let dialogueInOptions: TransitionParams = {};
+
+  // NPC TEXT TRANSITION
   export let npcIn: TransitionFunction = fly;
   export let npcInOptions: TransitionParams = { x: -200 };
 
@@ -60,7 +64,7 @@
   export let choiceInOptions: TransitionParams = {};
   export let choiceStaggerGap: number = 200;
 
-  let choosing = false;
+  let interacting = false;
   let index = -1;
   let key = "";
   let history: Branch<BranchKey, CharacterKey> = [""];
@@ -137,7 +141,7 @@
     }
 
     userTextIndexes.push(userIndex);
-    choosing = false;
+    interacting = false;
 
     /**
      * required to rerender the dom
@@ -160,23 +164,36 @@
       historyIndex,
     }: { onSpawn: Function; text: string; historyIndex: number }
   ) {
-    onSpawn();
-    parseNarrations(historyIndex, text);
+    if (typeof onSpawn == "function") {
+      onSpawn();
+      parseNarrations(historyIndex, text);
+    }
   }
 
   let cachedResults = new Map<number, any>();
 
   function choicesGenerated(node: Element) {
-    choosing = true;
+    node.remove();
+    interacting = true;
   }
 
-  function spawnedComponent(node: Element) {}
+  function spawnedComponent(node: Element) {
+    interacting = true;
+    node.remove();
+  }
+
+  function changeKey(node: Element, newKey: BranchKey) {
+    node.remove();
+    key = newKey;
+    history = [...history, ...tree[key]];
+    index++;
+  }
 </script>
 
 <svelte:window
   on:keydown={(e) => {
-    if (choosing || Array.isArray(history[index])) {
-      choosing = true;
+    if (interacting || Array.isArray(history[index])) {
+      interacting = true;
       return;
     }
 
@@ -188,10 +205,8 @@
   }}
 />
 
-<!-- TODO: Minigame component and Minigame event handler -->
-
 <article
-  in:scale|local
+  in:dialogueIn|local={dialogueInOptions}
   bind:this={container}
   class={containerClass || "sdt-container"}
 >
@@ -225,21 +240,24 @@
             {choiceInOptions}
             {choiceStaggerGap}
             {choiceContainerClass}
-          >
-            <span slot="generated" use:choicesGenerated />
-          </ChoiceRenderer>
-        {:else if typeof params == "string"}
-          <TextObjectRenderer
-            text={params}
-            {npcIn}
-            {npcClass}
-            {characters}
-            {npcInOptions}
-            {historyIndex}
-            {spawnedTextElement}
           />
+          <span use:choicesGenerated />
+        {:else if typeof params == "string"}
+          {#if tree[params]}
+            <span use:changeKey={params} />
+          {:else}
+            <TextRenderer
+              text={params}
+              {npcIn}
+              {npcClass}
+              {characters}
+              {npcInOptions}
+              {historyIndex}
+              {spawnedTextElement}
+            />
+          {/if}
         {:else}
-          <TextObjectRenderer
+          <TextRenderer
             {...params}
             {npcIn}
             {npcClass}
@@ -256,10 +274,13 @@
             this={item.component}
             {...item.args}
             on:componentEvent
-            on:componentEnd
+            on:componentEnd={(e) => {
+              dispatch("componentEnd", e.detail);
+              interacting = false;
+            }}
           />
         {:else}
-          <TextObjectRenderer
+          <TextRenderer
             {...item}
             {npcIn}
             {npcClass}

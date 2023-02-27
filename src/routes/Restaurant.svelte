@@ -58,7 +58,8 @@
   let dialogue: DialogueData<BranchKey, CharacterKey> = {
     characters: {
       cook: {
-        name: "cook",
+        name: "Cook",
+        avatarURL: "https://picsum.photos/200/300",
       },
     },
     tree: {

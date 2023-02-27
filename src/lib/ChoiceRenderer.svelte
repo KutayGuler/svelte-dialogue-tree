@@ -37,5 +37,4 @@
       {@html choice.label}
     </button>
   {/each}
-  <slot name="generated" />
 </form>
