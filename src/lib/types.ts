@@ -19,6 +19,11 @@ export interface Character {
   };
 }
 
+export interface ComponentLeaf {
+  component: Function;
+  args?: object;
+}
+
 export type TextObject = { text: string };
 export type WithOnSpawn = { onSpawn: Function };
 export type WithCharacterID<CharacterKey> = { characterID: CharacterKey };
@@ -38,9 +43,9 @@ export type ChoiceLeaf<BranchKey, CharacterKey extends string> =
   | (() => Array<Choice<BranchKey, CharacterKey>>);
 
 export type Branch<BranchKey, CharacterKey extends string> =
-  | Array<TextLeaf<CharacterKey>>
+  | Array<TextLeaf<CharacterKey> | ComponentLeaf>
   | [
-      ...texts: Array<TextLeaf<CharacterKey>>,
+      ...texts: Array<TextLeaf<CharacterKey> | ComponentLeaf>,
       lastItem: ChoiceLeaf<BranchKey, CharacterKey>
     ];
 
@@ -48,8 +53,8 @@ export interface DialogueData<
   BranchKey extends string = string,
   CharacterKey extends string = string
 > {
-  characters?: CharacterCollection<CharacterKey>;
   tree: Tree<BranchKey, CharacterKey>;
+  characters?: CharacterCollection<CharacterKey>;
 }
 
 export type Tree<

@@ -169,6 +169,8 @@
   function choicesGenerated(node: Element) {
     choosing = true;
   }
+
+  function spawnedComponent(node: Element) {}
 </script>
 
 <svelte:window
@@ -226,6 +228,16 @@
           >
             <span slot="generated" use:choicesGenerated />
           </ChoiceRenderer>
+        {:else if typeof params == "string"}
+          <TextObjectRenderer
+            text={params}
+            {npcIn}
+            {npcClass}
+            {characters}
+            {npcInOptions}
+            {historyIndex}
+            {spawnedTextElement}
+          />
         {:else}
           <TextObjectRenderer
             {...params}
@@ -238,15 +250,25 @@
           />
         {/if}
       {:else if typeof item == "object"}
-        <TextObjectRenderer
-          {...item}
-          {npcIn}
-          {npcClass}
-          {characters}
-          {npcInOptions}
-          {historyIndex}
-          {spawnedTextElement}
-        />
+        {#if item.component}
+          <span use:spawnedComponent />
+          <svelte:component
+            this={item.component}
+            {...item.args}
+            on:componentEvent
+            on:componentEnd
+          />
+        {:else}
+          <TextObjectRenderer
+            {...item}
+            {npcIn}
+            {npcClass}
+            {characters}
+            {npcInOptions}
+            {historyIndex}
+            {spawnedTextElement}
+          />
+        {/if}
       {:else if typeof item == "string" && isNarration}
         {@const trimmed = item.replaceAll("*", "")}
         <p in:fly={{ y: -50 }} class={narrationClass || "sdt-narration"}>

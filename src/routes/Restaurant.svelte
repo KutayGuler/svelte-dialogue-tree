@@ -3,7 +3,7 @@
   import Dialogue from "../lib/Dialogue.svelte";
 
   let menu = ["🥧", "🍕", "🥣", "🍔"];
-  let inventory = ["🥧", "🍕", "🥣", "🍔"];
+  let inventory = ["🥧"]; // "🍕", "🥣", "🍔"
   let orderedItem = "";
 
   function itemExists(item: string): boolean {
@@ -13,8 +13,6 @@
   function consumeOrderedItem() {
     inventory = inventory.filter((x) => x != orderedItem);
   }
-
-  function generateTitle() {}
 
   function listAvailableItems(): Array<Choice<BranchKey, CharacterKey>> {
     let choices: Array<Choice<BranchKey, CharacterKey>> = [];

@@ -10,8 +10,6 @@
   export let choiceStaggerGap: number;
 </script>
 
-<!-- TODO: What if all options are disabled? -->
-
 <form
   class={choiceContainerClass || "sdt-choiceContainer"}
   on:submit|preventDefault={makeChoice}
