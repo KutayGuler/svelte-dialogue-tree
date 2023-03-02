@@ -1,6 +1,6 @@
 <script lang="ts">
   import Dialogue from "$lib/Dialogue.svelte";
-  import type { DialogueData } from "$lib/types";
+  import type { DialogueTree } from "$lib/types";
   import DiceRoll from "./DiceRoll.svelte";
 
   type BranchKey = "start" | "success" | "failure";
@@ -10,17 +10,15 @@
     return diceResult > 4 ? "success" : "failure";
   }
 
-  let dialogue: DialogueData<BranchKey> = {
-    tree: {
-      start: ["nested", { component: DiceRoll }, branchDialogue],
-      success: ["You survived."],
-      failure: ["You died."],
-    },
+  let tree: DialogueTree<BranchKey> = {
+    start: ["nested", { component: DiceRoll }, branchDialogue],
+    success: ["You survived."],
+    failure: ["You died."],
   };
 </script>
 
 <Dialogue
-  {dialogue}
+  {tree}
   on:dialogueEnd={() => alert("dialogue ended")}
   on:componentEvent={(e) => console.log(e)}
   on:componentEnd={(e) => {

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Choice, DialogueData } from "$lib/types";
+  import type { CharacterCollection, Choice, DialogueTree } from "$lib/types";
   import Dialogue from "$lib/Dialogue.svelte";
 
   let menu = ["🥧", "🍕", "🥣", "🍔"];
@@ -55,32 +55,31 @@
   type BranchKey = "start" | "success" | "failure";
   type CharacterKey = "cook";
 
-  let dialogue: DialogueData<BranchKey, CharacterKey> = {
-    characters: {
-      cook: {
-        name: "Cook",
-        avatarURL: "https://picsum.photos/200/300",
+  let characters: CharacterCollection<CharacterKey> = {
+    cook: {
+      name: "Cook",
+      avatarURL: "https://picsum.photos/200/300",
+    },
+  };
+
+  let tree: DialogueTree<BranchKey, CharacterKey> = {
+    start: [
+      { text: "What would you like to have?", characterID: "cook" },
+      listAvailableItems,
+    ],
+    success: [
+      { text: "Coming right up!", characterID: "cook" },
+      bringOrderedItem,
+      orderOrLeave,
+    ],
+    failure: [
+      {
+        text: "We are fresh out of that, Would you like to have something else",
+        characterID: "cook",
       },
-    },
-    tree: {
-      start: [
-        { text: "What would you like to have?", characterID: "cook" },
-        listAvailableItems,
-      ],
-      success: [
-        { text: "Coming right up!", characterID: "cook" },
-        bringOrderedItem,
-        orderOrLeave,
-      ],
-      failure: [
-        {
-          text: "We are fresh out of that, Would you like to have something else",
-          characterID: "cook",
-        },
-        orderOrLeave,
-      ],
-    },
+      orderOrLeave,
+    ],
   };
 </script>
 
-<Dialogue {dialogue} on:dialogueEnd={() => alert("dialogue ended")} />
+<Dialogue {tree} {characters} on:dialogueEnd={() => alert("dialogue ended")} />

@@ -1,8 +1,7 @@
 <script lang="ts">
   import type {
     Branch,
-    DialogueData,
-    Tree,
+    DialogueTree,
     CharacterCollection,
     ChoiceLeaf,
     TransitionFunction,
@@ -29,13 +28,11 @@
     if (autoscroll) container.scrollTo(0, container.scrollHeight);
   });
 
-  export let dialogue: DialogueData;
-  type BranchKey = keyof typeof dialogue.tree;
-  type CharacterKey = keyof typeof dialogue.characters;
+  type BranchKey = string;
+  type CharacterKey = string;
 
-  let tree: Tree<BranchKey, CharacterKey | string> = dialogue.tree;
-  let characters: CharacterCollection<CharacterKey | string> | undefined =
-    dialogue.characters;
+  export let tree: DialogueTree<string> = {};
+  export let characters: CharacterCollection<string> | undefined = {};
 
   export let containerClass = "";
   export let choiceContainerClass = "";
@@ -67,7 +64,7 @@
   let interacting = false;
   let index = -1;
   let key = "";
-  let history: Branch<BranchKey, CharacterKey> = [""];
+  let history: Branch<string, string> = [""];
   let userTextIndexes: Array<number> = [];
 
   function generateKey(): string {

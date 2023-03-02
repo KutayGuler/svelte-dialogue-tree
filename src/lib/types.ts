@@ -46,15 +46,7 @@ export type Branch<BranchKey, CharacterKey extends string> =
       lastItem: ChoiceLeaf<BranchKey, CharacterKey>
     ];
 
-export interface DialogueData<
-  BranchKey extends string = string,
-  CharacterKey extends string = string
-> {
-  tree: Tree<BranchKey, CharacterKey>;
-  characters?: CharacterCollection<CharacterKey>;
-}
-
-export type Tree<
+export type DialogueTree<
   BranchKey extends string = string,
   CharacterKey extends string = string
 > = {
