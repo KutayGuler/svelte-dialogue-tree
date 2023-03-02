@@ -38,5 +38,9 @@
 	},
 	"svelte": "./dist/index.js",
 	"types": "./dist/index.d.ts",
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"highlight.js": "^11.7.0",
+		"svhighlight": "^0.7.1"
+	}
 }

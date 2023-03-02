@@ -1,7 +1,9 @@
 <script>
   import "../lib/lib.css";
+  import "highlight.js/styles/github-dark.css";
 
   const links = [
+    { title: "Examples", href: "/examples" },
     { title: "Docs", href: "/docs" },
     {
       title: "Github",
