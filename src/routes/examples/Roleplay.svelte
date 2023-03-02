@@ -21,7 +21,7 @@
 
 <Dialogue
   {dialogue}
-  on:dialogueEnd={() => console.log("dialogue ended")}
+  on:dialogueEnd={() => alert("dialogue ended")}
   on:componentEvent={(e) => console.log(e)}
   on:componentEnd={(e) => {
     diceResult = e.detail.result;

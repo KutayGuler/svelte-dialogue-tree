@@ -13,4 +13,4 @@
   };
 </script>
 
-<Dialogue {dialogue} on:dialogueEnd={() => console.log("dialogue ended")} />
+<Dialogue {dialogue} on:dialogueEnd={() => alert("dialogue ended")} />

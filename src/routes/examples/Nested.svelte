@@ -1,6 +1,6 @@
 <script lang="ts">
   import Dialogue from "$lib/Dialogue.svelte";
-  import type { DialogueData } from "../lib/types";
+  import type { DialogueData } from "$lib/types";
 
   type BranchKey = "start";
 
@@ -75,4 +75,4 @@
   };
 </script>
 
-<Dialogue {dialogue} on:dialogueEnd={() => console.log("dialogue ended")} />
+<Dialogue {dialogue} on:dialogueEnd={() => alert("dialogue ended")} />

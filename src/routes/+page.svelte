@@ -1,61 +1,22 @@
 <script lang="ts">
-  import Restaurant from "./Restaurant.svelte";
-  import Nested from "./Nested.svelte";
-  import Roleplay from "./Roleplay.svelte";
-  import Html from "./Html.svelte";
-  let currentExample = "restaurant";
+  import Dialogue from "$lib/Dialogue.svelte";
+
+  const dialogue = {
+    tree: {
+      start: [
+        "Greetings traveler",
+        "Where would you like to visit next?",
+        [
+          {
+            label: "Go to docs",
+            text: "I would like to make an order",
+            next: "start",
+          },
+          { label: "Visit Github", text: "**You leave**", next: [] },
+        ],
+      ],
+    },
+  };
 </script>
 
-<div class="p-4">
-  <label>
-    <input
-      type="radio"
-      bind:group={currentExample}
-      name="examples"
-      value="restaurant"
-    />
-    Restaurant
-  </label>
-
-  <label>
-    <input
-      type="radio"
-      bind:group={currentExample}
-      name="examples"
-      value="nested"
-    />
-    Nested
-  </label>
-
-  <label>
-    <input
-      type="radio"
-      bind:group={currentExample}
-      name="examples"
-      value="roleplay"
-    />
-    Roleplay
-  </label>
-
-  <label>
-    <input
-      type="radio"
-      bind:group={currentExample}
-      name="examples"
-      value="html"
-    />
-    HTML
-  </label>
-</div>
-
-<main class="w-full h-[600px] flex items-start justify-center p-4">
-  {#if currentExample == "restaurant"}
-    <Restaurant />
-  {:else if currentExample == "nested"}
-    <Nested />
-  {:else if currentExample == "roleplay"}
-    <Roleplay />
-  {:else if currentExample == "html"}
-    <Html />
-  {/if}
-</main>
+<Dialogue {dialogue} />

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { Choice, DialogueData } from "../lib/types";
-  import Dialogue from "../lib/Dialogue.svelte";
+  import type { Choice, DialogueData } from "$lib/types";
+  import Dialogue from "$lib/Dialogue.svelte";
 
   let menu = ["🥧", "🍕", "🥣", "🍔"];
   let inventory = ["🥧"]; // "🍕", "🥣", "🍔"
@@ -83,4 +83,4 @@
   };
 </script>
 
-<Dialogue {dialogue} on:dialogueEnd={() => console.log("dialogue ended")} />
+<Dialogue {dialogue} on:dialogueEnd={() => alert("dialogue ended")} />

@@ -15,7 +15,6 @@
   export let npcInOptions: TransitionParams;
 </script>
 
-<!-- TODO: export classes -->
 <div class="flex flex-col gap-2" in:npcIn={npcInOptions}>
   {#if characters && characterID}
     {@const { name, avatarURL } = characters[characterID]}
