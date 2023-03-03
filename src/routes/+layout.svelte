@@ -18,12 +18,16 @@
       >svelte-dialogue-tree 💬🌲</a
     >
   </div>
+  <div class="mockup-code">
+    <pre data-prefix="$"><code>npm i daisyui</code></pre>
+  </div>
   <div class="flex-none">
     <ul class="menu menu-horizontal px-1">
       {#each links as link}
         <li><a href={link.href}>{link.title}</a></li>
       {/each}
     </ul>
+    <!-- TODO: Change Github to svg -->
   </div>
 </header>
 

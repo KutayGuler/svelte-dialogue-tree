@@ -11,9 +11,6 @@
 () => { text: "something", characterID: "jason" }}
   `;
 
-  // TODO: Turn this into a conversation, blur, unblur code based on spawning stuff
-  // TODO: Link types to github
-
   let textTree: DialogueTree = {
     start: [
       "A TextLeaf can be a string",
