@@ -12,12 +12,19 @@
   ];
 </script>
 
-<header>
-  <ul>
-    {#each links as link}
-      <li><a href={link.href}>{link.title}</a></li>
-    {/each}
-  </ul>
+<header class="navbar bg-base-100">
+  <div class="flex-1">
+    <a class="btn btn-ghost normal-case text-xl" href="/"
+      >svelte-dialogue-tree 💬🌲</a
+    >
+  </div>
+  <div class="flex-none">
+    <ul class="menu menu-horizontal px-1">
+      {#each links as link}
+        <li><a href={link.href}>{link.title}</a></li>
+      {/each}
+    </ul>
+  </div>
 </header>
 
 <slot><!-- optional fallback --></slot>

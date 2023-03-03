@@ -3,6 +3,11 @@
 @tailwind utilities;
 
 /* class="bg-slate-100 p-4 rounded-2xl flex flex-col items-start gap-2 w-1/2 h-full overflow-y-auto" */
+:root {
+  --sdt-chat-bg: #5d5656;
+  --sdt-chat-color: #e9e7e7;
+}
+
 .sdt-container {
   --tw-bg-opacity: 1;
   display: flex;
@@ -21,7 +26,8 @@
 /* class="bg-blue-200 p-4 rounded-xl max-w-xs" */
 .sdt-npc {
   padding: 1rem;
-  background-color: #bfdbfe;
+  background-color: var(--sdt-chat-bg);
+  color: var(--sdt-chat-color);
   max-width: 20rem;
   border-radius: 0.75rem;
 }
@@ -29,7 +35,8 @@
 /* class="bg-blue-200 p-4 rounded-xl self-end text-end max-w-xs" */
 .sdt-user {
   padding: 1rem;
-  background-color: #bfdbfe;
+  background-color: var(--sdt-chat-bg);
+  color: var(--sdt-chat-color);
   align-self: flex-end;
   max-width: 20rem;
   border-radius: 0.75rem;

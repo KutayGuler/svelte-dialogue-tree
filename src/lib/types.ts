@@ -36,8 +36,8 @@ export type TextLeaf<CharacterKey extends string> =
   | (() => TextObject & WithOnSpawn & WithCharacterID<CharacterKey>);
 
 export type ChoiceLeaf<BranchKey, CharacterKey extends string> =
-  | Array<Choice<BranchKey, CharacterKey>>
-  | (() => Array<Choice<BranchKey, CharacterKey>>);
+  | Array<ChoiceObject<BranchKey, CharacterKey>>
+  | (() => Array<ChoiceObject<BranchKey, CharacterKey>>);
 
 export type Branch<BranchKey, CharacterKey extends string> =
   | Array<TextLeaf<CharacterKey> | ComponentLeaf>
@@ -53,7 +53,7 @@ export type DialogueTree<
   [key in BranchKey]: Branch<BranchKey, CharacterKey>;
 };
 
-export interface Choice<BranchKey, CharacterKey extends string> {
+export interface ChoiceObject<BranchKey, CharacterKey extends string> {
   label: string;
   text: string;
   next: BranchKey | Branch<BranchKey, CharacterKey> | (() => BranchKey);

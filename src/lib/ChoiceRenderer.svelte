@@ -1,6 +1,10 @@
 <script lang="ts">
-  import type { Choice, TransitionFunction, TransitionParams } from "./types";
-  export let choices: Array<Choice<string, string>>;
+  import type {
+    ChoiceObject,
+    TransitionFunction,
+    TransitionParams,
+  } from "./types";
+  export let choices: Array<ChoiceObject<string, string>>;
   export let choiceContainerClass: string;
   export let choiceClass: string;
   export let historyIndex: number;

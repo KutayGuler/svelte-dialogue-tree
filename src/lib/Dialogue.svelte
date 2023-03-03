@@ -31,7 +31,7 @@
   type BranchKey = string;
   type CharacterKey = string;
 
-  export let tree: DialogueTree<string> = {};
+  export let tree: DialogueTree<string>;
   export let characters: CharacterCollection<string> | undefined = {};
 
   export let containerClass = "";

@@ -1,5 +1,9 @@
 <script lang="ts">
-  import type { CharacterCollection, Choice, DialogueTree } from "$lib/types";
+  import type {
+    CharacterCollection,
+    ChoiceObject,
+    DialogueTree,
+  } from "$lib/types";
   import Dialogue from "$lib/Dialogue.svelte";
 
   let menu = ["🥧", "🍕", "🥣", "🍔"];
@@ -14,8 +18,8 @@
     inventory = inventory.filter((x) => x != orderedItem);
   }
 
-  function listAvailableItems(): Array<Choice<BranchKey, CharacterKey>> {
-    let choices: Array<Choice<BranchKey, CharacterKey>> = [];
+  function listAvailableItems(): Array<ChoiceObject<BranchKey, CharacterKey>> {
+    let choices: Array<ChoiceObject<BranchKey, CharacterKey>> = [];
     for (let item of menu) {
       choices.push({
         label: item,
@@ -41,7 +45,7 @@
     };
   }
 
-  function orderOrLeave(): Array<Choice<BranchKey, CharacterKey>> {
+  function orderOrLeave(): Array<ChoiceObject<BranchKey, CharacterKey>> {
     return [
       {
         label: "Order another one",
