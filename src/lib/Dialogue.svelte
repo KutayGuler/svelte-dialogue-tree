@@ -4,11 +4,9 @@
     DialogueTree,
     CharacterCollection,
     ChoiceLeaf,
-    TransitionFunction,
-    TransitionParams,
   } from "./types";
   import { beforeUpdate, afterUpdate } from "svelte";
-  import { fly, scale } from "svelte/transition";
+  import { fly, scale, type TransitionConfig } from "svelte/transition";
   import { createEventDispatcher, onMount } from "svelte";
   import TextRenderer from "./TextRenderer.svelte";
   import ChoiceRenderer from "./ChoiceRenderer.svelte";
@@ -46,19 +44,17 @@
   };
 
   // NPC TEXT TRANSITION
-  export let dialogueIn: TransitionFunction = scale;
-  export let dialogueInOptions: TransitionParams = {};
-
-  // NPC TEXT TRANSITION
-  export let npcIn: TransitionFunction = fly;
-  export let npcInOptions: TransitionParams = { x: -200 };
+  export let npcIn: (node: Element, params: object) => TransitionConfig = fly;
+  export let npcInOptions: any = { x: -200 };
 
   // USER TEXT TRANSITION
-  export let userIn: TransitionFunction = fly;
-  export let userInOptions: TransitionParams = { x: 200 };
+  export let userIn: (node: Element, params: object) => TransitionConfig = fly;
+  export let userInOptions: any = { x: 200 };
 
-  export let choiceIn: TransitionFunction = scale;
-  export let choiceInOptions: TransitionParams = {};
+  // CHOICE BUTTON TRANSITION
+  export let choiceIn: (node: Element, params: object) => TransitionConfig =
+    scale;
+  export let choiceInOptions: any = {};
   export let choiceStaggerGap: number = 200;
 
   let interacting = false;
@@ -202,11 +198,7 @@
   }}
 />
 
-<article
-  in:dialogueIn|local={dialogueInOptions}
-  bind:this={container}
-  class={containerClass || "sdt-container"}
->
+<article bind:this={container} class={containerClass || "sdt-container"}>
   {#each history as item, historyIndex (historyIndex)}
     {@const isUser = userTextIndexes.includes(historyIndex)}
     {@const isNarration =

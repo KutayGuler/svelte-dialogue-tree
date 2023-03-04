@@ -1,11 +1,7 @@
-import type {
-  ScaleParams,
-  FadeParams,
-  BlurParams,
-  FlyParams,
-  SlideParams,
-  TransitionConfig,
-} from "svelte/types/runtime/transition";
+export interface ComponentLeaf {
+  component: Function;
+  args?: object;
+}
 
 export type CharacterCollection<CharacterKey extends string> = {
   [id in CharacterKey]: Character;
@@ -13,12 +9,7 @@ export type CharacterCollection<CharacterKey extends string> = {
 
 export interface Character {
   name: string;
-  avatarURL?: string;
-}
-
-export interface ComponentLeaf {
-  component: Function;
-  args?: object;
+  avatarSrc?: string;
 }
 
 export type TextObject = { text: string };
@@ -34,6 +25,14 @@ export type TextLeaf<CharacterKey extends string> =
   | (() => TextObject & WithOnSpawn)
   | (() => TextObject & WithCharacterID<CharacterKey>)
   | (() => TextObject & WithOnSpawn & WithCharacterID<CharacterKey>);
+
+export interface ChoiceObject<BranchKey, CharacterKey extends string> {
+  label: string;
+  text: string;
+  next: BranchKey | Branch<BranchKey, CharacterKey> | (() => BranchKey);
+  title?: string | (() => string);
+  disabled?: boolean | (() => boolean);
+}
 
 export type ChoiceLeaf<BranchKey, CharacterKey extends string> =
   | Array<ChoiceObject<BranchKey, CharacterKey>>
@@ -52,25 +51,3 @@ export type DialogueTree<
 > = {
   [key in BranchKey]: Branch<BranchKey, CharacterKey>;
 };
-
-export interface ChoiceObject<BranchKey, CharacterKey extends string> {
-  label: string;
-  text: string;
-  next: BranchKey | Branch<BranchKey, CharacterKey> | (() => BranchKey);
-  title?: string | (() => string);
-  disabled?: boolean | (() => boolean);
-}
-
-// TRANSITION TYPES
-
-export type TransitionParams =
-  | ScaleParams
-  | FadeParams
-  | BlurParams
-  | FlyParams
-  | SlideParams;
-
-export type TransitionFunction = (
-  node: Element,
-  params?: TransitionParams
-) => TransitionConfig;

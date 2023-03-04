@@ -1,16 +1,13 @@
 <script lang="ts">
-  import type {
-    ChoiceObject,
-    TransitionFunction,
-    TransitionParams,
-  } from "./types";
+  import type { TransitionConfig } from "svelte/transition";
+  import type { ChoiceObject } from "./types";
   export let choices: Array<ChoiceObject<string, string>>;
   export let choiceContainerClass: string;
   export let choiceClass: string;
   export let historyIndex: number;
   export let makeChoice: (e: SubmitEvent) => void;
-  export let choiceIn: TransitionFunction;
-  export let choiceInOptions: TransitionParams;
+  export let choiceIn: (node: Element, params: object) => TransitionConfig;
+  export let choiceInOptions: object;
   export let choiceStaggerGap: number;
 </script>
 

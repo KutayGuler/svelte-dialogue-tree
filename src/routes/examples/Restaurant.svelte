@@ -62,7 +62,7 @@
   let characters: CharacterCollection<CharacterKey> = {
     cook: {
       name: "Cook",
-      avatarURL: "https://picsum.photos/200/300",
+      avatarSrc: "https://picsum.photos/200/300",
     },
   };
 

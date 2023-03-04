@@ -5,10 +5,6 @@
   const links = [
     { title: "Examples", href: "/examples" },
     { title: "Docs", href: "/docs" },
-    {
-      title: "Github",
-      href: "https://github.com/KutayGuler/svelte-dialogue-tree",
-    },
   ];
 </script>
 
@@ -18,15 +14,15 @@
       >svelte-dialogue-tree 💬🌲</a
     >
   </div>
-  <div class="mockup-code">
-    <pre data-prefix="$"><code>npm i daisyui</code></pre>
-  </div>
   <div class="flex-none">
     <ul class="menu menu-horizontal px-1">
-      {#each links as link}
-        <li><a href={link.href}>{link.title}</a></li>
-      {/each}
+      <li><a href="/examples">Demos</a></li>
+      <li><a href="/docs">Docs</a></li>
+      <li>
+        <a href=""> <img src="github-mark.svg" class="w-6 h-6" /> </a>
+      </li>
     </ul>
+
     <!-- TODO: Change Github to svg -->
   </div>
 </header>

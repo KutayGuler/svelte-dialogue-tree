@@ -1,9 +1,6 @@
 <script lang="ts">
-  import type {
-    CharacterCollection,
-    TransitionFunction,
-    TransitionParams,
-  } from "./types";
+  import type { TransitionConfig } from "svelte/transition";
+  import type { CharacterCollection } from "./types";
   export let text: string;
   export let onSpawn: Function = () => {};
   export let characterID: string = "";
@@ -11,16 +8,16 @@
   export let spawnedTextElement: Function;
   export let historyIndex: number;
   export let npcClass: string;
-  export let npcIn: TransitionFunction;
-  export let npcInOptions: TransitionParams;
+  export let npcIn: (node: Element, params: object) => TransitionConfig;
+  export let npcInOptions: (node: Element, params: object) => TransitionConfig;
 </script>
 
 <div class="flex flex-col gap-2" in:npcIn={npcInOptions}>
   {#if characters && characterID}
-    {@const { name, avatarURL } = characters[characterID]}
+    {@const { name, avatarSrc } = characters[characterID]}
     <div class="flex flex-row gap-2 items-center">
-      {#if avatarURL}
-        <img class="w-8 h-8 rounded-full" src={avatarURL} alt="avatar" />
+      {#if avatarSrc}
+        <img class="w-8 h-8 rounded-full" src={avatarSrc} alt="avatar" />
       {/if}
       <p class="font-bold">
         {@html characters[characterID].name}
