@@ -3,6 +3,7 @@
   import type { DialogueTree } from "$lib/types";
   import { onMount } from "svelte";
   import { writable, type Writable } from "svelte/store";
+  import { slide } from "svelte/transition";
   import { CodeBlock, type FocusBlock } from "svhighlight";
 
   function createFocusStore() {
@@ -20,93 +21,118 @@
     };
   }
 
+  // TODO: Add rest of the data
   const typesData: Array<{
     title: string;
     code: string;
-    tree: DialogueTree;
-    activeFocusBlockStore: Writable<number> | null | undefined;
-    focusBlocks: FocusBlock[];
-    next: Function;
+    tree?: DialogueTree;
+    activeFocusBlockStore?: Writable<number> | null | undefined;
+    focusBlocks?: FocusBlock[];
+    next?: Function;
   }> = [
     {
       title: "TextLeaf",
       code: `
+// A TextLeaf can be the following:
+
+// string
 "something"
+
+// HTML string
+"<a href="/something">something</a>"
+
+// TextObject
 { text: "something", characterID: "jason" }
-() => "something"
+
+// function that returns a string
+() => "something" 
+
+// function that returns a TextObject
 () => { text: "something", characterID: "jason" }}
+`,
+    },
+    {
+      title: "TextObject",
+      code: `
+// A TextObject should have a text property
+// and at least one (1) additional property
+    
+{ 
+  text: "something", // ❕ required
+  characterID: "jason" // additional
+}
+
+{ 
+  text: "something", // ❕ required
+  onSpawn: () => console.log("something spawned.") // additional
+}
+
+// it can have both of the additional properties
+{ 
+  text: "something", // ❕ required
+  characterID: "jason", // additional
+  onSpawn: () => console.log("something spawned.") // additional
+}
   `,
-      tree: {
-        start: [
-          "A TextLeaf can be a string",
-          "a TextObject",
-          "a function that returns a string",
-          "or a function that returns a TextObject",
-        ],
-      },
-      focusBlocks: [
-        { lines: "0" },
-        { lines: "0,1" },
-        { lines: "0-2" },
-        { lines: "0-3" },
-      ],
-      activeFocusBlockStore: createFocusStore(),
-      next: () => {
-        typesData[0].activeFocusBlockStore.increment();
-        components[0].nextLine();
-      },
     },
     {
       title: "ChoiceLeaf",
       code: `
+// A ChoiceLeaf can be an array of ChoiceObjects
 [
   { label: "YES", text: "I think that's right", next: "yesBranch" },
   { label: "NO", text: "I don't think so", next: "noBranch" },
 ]
 
+// or a function that returns an array of ChoiceObjects
 () => [
   { label: "YES", text: "I think that's right", next: "yesBranch" },
   { label: "NO", text: "I don't think so", next: "noBranch" },
 ]
   `,
-      tree: {
-        start: [
-          "A ChoiceLeaf can be an array of ChoiceObjects",
-          "or a function that returns an array of ChoiceObjects",
-        ],
-      },
-      focusBlocks: [{ lines: "0-3" }, { lines: "0-8" }],
-      activeFocusBlockStore: createFocusStore(),
-      next: () => {
-        typesData[1].activeFocusBlockStore.increment();
-        components[1].nextLine();
-      },
+    },
+    {
+      title: "ChoiceObject",
+      code: `
+// A choice object has three (3) required and two (2) optional parameters
+{ 
+  label: "YES", ❕ required
+  text: "I think that's right", ❕ required
+  next: "yesBranch" ❕ required
+}`,
     },
   ];
 
   let schemaCode = `
 let tree: DialogueTree = {
   branch1: [ // 📌 dialogue starts from the tree's first key 
-    // TextLeaf,
-    // TextLeaf,
-    // TextLeaf,
-    // TextLeaf,
+    // TextLeaf
+    // TextLeaf
+    // TextLeaf
+    // TextLeaf
     // TextLeaf ✅ any number of TextLeafs can populate a branch
   ],
   branch2: [
-    // TextLeaf,
-    // TextLeaf,
-    // ChoiceLeaf ✅ ChoiceLeaf at the end of the branch
+    // TextLeaf
+    // ComponentLeaf
+    // TextLeaf
+    // ComponentLeaf
+    // ComponentLeaf ✅ Just like TextLeafs, any number of ComponentLeafs can be placed anywhere in the branch
+  ],
+  branch3: [
+    // TextLeaf
+    // TextLeaf
+    // ChoiceLeaf ✅ ChoiceLeafs should always be at the end of branches
   ],
   invalid1: [
-    // TextLeaf,
-    // ChoiceLeaf, ❌ ChoiceLeafs should always be at the end of branches
+    // TextLeaf
+    // ChoiceLeaf ❌ ChoiceLeafs should always be at the end of branches
     // TextLeaf
   ],
   invalid2: [
-    // TextLeaf,
-    // ChoiceLeaf, 
-    // ChoiceLeaf, ❌ there cannot be more than one ChoiceLeaf in a single branch
+    // TextLeaf
+    // ChoiceLeaf 
+    // ChoiceLeaf ❌ there cannot be more than one ChoiceLeaf in a single branch
   ],
 };
   
@@ -191,28 +217,6 @@ let characters: CharacterCollection<CharacterKey> = { // ❔ optional component 
   <div class="divider">
     <h1 class="text-primary text-4xl font-bold">SCHEMA</h1>
   </div>
-  <!-- <div class="form-control w-1/2">
-    <label class="label cursor-pointer">
-      <span class="label-text">With Generics</span>
-      <input
-        type="radio"
-        class="radio checked:bg-red-500"
-        value="with"
-        bind:group={showSchema}
-      />
-    </label>
-  </div>
-  <div class="form-control w-1/2">
-    <label class="label cursor-pointer">
-      <span class="label-text">Without Generics</span>
-      <input
-        type="radio"
-        class="radio checked:bg-blue-500"
-        value="without"
-        bind:group={showSchema}
-      />
-    </label>
-  </div> -->
 
   <div class="form-control w-52">
     <label class="cursor-pointer label">
@@ -227,8 +231,15 @@ let characters: CharacterCollection<CharacterKey> = { // ❔ optional component 
     </label>
   </div>
   {#if withGenerics}
-    <p>Benefits:</p>
-    <!-- TODO: design this -->
+    <div
+      transition:slide
+      class="w-full bg-success text-success-content p-4 rounded-lg"
+    >
+      <h2 class="text-2xl font-bold">Benefits</h2>
+      <p>Autocomplete branch and character keys ☑</p>
+      <p>Type errors on inexistent branch and character keys ☑</p>
+    </div>
+    <!-- TODO: Might add example here -->
   {/if}
 
   {#key withGenerics}
@@ -250,134 +261,28 @@ let characters: CharacterCollection<CharacterKey> = { // ❔ optional component 
 </div>
 
 {#if mounted}
-  {#each typesData as { title, code, tree, focusBlocks, activeFocusBlockStore, next }, i}
-    <div
-      class="relative flex flex-row items-start gap-2 justify-start bg-primary px-4 pt-12 pb-24 rounded-lg duration-200 ease-out"
-    >
-      <h2 class="absolute top-4 text-primary-content text-2xl font-bold">
-        {title}
-      </h2>
-      <div class="flex flex-col w-full">
-        <!-- bind:this={component} -->
-        <Dialogue
-          bind:this={components[i]}
-          containerClass="sdt-container-docs"
-          {tree}
-          nextLineKey=""
-        />
-      </div>
-      <div class="flex flex-col w-full h-full gap-2">
-        <CodeBlock
-          language="typescript"
-          {code}
-          showHeader={false}
-          {activeFocusBlockStore}
-          {focusBlocks}
-        />
-      </div>
-      <div
-        class="absolute w-full -bottom-4 right-0 flex items-center justify-center"
-      >
-        <button class="btn w-1/2" on:click={() => next()}>NEXT</button>
-      </div>
+  {#each typesData as { title, code }}
+    <div class="relative flex flex-col items-start gap-2 justify-start">
+      <CodeBlock
+        showHeader
+        headerText={title}
+        headerClasses="bg-gray-800 text-white/80 text-2xl font-bold"
+        language="typescript"
+        {code}
+        showFocusButtons
+        showLineNumbers={false}
+      />
     </div>
   {/each}
 {/if}
 
-<!-- <div>
-  <h2 class="text-primary text-2xl font-bold">TextObject</h2>
-  <div class="flex flex-row h-72 items-start gap-2 justify-start">
-    <Dialogue
-      bind:this={textDialogue}
-      containerClass="sdt-container-docs"
-      tree={textTree}
-      nextLineKey=""
-    />
-    <div class="flex flex-col w-full h-full gap-2">
-      <CodeBlock
-        language="typescript"
-        code={textCode}
-        showHeader={false}
-        activeFocusBlockStore={textFocus}
-        focusBlocks={textFocusBlocks}
-      />
-      <button class="btn w-full flex-grow" on:click={nextText}>NEXT</button>
-    </div>
-  </div>
+<div class="divider">
+  <h1 class="text-primary text-4xl font-bold">MISC</h1>
 </div>
 
-<div>
-  <h2 class="text-primary text-2xl font-bold">ChoiceLeaf</h2>
-  <div class="flex flex-row h-72 items-start gap-2 justify-start">
-    <Dialogue
-      bind:this={choiceDialogue}
-      containerClass="sdt-container-docs"
-      tree={choiceTree}
-      nextLineKey=""
-    />
-    <div class="flex flex-col w-full h-full gap-2">
-      <CodeBlock
-        language="typescript"
-        code={choiceCode}
-        showHeader={false}
-        activeFocusBlockStore={choiceFocus}
-        focusBlocks={choiceFocusBlocks}
-      />
-      <button class="btn w-full flex-grow fill" on:click={nextChoice}
-        >NEXT</button
-      >
-    </div>
-  </div>
-</div>
+<!-- TODO: HTML Rendering -->
 
-<div>
-  <h2 class="text-primary text-2xl font-bold">ChoiceObject</h2>
-  <div class="flex flex-row h-72 items-start gap-2 justify-start">
-    <Dialogue
-      bind:this={choiceDialogue}
-      containerClass="sdt-container-docs"
-      tree={choiceTree}
-      nextLineKey=""
-    />
-    <div class="flex flex-col w-full h-full gap-2">
-      <CodeBlock
-        language="typescript"
-        code={choiceCode}
-        showHeader={false}
-        activeFocusBlockStore={choiceFocus}
-        focusBlocks={choiceFocusBlocks}
-      />
-      <button class="btn w-full flex-grow fill" on:click={nextChoice}
-        >NEXT</button
-      >
-    </div>
-  </div>
-</div>
-
-<div>
-  <div class="divider">
-    <h1 class="text-primary text-4xl font-bold">MISC</h1>
-  </div>
-  <h2 class="text-primary text-2xl font-bold">Narration</h2>
-  <div class="flex flex-row h-72 items-start gap-2 justify-start">
-    <Dialogue
-      bind:this={textDialogue}
-      containerClass="sdt-container-docs"
-      tree={textTree}
-      nextLineKey=""
-    />
-    <div class="flex flex-col w-full h-full gap-2">
-      <CodeBlock
-        language="typescript"
-        code={textCode}
-        showHeader={false}
-        activeFocusBlockStore={textFocus}
-        focusBlocks={textFocusBlocks}
-      />
-      <button class="btn w-full flex-grow" on:click={nextText}>NEXT</button>
-    </div>
-  </div>
-</div> -->
+<!-- TODO: Narration -->
 <style>
   :global(.sdt-container-docs) {
     display: flex;

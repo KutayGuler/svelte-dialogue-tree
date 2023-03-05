@@ -4,6 +4,8 @@
   import Roleplay from "./Roleplay.svelte";
   import Html from "./Html.svelte";
   let currentExample = "restaurant";
+
+  // TODO: Add different styles
 </script>
 
 <div class="p-4">
