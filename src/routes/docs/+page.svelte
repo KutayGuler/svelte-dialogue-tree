@@ -213,76 +213,77 @@ let characters: CharacterCollection<CharacterKey> = { // ❔ optional component 
   $: _schemaCode = withGenerics ? schemaCodeT : schemaCode;
 </script>
 
-<div>
-  <div class="divider">
-    <h1 class="text-primary text-4xl font-bold">SCHEMA</h1>
-  </div>
-
-  <div class="form-control w-52">
-    <label class="cursor-pointer label">
-      <span class="label-text"
-        >{withGenerics ? "With Generics" : "Without Generics"}</span
-      >
-      <input
-        type="checkbox"
-        class="toggle toggle-success"
-        bind:checked={withGenerics}
-      />
-    </label>
-  </div>
-  {#if withGenerics}
-    <div
-      transition:slide
-      class="w-full bg-success text-success-content p-4 rounded-lg"
-    >
-      <h2 class="text-2xl font-bold">Benefits</h2>
-      <p>Autocomplete branch and character keys ☑</p>
-      <p>Type errors on inexistent branch and character keys ☑</p>
+<div class="p-4 flex flex-col gap-16">
+  <div>
+    <div class="divider">
+      <h1 class="text-primary text-4xl font-bold">SCHEMA</h1>
     </div>
-    <!-- TODO: Might add example here -->
-  {/if}
 
-  {#key withGenerics}
+    <div class="form-control w-52">
+      <label class="cursor-pointer label">
+        <span class="label-text"
+          >{withGenerics ? "With Generics" : "Without Generics"}</span
+        >
+        <input
+          type="checkbox"
+          class="toggle toggle-success"
+          bind:checked={withGenerics}
+        />
+      </label>
+    </div>
+    {#if withGenerics}
+      <div
+        transition:slide
+        class="w-full bg-success text-success-content p-4 rounded-lg"
+      >
+        <h2 class="text-2xl font-bold">Benefits</h2>
+        <p>Autocomplete branch and character keys ☑</p>
+        <p>Type errors on inexistent branch and character keys ☑</p>
+      </div>
+      <!-- TODO: Might add example here -->
+    {/if}
+
+    {#key withGenerics}
+      <CodeBlock
+        language="typescript"
+        code={_schemaCode}
+        headerText="DialogueData.ts"
+      />
+    {/key}
     <CodeBlock
       language="typescript"
-      code={_schemaCode}
-      headerText="DialogueData.ts"
+      code={svelteCode}
+      headerText="+page.svelte"
     />
-  {/key}
-  <CodeBlock
-    language="typescript"
-    code={svelteCode}
-    headerText="+page.svelte"
-  />
+  </div>
+
+  <div class="divider">
+    <h1 class="text-primary text-4xl font-bold">TYPES</h1>
+  </div>
+
+  {#if mounted}
+    {#each typesData as { title, code }}
+      <div class="relative flex flex-col items-start gap-2 justify-start">
+        <CodeBlock
+          showHeader
+          headerText={title}
+          headerClasses="bg-gray-800 text-white/80 text-2xl font-bold"
+          language="typescript"
+          {code}
+          showFocusButtons
+          showLineNumbers={false}
+        />
+      </div>
+    {/each}
+  {/if}
+
+  <div class="divider">
+    <h1 class="text-primary text-4xl font-bold">MISC</h1>
+  </div>
+
+  <!-- TODO: Narration -->
 </div>
 
-<div class="divider">
-  <h1 class="text-primary text-4xl font-bold">TYPES</h1>
-</div>
-
-{#if mounted}
-  {#each typesData as { title, code }}
-    <div class="relative flex flex-col items-start gap-2 justify-start">
-      <CodeBlock
-        showHeader
-        headerText={title}
-        headerClasses="bg-gray-800 text-white/80 text-2xl font-bold"
-        language="typescript"
-        {code}
-        showFocusButtons
-        showLineNumbers={false}
-      />
-    </div>
-  {/each}
-{/if}
-
-<div class="divider">
-  <h1 class="text-primary text-4xl font-bold">MISC</h1>
-</div>
-
-<!-- TODO: HTML Rendering -->
-
-<!-- TODO: Narration -->
 <style>
   :global(.sdt-container-docs) {
     display: flex;
