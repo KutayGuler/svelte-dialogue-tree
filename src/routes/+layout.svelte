@@ -1,6 +1,6 @@
 <script>
   import "../lib/lib.css";
-  import "highlight.js/styles/github-dark.css";
+  import "highlight.js/styles/vs2015.css";
 </script>
 
 <header class="navbar bg-base-100">
