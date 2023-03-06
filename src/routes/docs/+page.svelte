@@ -1,34 +1,12 @@
 <script lang="ts">
-  import Dialogue from "$lib/Dialogue.svelte";
-  import type { DialogueTree } from "$lib/types";
   import { onMount } from "svelte";
-  import { writable, type Writable } from "svelte/store";
   import { slide } from "svelte/transition";
-  import { CodeBlock, type FocusBlock } from "svhighlight";
+  import { CodeBlock } from "svhighlight";
+  import Narration from "../demos/Narration.svelte";
 
-  function createFocusStore() {
-    const { set, subscribe, update } = writable(0);
-
-    return {
-      set,
-      subscribe,
-      update,
-      increment: () =>
-        update((state) => {
-          state += 1;
-          return state;
-        }),
-    };
-  }
-
-  // TODO: Add rest of the data
   const typesData: Array<{
     title: string;
     code: string;
-    tree?: DialogueTree;
-    activeFocusBlockStore?: Writable<number> | null | undefined;
-    focusBlocks?: FocusBlock[];
-    next?: Function;
   }> = [
     {
       title: "TextLeaf",
@@ -76,18 +54,37 @@
   `,
     },
     {
+      title: "ComponentLeaf",
+      code: `
+import { Component } from "./Component.svelte";
+
+// A ComponentLeaf
+{
+  component: Component,
+  args: { // ❔ optional
+    count: 5,
+    color: "red"
+  }
+}
+      `,
+    },
+    {
       title: "ChoiceLeaf",
       code: `
-// A ChoiceLeaf can be an array of ChoiceObjects
+/** 
+ * A ChoiceLeaf can be an array of ChoiceObjects
+*/
 [
-  { label: "YES", text: "I think that's right", next: "yesBranch" },
-  { label: "NO", text: "I don't think so", next: "noBranch" },
+  // ChoiceObject
+  // ChoiceObject
 ]
 
-// or a function that returns an array of ChoiceObjects
+/** 
+ * or a function that returns an array of ChoiceObjects
+*/
 () => [
-  { label: "YES", text: "I think that's right", next: "yesBranch" },
-  { label: "NO", text: "I don't think so", next: "noBranch" },
+  // ChoiceObject
+  // ChoiceObject
 ]
   `,
     },
@@ -96,10 +93,85 @@
       code: `
 // A choice object has three (3) required and two (2) optional parameters
 { 
+  // The text that will appear on the choice button
   label: "YES", ❕ required
+
+  // The content that will appear on the dialogue after choice is made
   text: "I think that's right", ❕ required
+
+  // The key of the branch dialogue will jump to
   next: "yesBranch" ❕ required
-}`,
+
+  // The title that will appear when a mouse is hovered over the choice button
+  titleTag:  ❔ optional 
+
+  // Whether the choice button is disabled or not
+  disabled: true ❔ optional 
+}
+
+// You can use the "next" prop's two (2) alternative types:
+
+// (1) A function that returns a BranchKey
+{
+  /** 
+   * code
+  */
+
+  next: () => "yesBranch" 
+}
+
+// (2) A nested branch
+{
+  /** 
+   * code
+  */
+
+  next: [
+    "Great! Let's go bowling."
+    "How would you like to go?"
+    [
+      { 
+        label: "🚗",
+        text: "How about we take your Honda?", 
+        next: [
+          "Oh, it's actually broken. We can take a cab though."
+        ]
+      },
+      { 
+        label: "🚶‍♀️",
+        text: "It's not that far, we can walk.", 
+        next: [
+          "Sure!"
+          "Would you like to race?"
+          [
+            {       
+              label: "YES",
+              text: "I don't know. ** You start running **", 
+              next: [
+                "** You win **"
+                // Nesting can go forever 
+              ]
+            },
+            {       
+              label: "No",
+              text: "Nah, I don't feel like it.", 
+              next: [
+                "** You don't race **"
+                // Nesting can go forever 
+              ]
+            }
+          ]
+        ] 
+      },
+      { 
+        label: "Cancel the date",
+        text: "You know what? I forgot I had some things to do.", 
+        next: "cancelBranch" 
+      },
+    ]
+  ]
+}
+`,
     },
   ];
 
@@ -148,7 +220,7 @@ let characters: CharacterCollection = { // ❔ optional Dialogue parameter
   `;
 
   let schemaCodeT = `
-type BranchKey = "branchOne" | "branchTwo" ;
+type BranchKey = "branch1" | "branch2" | "branch3" | "invalid1" | "invalid2" ;
 type CharacterKey = "character1" | "character2";
 
 let tree: DialogueTree<BranchKey, CharacterKey> = {
@@ -160,9 +232,16 @@ let tree: DialogueTree<BranchKey, CharacterKey> = {
     // TextLeaf ✅ any number of TextLeafs can populate a branch
   ],
   branch2: [
+    // TextLeaf
+    // ComponentLeaf
+    // TextLeaf
+    // ComponentLeaf
+    // ComponentLeaf ✅ Just like TextLeafs, any number of ComponentLeafs can be placed anywhere in the branch
+  ],
+  branch3: [
     // TextLeaf,
     // TextLeaf,
-    // ChoiceLeaf ✅ ChoiceLeaf at the end of the branch
+    // ChoiceLeaf ✅ ChoiceLeafs should always be at the end of branches
   ],
   invalid1: [
     // TextLeaf,
@@ -173,6 +252,11 @@ let tree: DialogueTree<BranchKey, CharacterKey> = {
     // TextLeaf,
     // ChoiceLeaf, 
     // ChoiceLeaf, ❌ there cannot be more than one ChoiceLeaf in a single branch
+  ],
+  invalid3: // [ ❌ Type error: "invalid3" is not of type BranchKey
+    // TextLeaf,
+    // TextLeaf,
+    // TextLeaf,
   ],
 };
 
@@ -186,7 +270,6 @@ let characters: CharacterCollection<CharacterKey> = { // ❔ optional component 
   },
 }
 `;
-  // TODO: Check if it needs to change to /character.jpg
 
   let svelteCode = `
 <script lang="ts">
@@ -199,6 +282,10 @@ let characters: CharacterCollection<CharacterKey> = { // ❔ optional component 
 
 <!-- OR WITHOUT CHARACTERS -->
 <Dialogue {tree} /> ✅
+  `;
+
+  let narrationCode = `
+    
   `;
 
   let components = new Array(typesData.length).fill(null);
@@ -240,7 +327,6 @@ let characters: CharacterCollection<CharacterKey> = { // ❔ optional component 
         <p>Autocomplete branch and character keys ☑</p>
         <p>Type errors on inexistent branch and character keys ☑</p>
       </div>
-      <!-- TODO: Might add example here -->
     {/if}
 
     {#key withGenerics}
@@ -262,8 +348,8 @@ let characters: CharacterCollection<CharacterKey> = { // ❔ optional component 
   </div>
 
   {#if mounted}
-    {#each typesData as { title, code }}
-      <div class="relative flex flex-col items-start gap-2 justify-start">
+    <div class="relative flex flex-col items-start gap-2 justify-start">
+      {#each typesData as { title, code }}
         <CodeBlock
           showHeader
           headerText={title}
@@ -273,15 +359,16 @@ let characters: CharacterCollection<CharacterKey> = { // ❔ optional component 
           showFocusButtons
           showLineNumbers={false}
         />
-      </div>
-    {/each}
+      {/each}
+    </div>
   {/if}
 
   <div class="divider">
     <h1 class="text-primary text-4xl font-bold">MISC</h1>
   </div>
-
+  <p>Narration</p>
   <!-- TODO: Narration -->
+  <Narration />
 </div>
 
 <style>

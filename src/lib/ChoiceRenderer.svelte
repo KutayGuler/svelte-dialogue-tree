@@ -17,7 +17,9 @@
 >
   {#each choices as choice, siblingIndex}
     {@const title =
-      typeof choice.title == "function" ? choice.title() : choice.title}
+      typeof choice.titleTag == "function"
+        ? choice.titleTag()
+        : choice.titleTag}
     {@const disabled =
       typeof choice.disabled == "function"
         ? choice.disabled()

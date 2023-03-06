@@ -40,7 +40,7 @@
 
   function bringOrderedItem() {
     return {
-      text: `Your order is ready. Bon appetite! **Puts ${orderedItem} on the table ** This sentence won't be rendered as it is not between stars ** This will be rendered ** `,
+      text: `Your order is ready. Bon appetite! **Puts ${orderedItem} on the table ** This sentence won't be rendered as it is not between stars`,
       onSpawn: consumeOrderedItem,
     };
   }

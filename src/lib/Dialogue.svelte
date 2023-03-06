@@ -29,8 +29,8 @@
   type BranchKey = string;
   type CharacterKey = string;
 
-  export let tree: DialogueTree<string>;
-  export let characters: CharacterCollection<string> | undefined = {};
+  export let tree: DialogueTree<BranchKey, CharacterKey>;
+  export let characters: CharacterCollection<CharacterKey> | undefined = {};
 
   export let containerClass = "";
   export let choiceContainerClass = "";
@@ -90,6 +90,16 @@
     key = Object.keys(tree)[0];
     history = new Array(...tree[key]) as Branch<BranchKey, CharacterKey>;
     flatten(key);
+    console.log(history);
+    if (
+      (history[0].text && history[0].text.includes("**")) ||
+      (typeof history[0] == "string" && history.includes("**"))
+    ) {
+      parseNarrations(-1, history[0].text || history[0]);
+      history.pop();
+    }
+    console.log(history);
+
     nextLine();
   });
 
@@ -145,6 +155,8 @@
   function parseNarrations(historyIndex: number, text: string) {
     const narrationRegex = /\*\*(.*?)\*\*/g;
     let narrations = text.match(narrationRegex);
+    console.log(narrations);
+
     if (!narrations) return;
     history.splice(historyIndex + 1, 0, ...narrations);
   }
@@ -159,8 +171,10 @@
   ) {
     if (typeof onSpawn == "function") {
       onSpawn();
-      parseNarrations(historyIndex, text);
     }
+    console.log(history);
+    parseNarrations(historyIndex, text);
+    console.log(history);
   }
 
   let cachedResults = new Map<number, any>();
