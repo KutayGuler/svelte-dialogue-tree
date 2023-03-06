@@ -5,72 +5,50 @@
   import Html from "./Html.svelte";
   import Narration from "./Narration.svelte";
   let currentExample = "restaurant";
+  let dialogueParams = {
+    containerClass: "",
+    choiceContainerClass: "",
+    choiceClass: "",
+    userClass: "",
+    npcClass: "",
+    narrationClass: "",
+  };
+
+  let demos = ["Restaurant", "Nested", "Roleplay", "HTML", "Narration"];
 
   // TODO: Add different styles
 </script>
 
+<!-- TODO: Add kbd Space to instruct -->
+
 <div class="p-4">
-  <label>
-    <input
-      type="radio"
-      bind:group={currentExample}
-      name="examples"
-      value="restaurant"
-    />
-    Restaurant
-  </label>
-
-  <label>
-    <input
-      type="radio"
-      bind:group={currentExample}
-      name="examples"
-      value="nested"
-    />
-    Nested
-  </label>
-
-  <label>
-    <input
-      type="radio"
-      bind:group={currentExample}
-      name="examples"
-      value="roleplay"
-    />
-    Roleplay
-  </label>
-
-  <label>
-    <input
-      type="radio"
-      bind:group={currentExample}
-      name="examples"
-      value="html"
-    />
-    HTML
-  </label>
-
-  <label>
-    <input
-      type="radio"
-      bind:group={currentExample}
-      name="examples"
-      value="narration"
-    />
-    Narration
-  </label>
+  {#each demos as value}
+    <label>
+      <input
+        type="radio"
+        bind:group={currentExample}
+        name="demo"
+        value={value.toLowerCase()}
+      />
+      {value}
+    </label>
+  {/each}
 </div>
 
 <main class="w-full h-[600px] flex items-start justify-center p-4">
   {#if currentExample == "restaurant"}
-    <Restaurant />
+    <Restaurant {dialogueParams} />
   {:else if currentExample == "nested"}
-    <Nested />
+    <Nested {dialogueParams} />
   {:else if currentExample == "roleplay"}
-    <Roleplay />
+    <Roleplay {dialogueParams} />
   {:else if currentExample == "html"}
-    <Html />
+    <Html {dialogueParams} />
   {:else if currentExample == "narration"}
-    <Narration />
+    <Narration {dialogueParams} />
   {/if}
 </main>
+
+<style>
+  /* TODO: Add cyberpunk */
+</style>

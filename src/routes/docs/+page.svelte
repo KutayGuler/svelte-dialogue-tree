@@ -94,24 +94,28 @@ import { Component } from "./Component.svelte";
 // A choice object has three (3) required and two (2) optional parameters
 { 
   // The text that will appear on the choice button
-  label: "YES", ❕ required
+  label: "YES", // ❕ required
 
   // The content that will appear on the dialogue after choice is made
-  text: "I think that's right", ❕ required
+  text: "I think that's right", // ❕ required
 
   // The key of the branch dialogue will jump to
-  next: "yesBranch" ❕ required
+  next: "yesBranch" // ❕ required
 
   // The title that will appear when a mouse is hovered over the choice button
-  titleTag:  ❔ optional 
+  titleTag: // ❔ optional 
 
   // Whether the choice button is disabled or not
-  disabled: true ❔ optional 
+  disabled: true // ❔ optional 
 }
+`,
+    },
+    {
+      title: "ChoiceObject.next",
+      code: `
+      // You can use "next" in three (3) different types:
 
-// You can use the "next" prop's two (2) alternative types:
-
-// (1) A function that returns a BranchKey
+// (1) A BranchKey (string)
 {
   /** 
    * code
@@ -120,7 +124,16 @@ import { Component } from "./Component.svelte";
   next: () => "yesBranch" 
 }
 
-// (2) A nested branch
+// (2) A function that returns a BranchKey
+{
+  /** 
+   * code
+  */
+
+  next: () => "yesBranch" 
+}
+
+// (3) A nested branch
 {
   /** 
    * code
@@ -171,7 +184,7 @@ import { Component } from "./Component.svelte";
     ]
   ]
 }
-`,
+      `,
     },
   ];
 
@@ -300,75 +313,77 @@ let characters: CharacterCollection<CharacterKey> = { // ❔ optional component 
   $: _schemaCode = withGenerics ? schemaCodeT : schemaCode;
 </script>
 
-<div class="p-4 flex flex-col gap-16">
-  <div>
-    <div class="divider">
-      <h1 class="text-primary text-4xl font-bold">SCHEMA</h1>
+<div class="flex flex-row items-start justify-center">
+  <div>Links</div>
+  <div class="flex flex-col gap-16 w-[768px]">
+    <div>
+      <div class="divider">
+        <h1 class="text-primary text-4xl font-bold">SCHEMA</h1>
+      </div>
+
+      <div class="form-control w-52">
+        <label class="cursor-pointer label">
+          <span class="label-text"
+            >{withGenerics ? "With Generics" : "Without Generics"}</span
+          >
+          <input
+            type="checkbox"
+            class="toggle toggle-success"
+            bind:checked={withGenerics}
+          />
+        </label>
+      </div>
+      {#if withGenerics}
+        <div
+          transition:slide
+          class="w-full bg-success text-success-content p-4 rounded-lg"
+        >
+          <h2 class="text-2xl font-bold">Benefits</h2>
+          <p>Autocomplete branch and character keys ☑</p>
+          <p>Type errors on inexistent branch and character keys ☑</p>
+        </div>
+      {/if}
+
+      {#key withGenerics}
+        <CodeBlock
+          language="typescript"
+          code={_schemaCode}
+          headerText="DialogueData.ts"
+        />
+      {/key}
+      <CodeBlock
+        language="typescript"
+        code={svelteCode}
+        headerText="+page.svelte"
+      />
     </div>
 
-    <div class="form-control w-52">
-      <label class="cursor-pointer label">
-        <span class="label-text"
-          >{withGenerics ? "With Generics" : "Without Generics"}</span
-        >
-        <input
-          type="checkbox"
-          class="toggle toggle-success"
-          bind:checked={withGenerics}
-        />
-      </label>
+    <div class="divider">
+      <h1 class="text-primary text-4xl font-bold">TYPES</h1>
     </div>
-    {#if withGenerics}
-      <div
-        transition:slide
-        class="w-full bg-success text-success-content p-4 rounded-lg"
-      >
-        <h2 class="text-2xl font-bold">Benefits</h2>
-        <p>Autocomplete branch and character keys ☑</p>
-        <p>Type errors on inexistent branch and character keys ☑</p>
+
+    {#if mounted}
+      <div class="relative flex flex-col items-start gap-2 justify-start">
+        {#each typesData as { title, code }}
+          <CodeBlock
+            showHeader
+            headerText={title}
+            headerClasses="bg-gray-800 text-white/80 text-2xl font-bold"
+            language="typescript"
+            {code}
+            showFocusButtons
+            showLineNumbers={false}
+          />
+        {/each}
       </div>
     {/if}
 
-    {#key withGenerics}
-      <CodeBlock
-        language="typescript"
-        code={_schemaCode}
-        headerText="DialogueData.ts"
-      />
-    {/key}
-    <CodeBlock
-      language="typescript"
-      code={svelteCode}
-      headerText="+page.svelte"
-    />
-  </div>
-
-  <div class="divider">
-    <h1 class="text-primary text-4xl font-bold">TYPES</h1>
-  </div>
-
-  {#if mounted}
-    <div class="relative flex flex-col items-start gap-2 justify-start">
-      {#each typesData as { title, code }}
-        <CodeBlock
-          showHeader
-          headerText={title}
-          headerClasses="bg-gray-800 text-white/80 text-2xl font-bold"
-          language="typescript"
-          {code}
-          showFocusButtons
-          showLineNumbers={false}
-        />
-      {/each}
+    <div class="divider">
+      <h1 class="text-primary text-4xl font-bold">MISC</h1>
     </div>
-  {/if}
-
-  <div class="divider">
-    <h1 class="text-primary text-4xl font-bold">MISC</h1>
+    <p>Narration</p>
+    <Narration />
   </div>
-  <p>Narration</p>
-  <!-- TODO: Narration -->
-  <Narration />
 </div>
 
 <style>

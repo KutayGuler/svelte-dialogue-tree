@@ -5,9 +5,12 @@
     DialogueTree,
   } from "$lib/types";
   import Dialogue from "$lib/Dialogue.svelte";
+  export let dialogueParams: any;
 
   let menu = ["🥧", "🍕", "🥣", "🍔"];
   let inventory = ["🥧"]; // "🍕", "🥣", "🍔"
+  // TODO: Add one more option to say nevermind
+  // TODO: Add to docs "might have all options disabled" as an edge case reminder
   let orderedItem = "";
 
   function itemExists(item: string): boolean {
@@ -24,7 +27,7 @@
       choices.push({
         label: item,
         text: `I would like to have a ${item}`,
-        title: () =>
+        titleTag: () =>
           !itemExists(item)
             ? `The restaurant does not have any ${item}s left`
             : `Click to order ${item}`,
@@ -86,4 +89,9 @@
   };
 </script>
 
-<Dialogue {tree} {characters} on:dialogueEnd={() => alert("dialogue ended")} />
+<Dialogue
+  {tree}
+  {characters}
+  {...dialogueParams}
+  on:dialogueEnd={() => alert("dialogue ended")}
+/>

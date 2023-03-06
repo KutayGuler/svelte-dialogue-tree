@@ -293,6 +293,7 @@
             {spawnedTextElement}
           />
         {/if}
+        <!-- FIXME: Faulty implementation of narration parsing -->
       {:else if typeof item == "string" && isNarration}
         {@const trimmed = item.replaceAll("*", "")}
         <p in:fly={{ y: -50 }} class={narrationClass || "sdt-narration"}>

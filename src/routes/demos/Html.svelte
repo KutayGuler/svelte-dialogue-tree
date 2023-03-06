@@ -1,6 +1,7 @@
 <script lang="ts">
   import Dialogue from "$lib/Dialogue.svelte";
   import type { DialogueTree } from "$lib/types";
+  export let dialogueParams: any;
 
   type BranchKey = "start";
 
@@ -11,4 +12,8 @@
   };
 </script>
 
-<Dialogue {tree} on:dialogueEnd={() => alert("dialogue ended")} />
+<Dialogue
+  {tree}
+  {...dialogueParams}
+  on:dialogueEnd={() => alert("dialogue ended")}
+/>

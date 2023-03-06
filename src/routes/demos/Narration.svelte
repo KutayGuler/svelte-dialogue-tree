@@ -1,5 +1,6 @@
 <script lang="ts">
   import Dialogue from "$lib/Dialogue.svelte";
+  export let dialogueParams: any;
 
   let tree = {
     start: [
@@ -9,4 +10,4 @@
   };
 </script>
 
-<Dialogue {tree} />
+<Dialogue {tree} {...dialogueParams} />
