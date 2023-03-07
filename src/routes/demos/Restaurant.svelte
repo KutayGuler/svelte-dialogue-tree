@@ -71,18 +71,18 @@
 
   let tree: DialogueTree<BranchKey, CharacterKey> = {
     start: [
-      { text: "What would you like to have?", characterID: "cook" },
+      { text: "What would you like to have?", character: "cook" },
       listAvailableItems,
     ],
     success: [
-      { text: "Coming right up!", characterID: "cook" },
+      { text: "Coming right up!", character: "cook" },
       bringOrderedItem,
       orderOrLeave,
     ],
     failure: [
       {
         text: "We are fresh out of that, Would you like to have something else",
-        characterID: "cook",
+        character: "cook",
       },
       orderOrLeave,
     ],

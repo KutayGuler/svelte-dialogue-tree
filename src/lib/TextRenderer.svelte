@@ -3,7 +3,7 @@
   import type { CharacterCollection } from "./types";
   export let text: string;
   export let onSpawn: Function = () => {};
-  export let characterID: string = "";
+  export let character: string = "";
   export let characters: CharacterCollection<string> | undefined;
   export let spawnedTextElement: Function;
   export let historyIndex: number;
@@ -13,14 +13,14 @@
 </script>
 
 <div class="flex flex-col gap-2" in:npcIn={npcInOptions}>
-  {#if characters && characterID}
-    {@const { name, avatarSrc } = characters[characterID]}
+  {#if characters && character}
+    {@const { name, avatarSrc } = characters[character]}
     <div class="flex flex-row gap-2 items-center">
       {#if avatarSrc}
         <img class="w-8 h-8 rounded-full" src={avatarSrc} alt="avatar" />
       {/if}
       <p class="font-bold">
-        {@html characters[characterID].name}
+        {@html characters[character].name}
       </p>
     </div>
   {/if}

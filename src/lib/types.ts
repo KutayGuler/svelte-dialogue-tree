@@ -14,7 +14,7 @@ export interface Character {
 
 export type TextObject = { text: string };
 export type WithOnSpawn = { onSpawn: Function };
-export type WithCharacterID<CharacterKey> = { characterID: CharacterKey };
+export type WithCharacterID<CharacterKey> = { character: CharacterKey };
 
 export type TextLeaf<CharacterKey extends string> =
   | string

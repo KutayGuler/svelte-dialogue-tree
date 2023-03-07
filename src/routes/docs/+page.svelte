@@ -17,29 +17,32 @@
 // string
 "something"
 
+// narration string
+"** something is being narrated **"
+
 // HTML string
 "<a href="/something">something</a>"
 
 // TextObject
-{ text: "something", characterID: "jason" }
+{ text: "something", character: "jason" }
 
 // function that returns a string
 () => "something" 
 
 // function that returns a TextObject
-() => { text: "something", characterID: "jason" }}
+() => { text: "something", character: "jason" }}
 `,
     },
     {
       title: "TextObject",
       description:
-        'A TextObject should have a <code class="p-1 bg-primary text-primary-content">text</code> property and at least one (1) additional property.<br/> Additional properties are: <a class="link link-primary font-bold" href="#TextObject.onSpawn">onSpawn<a/> and <a class="link link-primary font-bold" href="#TextObject.characterID">characterID<a/>',
+        'A TextObject should have a <code class="p-1 bg-primary text-primary-content">text</code> property and at least one (1) additional property.<br/> Additional properties are: <a class="link link-primary font-bold" href="#TextObject.onSpawn">onSpawn<a/> and <a class="link link-primary font-bold" href="#TextObject.character">character<a/>',
       code: `
 
     
 { 
   text: "something", // ❕ required
-  characterID: "jason" // additional
+  character: "jason" // additional
 }
 
 { 
@@ -50,7 +53,7 @@
 // it can have both of the additional properties
 { 
   text: "something", // ❕ required
-  characterID: "jason", // additional
+  character: "jason", // additional
   onSpawn: () => console.log("something spawned.") // additional
 }
   `,
@@ -67,10 +70,6 @@
     health -= 50;
   }
 
-  let characters = {
-
-  }
-
   let tree = {
     start: [
       "** You wake up near a cliff. **",
@@ -79,24 +78,68 @@
   }
 <\/script>
 
-<Dialogue {tree} />
-  `,
+<Dialogue {tree} />`,
     },
     {
-      title: "TextObject.characterID",
+      title: "TextObject.character",
       description:
-        '<code class="p-1 bg-primary text-primary-content">characterID</code> should be a key inside a CharactersCollection executed when the <a class="link link-primary font-bold" href="#TextObject">TextObject<a/> enters the DOM',
+        '<code class="p-1 bg-primary text-primary-content">character</code> should be a key of a <a class="link link-primary font-bold" href="#CharacterCollection">CharacterCollection<a/>',
       code: `<script>
-  let health = 100;
-
-  function fallFromCliff() {
-    health -= 50;
+  let characters = {
+    gotrek: {
+      name: "Gotrek the Trollslayer",
+      avatarSrc: "gotrek.jpg"
+    }
   }
 
   let tree = {
     start: [
-      "** You wake up near a cliff. **",
-      { text: "** You panic and fall from the cliff. **", onSpawn: fallFromCliff }
+      "** You open your eyes and see a dwarf looking at you in disdain **"
+      { text: "Wake up, manling.", character: "gotrek" }
+    ]
+  }
+<\/script>
+
+<Dialogue {tree} />`,
+    },
+    {
+      title: "CharacterCollection",
+      description:
+        '<code class="p-1 bg-primary text-primary-content">character</code> should be a key of a <a class="link link-primary font-bold" href="#CharacterCollection">CharacterCollection<a/>',
+      code: `<script>
+  let characters = {
+    gotrek: {
+      name: "Gotrek the Trollslayer",
+      avatarSrc: "gotrek.jpg"
+    }
+  }
+
+  let tree = {
+    start: [
+      "** You open your eyes and see a dwarf looking at you in disdain **"
+      { text: "Wake up, manling.", character: "gotrek" }
+    ]
+  }
+<\/script>
+
+<Dialogue {tree} />`,
+    },
+    {
+      title: "Character",
+      description:
+        '<code class="p-1 bg-primary text-primary-content">character</code> should be a key of a <a class="link link-primary font-bold" href="#CharacterCollection">CharacterCollection<a/>',
+      code: `<script>
+  let characters = {
+    gotrek: {
+      name: "Gotrek the Trollslayer",
+      avatarSrc: "gotrek.jpg"
+    }
+  }
+
+  let tree = {
+    start: [
+      "** You open your eyes and see a dwarf looking at you in disdain **"
+      { text: "Wake up, manling.", character: "gotrek" }
     ]
   }
 <\/script>
@@ -324,7 +367,7 @@ const tree: DialogueTree<BranchKey, CharacterKey> = {
   ],
 };
 
-const characters: CharacterCollection<CharacterKey> = { // ❔ optional component argument
+const characters: CharacterCollection<CharacterKey> = { // ❔ optional Dialogue parameter
   character1: {
     name: "name of character1",
     avatarSrc: "character1.jpg" // ❔ optional parameter 
@@ -364,8 +407,28 @@ const characters: CharacterCollection<CharacterKey> = { // ❔ optional componen
   $: _schemaCode = withGenerics ? schemaCodeT : schemaCode;
 </script>
 
+<!-- TODO: Add intersection observer -->
 <div class="flex flex-row items-start justify-center">
-  <div>Links</div>
+  <ul class="sticky top-0 menu bg-base-100 w-56 p-2 rounded-box">
+    <li class="menu-title">
+      <span>Schema</span>
+    </li>
+    <li><a href="#Schema">Schema</a></li>
+    <li class="menu-title">
+      <span>Types</span>
+    </li>
+    {#each typesData as { title }}
+      <!-- class="active" -->
+      <li><a href={"#" + title}>{title}</a></li>
+      <!-- content here -->
+    {/each}
+    <li class="menu-title">
+      <span>Misc</span>
+    </li>
+    <!-- <li><a>Item 1</a></li>
+    <li><a class="active">Item 2</a></li>
+    <li><a>Item 3</a></li> -->
+  </ul>
   <div class="flex flex-col gap-16 w-[768px]">
     <div>
       <div class="divider">
