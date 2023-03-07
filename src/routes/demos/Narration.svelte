@@ -5,7 +5,9 @@
   let tree = {
     start: [
       "Hi",
-      "** This will be rendered ** This will not be rendered ** how **",
+      "npc text ** narration ** npc text ** narration **",
+      "** standalone narration **",
+      "** not standalone narration ** npc text",
     ],
   };
 </script>

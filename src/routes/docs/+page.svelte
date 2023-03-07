@@ -70,7 +70,7 @@
     health -= 50;
   }
 
-  let tree = {
+  const tree = {
     start: [
       "** You wake up near a cliff. **",
       { text: "** You panic and fall from the cliff. **", onSpawn: fallFromCliff }
@@ -92,7 +92,7 @@
     }
   }
 
-  let tree = {
+  const tree = {
     start: [
       "** You open your eyes and see a dwarf looking at you in disdain **"
       { text: "Wake up, manling.", character: "gotrek" }
@@ -114,7 +114,7 @@
     }
   }
 
-  let tree = {
+  const tree = {
     start: [
       "** You open your eyes and see a dwarf looking at you in disdain **"
       { text: "Wake up, manling.", character: "gotrek" }
@@ -136,7 +136,7 @@
     }
   }
 
-  let tree = {
+  const tree = {
     start: [
       "** You open your eyes and see a dwarf looking at you in disdain **"
       { text: "Wake up, manling.", character: "gotrek" }

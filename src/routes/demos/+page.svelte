@@ -19,8 +19,6 @@
   // TODO: Add different styles
 </script>
 
-<!-- TODO: Add kbd Space to instruct -->
-
 <div class="p-4">
   {#each demos as value}
     <label>
@@ -34,6 +32,10 @@
     </label>
   {/each}
 </div>
+
+<p class="pl-4">
+  Press <kbd class="kbd">Space</kbd> to continue the conversation
+</p>
 
 <main class="w-full h-[600px] flex items-start justify-center p-4">
   {#if currentExample == "restaurant"}

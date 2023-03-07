@@ -2,11 +2,8 @@
   import type { TransitionConfig } from "svelte/transition";
   import type { CharacterCollection } from "./types";
   export let text: string;
-  export let onSpawn: Function = () => {};
   export let character: string = "";
   export let characters: CharacterCollection<string> | undefined;
-  export let spawnedTextElement: Function;
-  export let historyIndex: number;
   export let npcClass: string;
   export let npcIn: (node: Element, params: object) => TransitionConfig;
   export let npcInOptions: (node: Element, params: object) => TransitionConfig;
@@ -24,10 +21,7 @@
       </p>
     </div>
   {/if}
-  <p
-    use:spawnedTextElement={{ onSpawn, text, historyIndex }}
-    class={npcClass || "sdt-npc"}
-  >
-    {@html text?.split("**")[0]}
+  <p class={npcClass || "sdt-npc"}>
+    {@html text}
   </p>
 </div>

@@ -24,6 +24,8 @@
   }
 </script>
 
+<!-- TODO: Make this in threlte -->
+
 <div class="w-1/2 h-80 border-black rounded bg-white">
   {#if rolling}
     {#await roll()}

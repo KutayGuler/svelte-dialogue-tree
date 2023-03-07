@@ -4,6 +4,8 @@
     DialogueTree,
     CharacterCollection,
     ChoiceLeaf,
+    TextObject,
+    WithOnSpawn,
   } from "./types";
   import { beforeUpdate, afterUpdate } from "svelte";
   import { fly, scale, type TransitionConfig } from "svelte/transition";
@@ -40,6 +42,62 @@
   export let narrationClass = "";
   export let nextLineKey = "Space";
   export const nextLine = () => {
+    let upcoming = history[index + 1];
+    if (typeof upcoming == "string" && upcoming.includes("**")) {
+      let splittedText = splitText(upcoming);
+      if (splittedText.length > 0) {
+        history.splice(index + 1, 1, ...splittedText);
+      }
+    } else if (typeof upcoming == "function") {
+      const ret = upcoming();
+      if (Array.isArray(ret)) {
+        history[index + 1] = ret;
+        interacting = true;
+      } else if (typeof ret == "string") {
+        /**
+         * add branch to the history if it exists
+         */
+        if (tree[ret]) {
+          // @ts-expect-error
+          history = [...history, ...tree[ret]];
+        } else {
+          history[index + 1] = ret;
+        }
+        // @ts-expect-error
+      } else if (typeof ret == "object" && !ret.component) {
+        let splitted = splitText(ret.text);
+        if (splitted.length > 0) {
+          /**
+           * find the first text that is not narration
+           */
+          const notNarration = (s: string) => !s.includes("**");
+          let onSpawnIndex = splitted.findIndex(notNarration);
+          ret.text = splitted.find(notNarration) || splitted[0];
+          // @ts-expect-error
+          splitted.splice(onSpawnIndex, 1, ret);
+
+          /**
+           * if first element of the splitted array is a narration
+           * add it before regular text
+           *
+           */
+          // TODO: This should be in a loop
+          if (splitted[0].includes("**")) {
+            history.splice(index + 1, 0, splitted[0]);
+            splitted.shift();
+          }
+
+          // 1 is required to remove the function from the history
+          history.splice(index + 2, 1, ...splitted);
+          console.log(history);
+        }
+
+        if ((ret as TextObject & WithOnSpawn).onSpawn) {
+          (ret as TextObject & WithOnSpawn).onSpawn();
+        }
+      }
+    }
+
     index += 1;
   };
 
@@ -57,6 +115,11 @@
   export let choiceInOptions: any = {};
   export let choiceStaggerGap: number = 200;
 
+  // NARRATION TRANSITION
+  // TODO:
+  // export let narrationIn;
+  // export let narrationInOptions;
+
   let interacting = false;
   let index = -1;
   let key = "";
@@ -71,10 +134,13 @@
     return key;
   }
 
+  /**
+   * Flattens the tree if it has nested branches
+   */
   function flatten(key: BranchKey) {
     let choices = tree[key].at(-1);
 
-    // confirming that it's a BranchChoiceElement
+    // confirming that it's an array of ChoiceObjects
     if (Array.isArray(choices)) {
       for (let choice of choices) {
         if (!Array.isArray(choice.next)) continue;
@@ -90,16 +156,6 @@
     key = Object.keys(tree)[0];
     history = new Array(...tree[key]) as Branch<BranchKey, CharacterKey>;
     flatten(key);
-    console.log(history);
-    if (
-      (history[0].text && history[0].text.includes("**")) ||
-      (typeof history[0] == "string" && history.includes("**"))
-    ) {
-      parseNarrations(-1, history[0].text || history[0]);
-      history.pop();
-    }
-    console.log(history);
-
     nextLine();
   });
 
@@ -147,53 +203,32 @@
     interacting = false;
 
     /**
-     * required to rerender the dom
+     * required to rerender the DOM
      */
     history = history;
   }
 
-  function parseNarrations(historyIndex: number, text: string) {
-    const narrationRegex = /\*\*(.*?)\*\*/g;
+  const narrationRegex = /\*\*(.*?)\*\*/g;
+
+  function splitText(text: string): Array<string> {
     let narrations = text.match(narrationRegex);
-    console.log(narrations);
+    if (!narrations) return [];
+    let splitted = text.split("*");
 
-    if (!narrations) return;
-    history.splice(historyIndex + 1, 0, ...narrations);
-  }
-
-  function spawnedTextElement(
-    node: Element,
-    {
-      onSpawn,
-      text,
-      historyIndex,
-    }: { onSpawn: Function; text: string; historyIndex: number }
-  ) {
-    if (typeof onSpawn == "function") {
-      onSpawn();
+    for (let i = 0; i < splitted.length; i++) {
+      if (i == 0 || i == splitted.length - 1) continue;
+      if (splitted[i - 1] == "" && splitted[i + 1] == "") {
+        let narration = "**".concat(splitted[i], "**");
+        splitted.splice(i - 1, 3, narration);
+      }
     }
-    console.log(history);
-    parseNarrations(historyIndex, text);
-    console.log(history);
-  }
 
-  let cachedResults = new Map<number, any>();
-
-  function choicesGenerated(node: Element) {
-    node.remove();
-    interacting = true;
+    return splitted.filter((s) => s != "");
   }
 
   function spawnedComponent(node: Element) {
     interacting = true;
     node.remove();
-  }
-
-  function changeKey(node: Element, newKey: BranchKey) {
-    node.remove();
-    key = newKey;
-    history = [...history, ...tree[key]];
-    index++;
   }
 </script>
 
@@ -215,10 +250,10 @@
 <article bind:this={container} class={containerClass || "sdt-container"}>
   {#each history as item, historyIndex (historyIndex)}
     {@const isUser = userTextIndexes.includes(historyIndex)}
-    {@const isNarration =
-      typeof item == "string" && item[0] == "*" && item.at(-1) == "*"}
+    {@const isChoice = Array.isArray(item) && item.length != 0}
+    {@const isNarration = typeof item == "string" && item.includes("**")}
     {#if index >= historyIndex}
-      {#if Array.isArray(item) && item.length != 0}
+      {#if isChoice}
         <ChoiceRenderer
           choices={item}
           {choiceIn}
@@ -229,47 +264,6 @@
           {choiceStaggerGap}
           {choiceContainerClass}
         />
-      {:else if typeof item == "function"}
-        {@const params =
-          cachedResults.get(historyIndex) ||
-          cachedResults.set(historyIndex, item()).get(historyIndex)}
-        {#if Array.isArray(params)}
-          <ChoiceRenderer
-            choices={params}
-            {choiceIn}
-            {makeChoice}
-            {choiceClass}
-            {historyIndex}
-            {choiceInOptions}
-            {choiceStaggerGap}
-            {choiceContainerClass}
-          />
-          <span use:choicesGenerated />
-        {:else if typeof params == "string"}
-          {#if tree[params]}
-            <span use:changeKey={params} />
-          {:else}
-            <TextRenderer
-              text={params}
-              {npcIn}
-              {npcClass}
-              {characters}
-              {npcInOptions}
-              {historyIndex}
-              {spawnedTextElement}
-            />
-          {/if}
-        {:else}
-          <TextRenderer
-            {...params}
-            {npcIn}
-            {npcClass}
-            {characters}
-            {npcInOptions}
-            {historyIndex}
-            {spawnedTextElement}
-          />
-        {/if}
       {:else if typeof item == "object"}
         {#if item.component}
           <span use:spawnedComponent />
@@ -289,15 +283,12 @@
             {npcClass}
             {characters}
             {npcInOptions}
-            {historyIndex}
-            {spawnedTextElement}
           />
         {/if}
-        <!-- FIXME: Faulty implementation of narration parsing -->
-      {:else if typeof item == "string" && isNarration}
-        {@const trimmed = item.replaceAll("*", "")}
+      {:else if isNarration}
+        <!-- TODO: replace in with narrationIn -->
         <p in:fly={{ y: -50 }} class={narrationClass || "sdt-narration"}>
-          {@html trimmed}
+          {@html item.replaceAll("**", "")}
         </p>
       {:else if isUser}
         <p
