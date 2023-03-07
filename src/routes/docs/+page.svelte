@@ -6,13 +6,14 @@
 
   const typesData: Array<{
     title: string;
+    description: string;
     code: string;
   }> = [
     {
       title: "TextLeaf",
+      description:
+        'A TextLeaf can be in following types: <code class="p-1 bg-primary text-primary-content">string</code>, <a class="link link-primary font-bold" href="#TextObject">TextObject<a/>, a function that returns a <code class="p-1 bg-primary text-primary-content">string</code>, a function that returns a <a class="link link-primary font-bold" href="#TextObject">TextObject<a/>',
       code: `
-// A TextLeaf can be the following:
-
 // string
 "something"
 
@@ -31,9 +32,10 @@
     },
     {
       title: "TextObject",
+      description:
+        'A TextObject should have a <code class="p-1 bg-primary text-primary-content">text</code> property and at least one (1) additional property.<br/> Additional properties are: <a class="link link-primary font-bold" href="#TextObject.onSpawn">onSpawn<a/> and <a class="link link-primary font-bold" href="#TextObject.characterID">characterID<a/>',
       code: `
-// A TextObject should have a text property
-// and at least one (1) additional property
+
     
 { 
   text: "something", // ❕ required
@@ -51,6 +53,55 @@
   characterID: "jason", // additional
   onSpawn: () => console.log("something spawned.") // additional
 }
+  `,
+    },
+    // TODO: Highlight onSpawn
+    {
+      title: "TextObject.onSpawn",
+      description:
+        'The function that is assigned to <code class="p-1 bg-primary text-primary-content">onSpawn</code> is executed when the <a class="link link-primary font-bold" href="#TextObject">TextObject<a/> enters the DOM',
+      code: `<script>
+  let health = 100;
+
+  function fallFromCliff() {
+    health -= 50;
+  }
+
+  let characters = {
+
+  }
+
+  let tree = {
+    start: [
+      "** You wake up near a cliff. **",
+      { text: "** You panic and fall from the cliff. **", onSpawn: fallFromCliff }
+    ]
+  }
+<\/script>
+
+<Dialogue {tree} />
+  `,
+    },
+    {
+      title: "TextObject.characterID",
+      description:
+        '<code class="p-1 bg-primary text-primary-content">characterID</code> should be a key inside a CharactersCollection executed when the <a class="link link-primary font-bold" href="#TextObject">TextObject<a/> enters the DOM',
+      code: `<script>
+  let health = 100;
+
+  function fallFromCliff() {
+    health -= 50;
+  }
+
+  let tree = {
+    start: [
+      "** You wake up near a cliff. **",
+      { text: "** You panic and fall from the cliff. **", onSpawn: fallFromCliff }
+    ]
+  }
+<\/script>
+
+<Dialogue {tree} />
   `,
     },
     {
@@ -189,7 +240,7 @@ import { Component } from "./Component.svelte";
   ];
 
   let schemaCode = `
-let tree: DialogueTree = {
+const tree = {
   branch1: [ // 📌 dialogue starts from the tree's first key 
     // TextLeaf
     // TextLeaf
@@ -202,7 +253,7 @@ let tree: DialogueTree = {
     // ComponentLeaf
     // TextLeaf
     // ComponentLeaf
-    // ComponentLeaf ✅ Just like TextLeafs, any number of ComponentLeafs can be placed anywhere in the branch
+    // ComponentLeaf ✅ any number of ComponentLeafs can be placed anywhere in the branch
   ],
   branch3: [
     // TextLeaf
@@ -221,7 +272,7 @@ let tree: DialogueTree = {
   ],
 };
   
-let characters: CharacterCollection = { // ❔ optional Dialogue parameter
+const characters = { // ❔ optional Dialogue parameter
   character1: {
     name: "name of character1",
     avatarSrc: "character1.jpg" // ❔ optional parameter 
@@ -236,7 +287,7 @@ let characters: CharacterCollection = { // ❔ optional Dialogue parameter
 type BranchKey = "branch1" | "branch2" | "branch3" | "invalid1" | "invalid2" ;
 type CharacterKey = "character1" | "character2";
 
-let tree: DialogueTree<BranchKey, CharacterKey> = {
+const tree: DialogueTree<BranchKey, CharacterKey> = {
   branch1: [ // 📌 dialogue starts from the tree's first key 
     // TextLeaf,
     // TextLeaf,
@@ -249,7 +300,7 @@ let tree: DialogueTree<BranchKey, CharacterKey> = {
     // ComponentLeaf
     // TextLeaf
     // ComponentLeaf
-    // ComponentLeaf ✅ Just like TextLeafs, any number of ComponentLeafs can be placed anywhere in the branch
+    // ComponentLeaf ✅ any number of ComponentLeafs can be placed anywhere in the branch
   ],
   branch3: [
     // TextLeaf,
@@ -273,7 +324,7 @@ let tree: DialogueTree<BranchKey, CharacterKey> = {
   ],
 };
 
-let characters: CharacterCollection<CharacterKey> = { // ❔ optional component argument
+const characters: CharacterCollection<CharacterKey> = { // ❔ optional component argument
   character1: {
     name: "name of character1",
     avatarSrc: "character1.jpg" // ❔ optional parameter 
@@ -363,17 +414,22 @@ let characters: CharacterCollection<CharacterKey> = { // ❔ optional component 
     </div>
 
     {#if mounted}
-      <div class="relative flex flex-col items-start gap-2 justify-start">
-        {#each typesData as { title, code }}
-          <CodeBlock
-            showHeader
-            headerText={title}
-            headerClasses="bg-gray-800 text-white/80 text-2xl font-bold"
-            language="typescript"
-            {code}
-            showFocusButtons
-            showLineNumbers={false}
-          />
+      <div class="relative flex flex-col items-start gap-16">
+        {#each typesData as { title, description, code }}
+          {@const language = code.includes("script") ? "svelte" : "typescript"}
+          <div class="relative flex flex-col gap-2 w-full">
+            <h3 id={title} class="text-2xl font-bold">{title}</h3>
+            <p>
+              {@html description}
+            </p>
+            <CodeBlock
+              showHeader={false}
+              {language}
+              {code}
+              showFocusButtons
+              showLineNumbers={false}
+            />
+          </div>
         {/each}
       </div>
     {/if}
