@@ -4,10 +4,13 @@
   import { CodeBlock } from "svhighlight";
   import Narration from "../demos/Narration.svelte";
 
+  // TODO: Change link when intersecting
+
   const typesData: Array<{
     title: string;
     description: string;
     code: string;
+    highlightLines?: string;
   }> = [
     {
       title: "TextLeaf",
@@ -36,25 +39,26 @@
     {
       title: "TextObject",
       description:
-        'A TextObject should have a <code class="p-1 bg-primary text-primary-content">text</code> property and at least one (1) additional property.<br/> Additional properties are: <a class="link link-primary font-bold" href="#TextObject.onSpawn">onSpawn<a/> and <a class="link link-primary font-bold" href="#TextObject.character">character<a/>',
+        'A TextObject requires a <code class="p-1 bg-primary text-primary-content">text</code> property and at least one (1) additional property.<br/> Additional properties are: <a class="link link-primary font-bold" href="#TextObject.onSpawn">onSpawn<a/> and <a class="link link-primary font-bold" href="#TextObject.character">character<a/>',
       code: `
 
-    
+// TextObject  
 { 
-  text: "something", // ❕ required
-  character: "jason" // additional
+  text: "something",
+  character: "jason"
 }
 
+// TextObject  
 { 
-  text: "something", // ❕ required
-  onSpawn: () => console.log("something spawned.") // additional
+  text: "something",
+  onSpawn: () => console.log("something spawned.")
 }
 
-// it can have both of the additional properties
+// TextObject (it can have both of the additional properties)
 { 
-  text: "something", // ❕ required
-  character: "jason", // additional
-  onSpawn: () => console.log("something spawned.") // additional
+  text: "something",
+  character: "jason",
+  onSpawn: () => console.log("something spawned.")
 }
   `,
     },
@@ -63,6 +67,7 @@
       title: "TextObject.onSpawn",
       description:
         'The function that is assigned to <code class="p-1 bg-primary text-primary-content">onSpawn</code> is executed when the <a class="link link-primary font-bold" href="#TextObject">TextObject<a/> enters the DOM',
+      highlightLines: "12",
       code: `<script>
   let health = 100;
 
@@ -73,7 +78,10 @@
   const tree = {
     start: [
       "** You wake up near a cliff. **",
-      { text: "** You panic and fall from the cliff. **", onSpawn: fallFromCliff }
+      { 
+        text: "** You panic and fall from the cliff. **", 
+        onSpawn: fallFromCliff 
+      }
     ]
   }
 <\/script>
@@ -82,10 +90,11 @@
     },
     {
       title: "TextObject.character",
+      highlightLines: "13",
       description:
         '<code class="p-1 bg-primary text-primary-content">character</code> should be a key of a <a class="link link-primary font-bold" href="#CharacterCollection">CharacterCollection<a/>',
       code: `<script>
-  let characters = {
+  const characters = {
     gotrek: {
       name: "Gotrek the Trollslayer",
       avatarSrc: "gotrek.jpg"
@@ -94,20 +103,23 @@
 
   const tree = {
     start: [
-      "** You open your eyes and see a dwarf looking at you in disdain **"
-      { text: "Wake up, manling.", character: "gotrek" }
+      "** You open your eyes and see a dwarf looking at you in disdain **",
+      { 
+        text: "Wake up, manling.",
+        character: "gotrek" 
+      }
     ]
   }
 <\/script>
 
-<Dialogue {tree} />`,
+<Dialogue {tree} {characters} />`,
     },
     {
       title: "CharacterCollection",
       description:
-        '<code class="p-1 bg-primary text-primary-content">character</code> should be a key of a <a class="link link-primary font-bold" href="#CharacterCollection">CharacterCollection<a/>',
+        '<code class="p-1 bg-primary text-primary-content">CharacterCollection</code> is an object which holds CharacterKeys as keys and Characters as values',
       code: `<script>
-  let characters = {
+  const characters = {
     gotrek: {
       name: "Gotrek the Trollslayer",
       avatarSrc: "gotrek.jpg"
@@ -122,37 +134,16 @@
   }
 <\/script>
 
-<Dialogue {tree} />`,
-    },
-    {
-      title: "Character",
-      description:
-        '<code class="p-1 bg-primary text-primary-content">character</code> should be a key of a <a class="link link-primary font-bold" href="#CharacterCollection">CharacterCollection<a/>',
-      code: `<script>
-  let characters = {
-    gotrek: {
-      name: "Gotrek the Trollslayer",
-      avatarSrc: "gotrek.jpg"
-    }
-  }
-
-  const tree = {
-    start: [
-      "** You open your eyes and see a dwarf looking at you in disdain **"
-      { text: "Wake up, manling.", character: "gotrek" }
-    ]
-  }
-<\/script>
-
-<Dialogue {tree} />
-  `,
+<Dialogue {tree} {characters} />`,
     },
     {
       title: "ComponentLeaf",
+      description:
+        'A ComponentLeaf requires a <code class="p-1 bg-primary text-primary-content">component</code> property which accepts a Svelte component. The other property is the optional <code class="p-1 bg-primary text-primary-content">args</code> property, which is passed to the given component as an argument.',
       code: `
 import { Component } from "./Component.svelte";
 
-// A ComponentLeaf
+// ComponentLeaf
 {
   component: Component,
   args: { // ❔ optional
@@ -164,18 +155,16 @@ import { Component } from "./Component.svelte";
     },
     {
       title: "ChoiceLeaf",
+      description:
+        'A ChoiceLeaf can be an array of <a class="link link-primary font-bold" href="#ChoiceObject">ChoiceObject<a/>s or a function that returns an array of <a class="link link-primary font-bold" href="#ChoiceObject">ChoiceObject<a/>s',
       code: `
-/** 
- * A ChoiceLeaf can be an array of ChoiceObjects
-*/
+// ChoiceLeaf
 [
   // ChoiceObject
   // ChoiceObject
 ]
 
-/** 
- * or a function that returns an array of ChoiceObjects
-*/
+// ChoiceLeaf
 () => [
   // ChoiceObject
   // ChoiceObject
@@ -184,55 +173,67 @@ import { Component } from "./Component.svelte";
     },
     {
       title: "ChoiceObject",
+      description:
+        'A choice object has three (3) required and two (2) optional parameters <br><b>Required parameters</b><br> <a class="link link-primary font-bold" href="#ChoiceObject.label">label<a/>, <a class="link link-primary font-bold" href="#ChoiceObject.text">text<a/>, <a class="link link-primary font-bold" href="#ChoiceObject.next">next<a/> <br><br><b>Optional parameters</b><br> <a class="link link-primary font-bold" href="#ChoiceObject.titleTag">titleTag<a/>, <a class="link link-primary font-bold" href="#ChoiceObject.disabled">disabled<a/> ',
       code: `
-// A choice object has three (3) required and two (2) optional parameters
 { 
-  // The text that will appear on the choice button
-  label: "YES", // ❕ required
+  /** REQUIRED */
+  label: "YES",
+  text: "I think that's right",
+  next: "yesBranch"
 
-  // The content that will appear on the dialogue after choice is made
-  text: "I think that's right", // ❕ required
+  /** OPTIONAL */
+  titleTag: "some title"
+  disabled: true 
+}
+`,
+    },
+    {
+      title: "ChoiceObject.label",
+      description:
+        '<code class="p-1 bg-primary text-primary-content">label</code> is the text that will appear on the choice button',
+      code: `
 
-  // The key of the branch dialogue will jump to
-  next: "yesBranch" // ❕ required
+{ 
+  // code
+  label: "YES",
+  // code
+}
+`,
+    },
+    {
+      title: "ChoiceObject.text",
+      description:
+        '<code class="p-1 bg-primary text-primary-content">text</code> is the content that will appear on the dialogue after choice is made',
+      code: `
 
-  // The title that will appear when a mouse is hovered over the choice button
-  titleTag: // ❔ optional 
-
-  // Whether the choice button is disabled or not
-  disabled: true // ❔ optional 
+{ 
+  // code
+  label: "YES",
+  // code
 }
 `,
     },
     {
       title: "ChoiceObject.next",
+      description:
+        '<code class="p-1 bg-primary text-primary-content">next</code> is the key of the branch dialogue will jump to. You can use <code class="p-1 bg-primary text-primary-content">next</code> in three (3) different ways: <br> (1) BranchKey <br> (2) A function that returns a BranchKey <br> (3) A nested branch',
       code: `
-      // You can use "next" in three (3) different types:
-
 // (1) A BranchKey (string)
 {
-  /** 
-   * code
-  */
-
-  next: () => "yesBranch" 
+  // code
+  next: "yesBranch"
 }
 
 // (2) A function that returns a BranchKey
 {
-  /** 
-   * code
-  */
-
+  // code
   next: () => "yesBranch" 
 }
 
 // (3) A nested branch
 {
-  /** 
-   * code
-  */
-
+  // code
   next: [
     "Great! Let's go bowling."
     "How would you like to go?"
@@ -279,6 +280,32 @@ import { Component } from "./Component.svelte";
   ]
 }
       `,
+    },
+    // TODO: Can be function
+    {
+      title: "ChoiceObject.titleTag",
+      description:
+        '<code class="p-1 bg-primary text-primary-content">titleTag</code> is the title that will appear when a mouse is hovered over the choice button',
+      code: `
+
+{ 
+  // code
+  titleTag: "some title",
+}
+`,
+    },
+    // TODO: Can be function
+    {
+      title: "ChoiceObject.disabled",
+      description:
+        '<code class="p-1 bg-primary text-primary-content">disabled</code> determines whether the choice button is disabled or not',
+      code: `
+
+{ 
+  // code
+  disabled: true,
+}
+`,
     },
   ];
 
@@ -391,12 +418,6 @@ const characters: CharacterCollection<CharacterKey> = { // ❔ optional Dialogue
 <Dialogue {tree} /> ✅
   `;
 
-  let narrationCode = `
-    
-  `;
-
-  let components = new Array(typesData.length).fill(null);
-
   let mounted = false;
 
   onMount(() => {
@@ -478,7 +499,7 @@ const characters: CharacterCollection<CharacterKey> = { // ❔ optional Dialogue
 
     {#if mounted}
       <div class="relative flex flex-col items-start gap-16">
-        {#each typesData as { title, description, code }}
+        {#each typesData as { title, highlightLines, description, code }}
           {@const language = code.includes("script") ? "svelte" : "typescript"}
           <div class="relative flex flex-col gap-2 w-full">
             <h3 id={title} class="text-2xl font-bold">{title}</h3>
@@ -490,6 +511,8 @@ const characters: CharacterCollection<CharacterKey> = { // ❔ optional Dialogue
               {language}
               {code}
               showFocusButtons
+              focusType="highlight"
+              {highlightLines}
               showLineNumbers={false}
             />
           </div>

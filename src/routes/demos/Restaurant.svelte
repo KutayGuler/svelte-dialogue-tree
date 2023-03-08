@@ -9,7 +9,6 @@
 
   let menu = ["🥧", "🍕", "🥣", "🍔"];
   let inventory = ["🥧"]; // "🍕", "🥣", "🍔"
-  // TODO: Add one more option to say nevermind
   // TODO: Add to docs "might have all options disabled" as an edge case reminder
   let orderedItem = "";
 
@@ -38,6 +37,12 @@
         },
       });
     }
+    choices.push({
+      label: "cancel",
+      text: "Nevermind",
+      next: "failure",
+      // TODO: might add another branch as it doesn't make sense rn
+    });
     return choices;
   }
 
