@@ -45,9 +45,10 @@
 							</svg>
 						</span>
 					</button>
-					<strong class="text-xl">svelte-dialogue-tree</strong>
 				</div>
 			</svelte:fragment>
+			<h3>svelte-dialogue-tree</h3>
+			<svelte:fragment slot="trail">(actions)</svelte:fragment>
 		</AppBar>
 	</svelte:fragment>
 

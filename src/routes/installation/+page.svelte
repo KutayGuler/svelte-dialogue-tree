@@ -46,4 +46,4 @@ gap: 0.5rem; -->
 	<div class="max-w-xs self-end rounded-xl bg-surface-800 p-4">dfdsdsf</div>
 </div> -->
 
-<Dialogue {tree} containerClass="bg-transparent w-full p-4" />
+<Dialogue {tree} containerClass="bg-transparent w-full h-full p-4 flex flex-col gap-2" />

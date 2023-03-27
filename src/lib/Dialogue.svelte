@@ -242,7 +242,8 @@
 	}}
 />
 
-<article bind:this={container} class={containerClass || 'sdt-container'}>
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<div on:click|self={nextLine} bind:this={container} class={containerClass || 'sdt-container'}>
 	{#each history as item, historyIndex (historyIndex)}
 		{@const isUser = userTextIndexes.includes(historyIndex)}
 		{@const isChoice = Array.isArray(item) && item.length != 0}
@@ -289,7 +290,7 @@
 			{/if}
 		{/if}
 	{/each}
-</article>
+</div>
 
 <!-- TODO: How to share css across library components? -->
 
