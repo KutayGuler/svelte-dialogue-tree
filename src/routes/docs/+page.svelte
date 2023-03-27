@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
-	import { CodeBlock, Tab, TabGroup } from '@skeletonlabs/skeleton';
+	import { CodeBlock, ProgressBar, Tab, TabGroup } from '@skeletonlabs/skeleton';
 	import Narration from '../demos/Narration.svelte';
 	import { TableOfContents } from '@skeletonlabs/skeleton';
 	import { SlideToggle } from '@skeletonlabs/skeleton';
 	import { typesData, propsData, eventsData } from './docsData';
 	import TypeSection from './TypeSection.svelte';
+	import Section from './Section.svelte';
 
 	let mounted = false;
 
@@ -134,14 +135,10 @@
 	let narrationTab = 0;
 </script>
 
-<!-- TODO: toc -->
-<!-- <TableOfContents target="#toc-target" /> -->
-
-<div class="flex flex-row items-start justify-center">
-	<div class="flex w-[768px] flex-col gap-16 py-4">
-		<div>
-			<h1 id="Schema">SCHEMA</h1>
-			<div class="py-4">
+<div class="relative flex flex-row items-start justify-center gap-4">
+	<div id="toc-target" class="flex w-[768px] flex-col gap-24 py-4">
+		<Section title="SCHEMA">
+			<div>
 				<SlideToggle active="bg-success-500" name="generics" bind:checked={withGenerics}>
 					{withGenerics ? 'With Generics' : 'Without Generics'}
 				</SlideToggle>
@@ -183,94 +180,84 @@
 					</div>
 				{/if}
 			</div>
-
 			{#key withGenerics}
 				<CodeBlock language="svelte" code={_schemaCode} />
 			{/key}
-			<!-- <CodeBlock language="svelte" code={svelteCode} /> -->
-		</div>
-
-		<h1>TYPES</h1>
-
-		{#if mounted}
+		</Section>
+		<Section title="TYPES">
 			<div class="relative flex flex-col items-start gap-16">
 				{#each typesData as { title, description, code }}
 					<TypeSection {title} {description} {code} />
 				{/each}
 			</div>
-		{/if}
-
-		<h1>PROPS</h1>
-
-		<div class="table-container">
-			<!-- Native Table Element -->
-			<table class="table-hover table">
-				<thead>
-					<tr>
-						<th>Name</th>
-						<th>Type</th>
-						<th>Value</th>
-						<th>Description</th>
-					</tr>
-				</thead>
-				<tbody>
-					{#each propsData as { name, type, value, description, required }, i}
+		</Section>
+		<Section title="PROPS">
+			<div class="table-container">
+				<!-- Native Table Element -->
+				<table class="table-hover table">
+					<thead>
 						<tr>
-							<td
-								>{name}
-								{#if required}
-									<span class="badge variant-filled-warning ml-1">Required</span>
-								{/if}</td
-							>
-							<td><code>{type}</code> </td>
-							<td>{value}</td>
-							<td>{description}</td>
+							<th>Name</th>
+							<th>Type</th>
+							<th>Value</th>
+							<th>Description</th>
 						</tr>
-					{/each}
-				</tbody>
-				<!-- <tfoot>
+					</thead>
+					<tbody>
+						{#each propsData as { name, type, value, description, required }, i}
+							<tr>
+								<td
+									>{name}
+									{#if required}
+										<span class="badge variant-filled-warning ml-1">Required</span>
+									{/if}</td
+								>
+								<td><code>{type}</code> </td>
+								<td>{value}</td>
+								<td>{description}</td>
+							</tr>
+						{/each}
+					</tbody>
+					<!-- <tfoot>
+								<tr>
+									<th colspan="3">Calculated Total Weight</th>
+									<td>{totalWeight}</td>
+								</tr>
+							</tfoot> -->
+				</table>
+			</div>
+		</Section>
+		<Section title="EVENTS">
+			<div class="table-container">
+				<!-- Native Table Element -->
+				<table class="table-hover table-compact table">
+					<thead>
 						<tr>
-							<th colspan="3">Calculated Total Weight</th>
-							<td>{totalWeight}</td>
+							<th>Name</th>
+							<th>Detail</th>
+							<th class="table-cell-fit">Description</th>
 						</tr>
-					</tfoot> -->
-			</table>
-		</div>
-
-		<div class="flex flex-col gap-4">
-			<h1>EVENTS</h1>
-		</div>
-
-		<div class="table-container">
-			<!-- Native Table Element -->
-			<table class="table-hover table-compact table">
-				<thead>
-					<tr>
-						<th>Name</th>
-						<th>Detail</th>
-						<th class="table-cell-fit">Description</th>
-					</tr>
-				</thead>
-				<tbody>
-					{#each eventsData as { name, detail, description }, i}
-						<tr>
-							<td>{name}</td>
-							<td>{detail}</td>
-							<td class="table-cell-fit">{description}</td>
-						</tr>
-					{/each}
-				</tbody>
-			</table>
-		</div>
-
-		<div class="flex flex-col gap-8">
-			<h1>NARRATION</h1>
+					</thead>
+					<tbody>
+						{#each eventsData as { name, detail, description }, i}
+							<tr>
+								<td>{name}</td>
+								<td>{detail}</td>
+								<td class="table-cell-fit">{description}</td>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+			</div>
+		</Section>
+		<Section title="NARRATION">
 			<p>
 				You can use narration to convey information as a third person. Wrap the content in double
 				asterisk (**) to render it as a narration text.
 			</p>
 			<blockquote>
-				You can include multiple narration texts inside a string. They will be rendered seperately.
+				TIP: You can include multiple narration texts inside a string. They will be rendered
+				seperately.
 			</blockquote>
 			<TabGroup>
 				<Tab bind:group={narrationTab} name="tab1" value={0}>Code</Tab>
@@ -282,13 +269,15 @@
 							language="ts"
 							code={`
 	const tree = {
-		start: [
-			'Hi',
-			'npc text ** narration1 ** npc text ** narration2 **',
-			'** standalone narration **',
-			'** not standalone narration ** npc text'
-		]
-	};`}
+	start: [
+		'** You wake up near a cliff. **',
+		{
+			text: '** You panic and fall from the cliff. ** npc text',
+			onSpawn: fallFromCliff
+		},
+		'** narration ** npc text ** narration **'
+	]
+};`}
 						/>
 					{:else if narrationTab === 1}
 						<Narration />
@@ -297,11 +286,20 @@
 			</TabGroup>
 			<div class="alert card variant-ghost-warning">
 				<p>
-					<a href="#TextObject.text">TextObject.text</a> will not be rendered as narration texts even
-					if they are inside double asterisks.
+					<a href="#TextObject.character">TextObject.character</a> information will not be rendered
+					if <a href="#TextObject.text">TextObject.text</a> is inside double asterisks.
 				</p>
 			</div>
-		</div>
+		</Section>
+	</div>
+	<div class="sticky top-0 py-4">
+		<TableOfContents
+			regionList="p-1"
+			spacing="space-y-4"
+			target="#toc-target"
+			width="w-56"
+			allowedHeadings="h1, h2, h3"
+		/>
 	</div>
 </div>
 

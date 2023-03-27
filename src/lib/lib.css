@@ -4,6 +4,7 @@
 
 /* class="bg-slate-100 p-4 rounded-2xl flex flex-col items-start gap-2 w-1/2 h-full overflow-y-auto" */
 :root {
+	/* TODO: update colors to match skeleton's theme */
 	--sdt-bubble-bg: #5d5656;
 	--sdt-bubble-color: #e9e7e7;
 	--sdt-choice-bg: #ecf4e7;
@@ -37,6 +38,7 @@
 }
 
 /* class="bg-blue-200 p-4 rounded-xl self-end text-end max-w-xs" */
+/* TODO: align-self not working because parent is block ? */
 .sdt-user {
 	padding: 1rem;
 	background-color: var(--sdt-bubble-bg);

@@ -12,7 +12,7 @@ export interface Character {
 	avatarSrc?: string;
 }
 
-export type TextObject = { text: Exclude<string, '**'> };
+export type TextObject = { text: string };
 export type WithOnSpawn = { onSpawn: Function };
 export type WithCharacterID<CharacterKey> = { character: CharacterKey };
 

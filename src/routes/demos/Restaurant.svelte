@@ -34,12 +34,14 @@
 		choices.push({
 			label: 'cancel',
 			text: 'Nevermind',
-			next: 'failure'
-			// TODO: might add another branch as it doesn't make sense rn
+			next: 'cancel'
 		});
 		return choices;
 	}
 
+	// TODO: might add character info here
+	// and orderable onSpawn
+	// onSpawn: [consumerOrderedItem, 5]
 	function bringOrderedItem() {
 		return {
 			text: `** A few minutes pass ** Your order is ready. Bon appetite! **Puts ${orderedItem} on the table **`,
@@ -58,7 +60,7 @@
 		];
 	}
 
-	type BranchKey = 'start' | 'success' | 'failure';
+	type BranchKey = 'start' | 'success' | 'failure' | 'cancel';
 	type CharacterKey = 'cook';
 
 	let characters: CharacterCollection<CharacterKey> = {
@@ -74,6 +76,13 @@
 		failure: [
 			{
 				text: 'We are fresh out of that, Would you like to have something else',
+				character: 'cook'
+			},
+			orderOrLeave
+		],
+		cancel: [
+			{
+				text: 'Let me know if you need anything else.',
 				character: 'cook'
 			},
 			orderOrLeave

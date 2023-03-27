@@ -19,7 +19,11 @@
 </script>
 
 <section class="relative flex w-full flex-col gap-4">
-	<h3 id={title}>{title}</h3>
+	{#if title.includes('.')}
+		<h3 id={title.replace('.', '')}>{title}</h3>
+	{:else}
+		<h2 id={title}>{title}</h2>
+	{/if}
 	<p>{@html description}</p>
 	{#if title == 'ChoiceObject'}
 		<div class="table-container">

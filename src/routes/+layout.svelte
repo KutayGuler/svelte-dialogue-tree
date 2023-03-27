@@ -13,14 +13,48 @@
 	import { storeHighlightJs } from '@skeletonlabs/skeleton';
 	storeHighlightJs.set(hljs);
 
-	import { AppRail, AppRailTile, AppShell, AppBar } from '@skeletonlabs/skeleton';
+	import {
+		AppRail,
+		AppRailTile,
+		AppShell,
+		AppBar,
+		Drawer,
+		drawerStore
+	} from '@skeletonlabs/skeleton';
+	import Navigation from './Navigation.svelte';
+
+	function drawerOpen(): void {
+		drawerStore.open({});
+	}
 </script>
 
-<!-- TODO: make this responsive -->
-<AppShell>
+<Drawer>
+	<Navigation />
+</Drawer>
+
+<AppShell slotSidebarLeft="bg-surface-500/5 w-0 lg:w-64 p-4">
 	<svelte:fragment slot="header">
-		<AppBar>Skeleton</AppBar>
+		<AppBar>
+			<svelte:fragment slot="lead">
+				<div class="flex items-center">
+					<button class="btn btn-sm mr-4 lg:hidden" on:click={drawerOpen}>
+						<span>
+							<svg viewBox="0 0 100 80" class="h-4 w-4 fill-token">
+								<rect width="100" height="20" />
+								<rect y="30" width="100" height="20" />
+								<rect y="60" width="100" height="20" />
+							</svg>
+						</span>
+					</button>
+					<strong class="text-xl">svelte-dialogue-tree</strong>
+				</div>
+			</svelte:fragment>
+		</AppBar>
 	</svelte:fragment>
+
+	<!-- <svelte:fragment slot="sidebarLeft">
+		<Navigation />
+	</svelte:fragment> -->
 
 	<slot><!-- optional fallback --></slot>
 </AppShell>

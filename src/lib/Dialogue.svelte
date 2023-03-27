@@ -13,6 +13,24 @@
 	import TextRenderer from './TextRenderer.svelte';
 	import ChoiceRenderer from './ChoiceRenderer.svelte';
 
+	const narrationRegex = /\*\*(.*?)\*\*/g;
+
+	function splitText(text: string): Array<string> {
+		let narrations = text.match(narrationRegex);
+		if (!narrations) return [];
+		let splitted = text.split('*');
+
+		for (let i = 0; i < splitted.length; i++) {
+			if (i == 0 || i == splitted.length - 1) continue;
+			if (splitted[i - 1] == '' && splitted[i + 1] == '') {
+				let narration = '**'.concat(splitted[i], '**');
+				splitted.splice(i - 1, 3, narration);
+			}
+		}
+
+		return splitted.filter((s) => !s.split('').every((x) => x == '' || x == ' '));
+	}
+
 	const dispatch = createEventDispatcher();
 	let container: HTMLElement;
 	let autoscroll = false;
@@ -76,9 +94,22 @@
 				}
 				// @ts-expect-error
 			} else if (typeof ret == 'object' && !ret.component) {
+				let splittedText = splitText((ret as TextObject).text);
+				if (splittedText.length > 0) {
+					history.splice(index + 1, 1, ...splittedText);
+				}
 				if ((ret as TextObject & WithOnSpawn).onSpawn) {
 					(ret as TextObject & WithOnSpawn).onSpawn();
 				}
+			}
+		} else if (!Array.isArray(upcoming) && typeof upcoming == 'object' && !upcoming.component) {
+			let splittedText = splitText((upcoming as TextObject).text);
+			if (splittedText.length > 0) {
+				history.splice(index + 1, 1, ...splittedText);
+			}
+
+			if ((upcoming as TextObject & WithOnSpawn).onSpawn) {
+				(upcoming as TextObject & WithOnSpawn).onSpawn();
 			}
 		}
 
@@ -188,25 +219,6 @@
 		 * required to rerender the DOM
 		 */
 		history = history;
-	}
-
-	const narrationRegex = /\*\*(.*?)\*\*/g;
-
-	function splitText(text: string): Array<string> {
-		let narrations = text.match(narrationRegex);
-		if (!narrations) return [];
-		let splitted = text.split('*');
-		console.log(splitted);
-
-		for (let i = 0; i < splitted.length; i++) {
-			if (i == 0 || i == splitted.length - 1) continue;
-			if (splitted[i - 1] == '' && splitted[i + 1] == '') {
-				let narration = '**'.concat(splitted[i], '**');
-				splitted.splice(i - 1, 3, narration);
-			}
-		}
-
-		return splitted.filter((s) => !s.split('').every((x) => x == '' || x == ' '));
 	}
 
 	function spawnedComponent(node: Element) {

@@ -54,6 +54,28 @@ export const typesData: Array<{
 `
 	},
 	{
+		title: 'TextObject.text',
+		description:
+			'The function that is assigned to <code>onSpawn</code> is executed when the <a href="#TextObject">TextObject<a/><span>enters the DOM<span/>',
+		highlightLines: '12',
+		code: `
+let health = 100;
+
+function fallFromCliff() {
+  health -= 50;
+}
+
+const tree = {
+  start: [
+    "** You wake up near a cliff. **",
+    { 
+      text: "** You panic and fall from the cliff. **", 
+      onSpawn: fallFromCliff 
+    }
+  ]
+}`
+	},
+	{
 		title: 'TextObject.onSpawn',
 		description:
 			'The function that is assigned to <code>onSpawn</code> is executed when the <a href="#TextObject">TextObject<a/><span>enters the DOM<span/>',
@@ -120,7 +142,7 @@ const tree = {
 	{
 		title: 'ComponentLeaf',
 		description:
-			'A ComponentLeaf requires a <code>component</code> property which accepts a Svelte component. The other property is the optional <code>args</code> property, which is passed to the given component as an argument.',
+			'A ComponentLeaf requires a <code>component</code> property which accepts a Svelte component. The other property is the optional <code>args</code> property, which is passed to the given component as a destructured argument.',
 		code: `
 import { Component } from "./Component.svelte";
 

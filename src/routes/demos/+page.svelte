@@ -1,12 +1,11 @@
 <script lang="ts">
 	import Restaurant from './Restaurant.svelte';
-	import Nested from './Nested.svelte';
 	import Roleplay from './Roleplay.svelte';
 	import Html from './Html.svelte';
 	import Narration from './Narration.svelte';
 	import { RadioGroup, RadioItem, CodeBlock } from '@skeletonlabs/skeleton';
 
-	const demos = ['Restaurant', 'Nested', 'Roleplay', 'HTML', 'Narration'];
+	const demos = ['Restaurant', 'Roleplay', 'HTML', 'Narration'];
 
 	let currentExample = 'restaurant';
 </script>
@@ -25,11 +24,9 @@
 	Press <kbd class="kbd">Space</kbd> to continue the conversation
 </p>
 
-<main class="flex h-[600px] w-full items-start justify-center p-4">
+<main class="flex h-[600px] w-full flex-col items-start justify-center p-4">
 	{#if currentExample == 'restaurant'}
 		<Restaurant />
-	{:else if currentExample == 'nested'}
-		<Nested />
 	{:else if currentExample == 'roleplay'}
 		<Roleplay />
 	{:else if currentExample == 'html'}
