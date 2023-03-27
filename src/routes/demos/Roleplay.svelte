@@ -17,6 +17,8 @@
 	};
 </script>
 
+<!-- TODO: mix roleplay and narration into roleplay -->
+
 <Dialogue
 	{tree}
 	on:dialogueEnd={() => alert('dialogue ended')}

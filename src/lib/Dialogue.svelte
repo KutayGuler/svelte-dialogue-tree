@@ -275,18 +275,65 @@
 					<TextRenderer {...item} {npcIn} {npcClass} {characters} {npcInOptions} />
 				{/if}
 			{:else if isNarration}
-				<p in:narrationIn={narrationInOptions} class={narrationClass || 'sdt-narration'}>
+				<div in:narrationIn={narrationInOptions} class={narrationClass || 'sdt-narration'}>
 					{@html item.replaceAll('**', '')}
-				</p>
+				</div>
 			{:else if isUser}
-				<p class={userClass || 'sdt-user'} in:userIn={userInOptions} out:userIn={{ duration: 0 }}>
+				<div class={userClass || 'sdt-user'} in:userIn={userInOptions} out:userIn={{ duration: 0 }}>
 					{@html item}
-				</p>
+				</div>
 			{:else}
-				<p class={npcClass || 'sdt-npc'} in:npcIn={npcInOptions}>
+				<div class={npcClass || 'sdt-npc'} in:npcIn={npcInOptions}>
 					{@html item}
-				</p>
+				</div>
 			{/if}
 		{/if}
 	{/each}
 </article>
+
+<!-- TODO: How to share css across library components? -->
+
+<style>
+	:root {
+		--sdt-container-bg: #2f2925;
+		--sdt-bubble-bg: #26211d;
+		--sdt-bubble-color: #fbe7d1;
+	}
+
+	.sdt-container {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+		width: 100%;
+		height: 100%;
+		background-color: var(--sdt-container-bg);
+		padding: 1rem;
+		border-radius: 1rem;
+		overflow-y: auto;
+		overflow-x: hidden;
+		gap: 0.5rem;
+	}
+
+	.sdt-npc {
+		padding: 1rem;
+		background-color: var(--sdt-bubble-bg);
+		color: var(--sdt-bubble-color);
+		max-width: 20rem;
+		border-radius: 0.75rem;
+	}
+
+	.sdt-user {
+		padding: 1rem;
+		background-color: var(--sdt-bubble-bg);
+		color: var(--sdt-bubble-color);
+		align-self: flex-end;
+		max-width: 20rem;
+		border-radius: 0.75rem;
+	}
+
+	.sdt-narration {
+		align-self: center;
+		padding: 0.5rem;
+		font-weight: 700;
+	}
+</style>

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { TransitionConfig } from 'svelte/transition';
+	import CharacterRenderer from './CharacterRenderer.svelte';
 	import type { CharacterCollection } from './types';
 	export let text: string;
 	export let character: string = '';
@@ -7,21 +8,28 @@
 	export let npcClass: string;
 	export let npcIn: (node: Element, params: object) => TransitionConfig;
 	export let npcInOptions: (node: Element, params: object) => TransitionConfig;
+	export let charInBubble = false;
 </script>
 
-<div class="flex flex-col gap-2" in:npcIn={npcInOptions}>
-	{#if characters && character}
+<!-- TODO: turn tailwind classes to vanilla css -->
+<div class="sdt-char-and-text-container" in:npcIn={npcInOptions}>
+	{#if !charInBubble && characters && character}
 		{@const { name, avatarSrc } = characters[character]}
-		<div class="flex flex-row items-center gap-2">
-			{#if avatarSrc}
-				<img class="h-8 w-8 rounded-full" src={avatarSrc} alt="avatar" />
-			{/if}
-			<p class="font-bold">
-				{@html name}
-			</p>
-		</div>
+		<CharacterRenderer {name} {avatarSrc} />
 	{/if}
-	<p class={npcClass || 'sdt-npc'}>
+	<div class={npcClass || 'sdt-npc'}>
+		{#if charInBubble && characters && character}
+			{@const { name, avatarSrc } = characters[character]}
+			<CharacterRenderer {name} {avatarSrc} />
+		{/if}
 		{@html text}
-	</p>
+	</div>
 </div>
+
+<style>
+	.sdt-char-and-text-container {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+</style>

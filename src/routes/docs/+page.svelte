@@ -135,6 +135,8 @@
 	let narrationTab = 0;
 </script>
 
+<!-- TODO: fix html rendering problem with anchor tags -->
+
 <div class="relative flex flex-row items-start justify-center gap-4">
 	<div id="toc-target" class="flex w-[768px] flex-col gap-24 py-4">
 		<Section title="SCHEMA">
@@ -143,40 +145,14 @@
 					{withGenerics ? 'With Generics' : 'Without Generics'}
 				</SlideToggle>
 				{#if withGenerics}
-					<div transition:slide class="w-full rounded-lg bg-success-500 p-4 text-surface-500">
-						<h2>Benefits</h2>
-						<div class="flex flex-row gap-1">
-							Autocomplete branch and character keys <svg
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke-width="1.5"
-								stroke="currentColor"
-								class="h-6 w-6"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-								/>
-							</svg>
-						</div>
-						<div class="flex flex-row gap-1">
-							Type errors on inexistent branch and character keys <svg
-								xmlns="http://www.w3.org/2000/svg"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke-width="1.5"
-								stroke="currentColor"
-								class="h-6 w-6"
-							>
-								<path
-									stroke-linecap="round"
-									stroke-linejoin="round"
-									d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-								/>
-							</svg>
-						</div>
+					<div
+						transition:slide
+						class="alert card variant-ghost-success mt-2 flex flex-col items-start gap-2"
+					>
+						<p>
+							Autocomplete branch and character keys ✔<br />Type errors on inexistent branch and
+							character keys ✔
+						</p>
 					</div>
 				{/if}
 			</div>

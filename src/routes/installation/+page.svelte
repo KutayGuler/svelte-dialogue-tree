@@ -35,4 +35,15 @@
 	};
 </script>
 
+<!-- display: flex; flex-direction: column; align-items: flex-start; width: 100%; height: 100%;
+background-color: #bfb9b9; padding: 1rem; border-radius: 1rem; overflow-y: auto; overflow-x: hidden;
+gap: 0.5rem; -->
+<!-- <div class="flex h-full w-full flex-col items-start gap-2 rounded bg-surface-700 p-4">
+	<button
+		class="max-w-xs rounded-xl bg-primary-700 p-4 hover:bg-secondary-700 focus:bg-secondary-700"
+		>asfsdfs</button
+	>
+	<div class="max-w-xs self-end rounded-xl bg-surface-800 p-4">dfdsdsf</div>
+</div> -->
+
 <Dialogue {tree} containerClass="bg-transparent w-full p-4" />

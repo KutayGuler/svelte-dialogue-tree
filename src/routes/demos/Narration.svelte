@@ -27,7 +27,4 @@
 </script>
 
 <ProgressBar height="h-4" labelledby="Health Bar" value={$health} meter="bg-success-600" />
-
-<div class="h-64 pt-4">
-	<Dialogue {tree} on:dialogueEnd={() => alert('dialogue ended.')} />
-</div>
+<Dialogue {tree} on:dialogueEnd={() => alert('dialogue ended.')} />
