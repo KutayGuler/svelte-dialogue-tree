@@ -26,7 +26,7 @@ export type TextLeaf<CharacterKey extends string> =
 	| (() => TextObject & WithCharacter<CharacterKey>)
 	| (() => TextObject & WithOnSpawn & WithCharacter<CharacterKey>);
 
-export interface ChoiceObject<BranchKey, CharacterKey extends string> {
+export interface ChoiceObject<BranchKey, CharacterKey extends string = ''> {
 	label: string;
 	text: string;
 	next: BranchKey | Branch<BranchKey, CharacterKey> | (() => BranchKey);

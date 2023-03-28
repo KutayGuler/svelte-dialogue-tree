@@ -1,6 +1,8 @@
 <script lang="ts">
-	import Dialogue from '$lib/Dialogue.svelte';
-	import type { DialogueTree } from '$lib/types';
+	import { Dialogue, type ChoiceLeaf, type ChoiceObject } from '$lib';
+	import type { DialogueTree } from '$lib';
+	import Instruction from '../Instruction.svelte';
+	import { CodeBlock } from '@skeletonlabs/skeleton';
 
 	const managers = [
 		{ name: 'npm', installation: 'npm install svelte-dialogue-tree' },
@@ -9,41 +11,74 @@
 		{ name: 'bun', installation: 'bun install svelte-dialogue-tree' }
 	];
 
-	function copyToClipboard(str: string) {
-		navigator.clipboard.writeText(str);
+	let code = '';
+
+	function getConfirmationMessage() {
+		return `Pasted <code>${code}</code> to your clipboard.`;
 	}
 
-	function listAvailableManagers() {
+	type BranchKey = 'start' | 'done';
+
+	function listAvailableManagers(): Array<ChoiceObject<BranchKey>> {
 		let choices = [];
 		for (let { name, installation } of managers) {
 			choices.push({
 				label: name,
 				text: name,
 				next: () => {
-					copyToClipboard(installation);
-					return 'done';
+					code = installation;
+					navigator.clipboard.writeText(installation);
+					return 'done' as BranchKey;
 				}
 			});
 		}
 		return choices;
 	}
 
-	const tree: DialogueTree<'start' | 'done'> = {
-		// @ts-expect-error
-		start: ['Choose wisely.', listAvailableManagers],
-		done: ['Pasted to your clipboard']
+	const tree: DialogueTree<BranchKey> = {
+		start: ['Choose your package manager, traveler.', listAvailableManagers],
+		done: [
+			getConfirmationMessage,
+			[
+				{ label: 'Thanks!', text: 'Thanks!', next: ['Your welcome, traveler.'] },
+				{
+					label: 'Change manager',
+					text: 'I changed my mind. I want to choose another package manager.',
+					next: 'start'
+				}
+			]
+		]
 	};
 </script>
 
-<!-- display: flex; flex-direction: column; align-items: flex-start; width: 100%; height: 100%;
-background-color: #bfb9b9; padding: 1rem; border-radius: 1rem; overflow-y: auto; overflow-x: hidden;
-gap: 0.5rem; -->
-<!-- <div class="flex h-full w-full flex-col items-start gap-2 rounded bg-surface-700 p-4">
-	<button
-		class="max-w-xs rounded-xl bg-primary-700 p-4 hover:bg-secondary-700 focus:bg-secondary-700"
-		>asfsdfs</button
-	>
-	<div class="max-w-xs self-end rounded-xl bg-surface-800 p-4">dfdsdsf</div>
-</div> -->
+<main class="flex flex-col gap-4 p-4">
+	<h1>Installation</h1>
+	<Instruction />
+	<Dialogue
+		{tree}
+		containerClass="bg-transparent w-full h-96 flex flex-col gap-2 overflow-y-auto overflow-x-hidden"
+	/>
+	<h1 class="pt-12">Usage</h1>
+	<CodeBlock
+		language="svelte"
+		code={`// +layout.js
+<script>
+	import 'svelte-dialogue-tree/style.css';
+<\/script>
+	`}
+	/>
+	<CodeBlock
+		language="svelte"
+		code={`// +page.js
+<script>
+	import { Dialogue } from "svelte-dialogue-tree";
 
-<Dialogue {tree} containerClass="bg-transparent w-full h-full p-4 flex flex-col gap-2" />
+	const tree = {
+		start: ["sample text."]
+	}
+<\/script>
+
+<Dialogue {tree} />
+`}
+	/>
+</main>
