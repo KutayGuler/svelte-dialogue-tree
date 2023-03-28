@@ -13,37 +13,6 @@
 	import TextRenderer from './TextRenderer.svelte';
 	import ChoiceRenderer from './ChoiceRenderer.svelte';
 
-	const narrationRegex = /\*\*(.*?)\*\*/g;
-
-	function splitText(text: string): Array<string> {
-		let narrations = text.match(narrationRegex);
-		if (!narrations) return [];
-		let splitted = text.split('*');
-
-		for (let i = 0; i < splitted.length; i++) {
-			if (i == 0 || i == splitted.length - 1) continue;
-			if (splitted[i - 1] == '' && splitted[i + 1] == '') {
-				let narration = '**'.concat(splitted[i], '**');
-				splitted.splice(i - 1, 3, narration);
-			}
-		}
-
-		return splitted.filter((s) => !s.split('').every((x) => x == '' || x == ' '));
-	}
-
-	const dispatch = createEventDispatcher();
-	let container: HTMLElement;
-	let autoscroll = false;
-
-	beforeUpdate(() => {
-		autoscroll =
-			container && container.offsetHeight + container.scrollTop > container.scrollHeight - 32;
-	});
-
-	afterUpdate(() => {
-		if (autoscroll) container.scrollTo(0, container.scrollHeight);
-	});
-
 	type BranchKey = string;
 	type CharacterKey = string;
 
@@ -58,6 +27,9 @@
 	export let userClass = '';
 	export let npcClass = '';
 	export let narrationClass = '';
+	export let charContainerClass = '';
+	export let charAvatarClass = '';
+	export let charNameClass = '';
 
 	// NEXT LINE STUFF
 	export let nextLineKey = 'Space';
@@ -132,6 +104,37 @@
 	// NARRATION TRANSITION
 	export let narrationIn: (node: Element, params: object) => TransitionConfig = fly;
 	export let narrationInOptions: object = { y: -50 };
+
+	const narrationRegex = /\*\*(.*?)\*\*/g;
+
+	function splitText(text: string): Array<string> {
+		let narrations = text.match(narrationRegex);
+		if (!narrations) return [];
+		let splitted = text.split('*');
+
+		for (let i = 0; i < splitted.length; i++) {
+			if (i == 0 || i == splitted.length - 1) continue;
+			if (splitted[i - 1] == '' && splitted[i + 1] == '') {
+				let narration = '**'.concat(splitted[i], '**');
+				splitted.splice(i - 1, 3, narration);
+			}
+		}
+
+		return splitted.filter((s) => !s.split('').every((x) => x == '' || x == ' '));
+	}
+
+	const dispatch = createEventDispatcher();
+	let container: HTMLElement;
+	let autoscroll = false;
+
+	beforeUpdate(() => {
+		autoscroll =
+			container && container.offsetHeight + container.scrollTop > container.scrollHeight - 32;
+	});
+
+	afterUpdate(() => {
+		if (autoscroll) container.scrollTo(0, container.scrollHeight);
+	});
 
 	let interacting = false;
 	let index = -1;
@@ -225,25 +228,32 @@
 		interacting = true;
 		node.remove();
 	}
-</script>
 
-<svelte:window
-	on:keydown={(e) => {
+	/**
+	 * Handle click or keyboard events
+	 */
+	function handle(codeOrType: string) {
 		if (interacting || Array.isArray(history[index])) {
 			interacting = true;
 			return;
 		}
 
-		if (e.code == nextLineKey) {
+		if (codeOrType == nextLineKey || codeOrType == 'click') {
 			nextLine();
 		}
 
 		checkForEnd();
-	}}
-/>
+	}
+</script>
+
+<svelte:window on:keydown={(e) => handle(e.code)} />
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
-<div on:click|self={nextLine} bind:this={container} class={containerClass || 'sdt-container'}>
+<div
+	on:click|self={(e) => handle(e.type)}
+	bind:this={container}
+	class={containerClass || 'sdt-container'}
+>
 	{#each history as item, historyIndex (historyIndex)}
 		{@const isUser = userTextIndexes.includes(historyIndex)}
 		{@const isChoice = Array.isArray(item) && item.length != 0}
@@ -273,7 +283,16 @@
 						}}
 					/>
 				{:else}
-					<TextRenderer {...item} {npcIn} {npcClass} {characters} {npcInOptions} />
+					<TextRenderer
+						{...item}
+						{npcIn}
+						{npcClass}
+						{characters}
+						{npcInOptions}
+						{charContainerClass}
+						{charAvatarClass}
+						{charNameClass}
+					/>
 				{/if}
 			{:else if isNarration}
 				<div in:narrationIn={narrationInOptions} class={narrationClass || 'sdt-narration'}>
@@ -291,50 +310,3 @@
 		{/if}
 	{/each}
 </div>
-
-<!-- TODO: How to share css across library components? -->
-
-<style>
-	:root {
-		--sdt-container-bg: #2f2925;
-		--sdt-bubble-bg: #26211d;
-		--sdt-bubble-color: #fbe7d1;
-	}
-
-	.sdt-container {
-		display: flex;
-		flex-direction: column;
-		align-items: flex-start;
-		width: 100%;
-		height: 100%;
-		background-color: var(--sdt-container-bg);
-		padding: 1rem;
-		border-radius: 1rem;
-		overflow-y: auto;
-		overflow-x: hidden;
-		gap: 0.5rem;
-	}
-
-	.sdt-npc {
-		padding: 1rem;
-		background-color: var(--sdt-bubble-bg);
-		color: var(--sdt-bubble-color);
-		max-width: 20rem;
-		border-radius: 0.75rem;
-	}
-
-	.sdt-user {
-		padding: 1rem;
-		background-color: var(--sdt-bubble-bg);
-		color: var(--sdt-bubble-color);
-		align-self: flex-end;
-		max-width: 20rem;
-		border-radius: 0.75rem;
-	}
-
-	.sdt-narration {
-		align-self: center;
-		padding: 0.5rem;
-		font-weight: 700;
-	}
-</style>

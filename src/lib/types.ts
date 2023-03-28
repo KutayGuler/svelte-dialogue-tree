@@ -14,17 +14,17 @@ export interface Character {
 
 export type TextObject = { text: string };
 export type WithOnSpawn = { onSpawn: Function };
-export type WithCharacterID<CharacterKey> = { character: CharacterKey };
+export type WithCharacter<CharacterKey> = { character: CharacterKey };
 
 export type TextLeaf<CharacterKey extends string> =
 	| string
 	| (TextObject & WithOnSpawn)
-	| (TextObject & WithCharacterID<CharacterKey>)
-	| (TextObject & WithOnSpawn & WithCharacterID<CharacterKey>)
+	| (TextObject & WithCharacter<CharacterKey>)
+	| (TextObject & WithOnSpawn & WithCharacter<CharacterKey>)
 	| (() => string)
 	| (() => TextObject & WithOnSpawn)
-	| (() => TextObject & WithCharacterID<CharacterKey>)
-	| (() => TextObject & WithOnSpawn & WithCharacterID<CharacterKey>);
+	| (() => TextObject & WithCharacter<CharacterKey>)
+	| (() => TextObject & WithOnSpawn & WithCharacter<CharacterKey>);
 
 export interface ChoiceObject<BranchKey, CharacterKey extends string> {
 	label: string;

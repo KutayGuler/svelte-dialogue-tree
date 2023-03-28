@@ -5,6 +5,7 @@
 	import '@skeletonlabs/skeleton/styles/all.css';
 	// Most of your app wide CSS should be put in this file
 	import '../app.postcss';
+	import '../lib/style.css';
 	import 'highlight.js/styles/vs2015.css';
 	import hljs from 'highlight.js';
 	import { hljsDefineSvelte } from './highlight-svelte';

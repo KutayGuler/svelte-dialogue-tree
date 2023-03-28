@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { CharacterCollection, ChoiceObject, DialogueTree } from '$lib/types';
-	import Dialogue from '$lib/Dialogue.svelte';
+	import type { CharacterCollection, ChoiceObject, DialogueTree } from '$lib';
+	import { Dialogue } from '$lib';
 
 	let menu = ['🥧', '🍕', '🥣', '🍔'];
 	let inventory = ['🥧']; // "🍕", "🥣", "🍔"

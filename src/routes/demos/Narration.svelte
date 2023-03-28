@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Dialogue from '$lib/Dialogue.svelte';
-	import type { DialogueTree } from '$lib/types';
+	import { Dialogue } from '$lib';
+	import type { DialogueTree } from '$lib';
 	import { tweened } from 'svelte/motion';
 	import { cubicOut } from 'svelte/easing';
 	import { ProgressBar } from '@skeletonlabs/skeleton';

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Dialogue from '$lib/Dialogue.svelte';
-	import type { DialogueTree } from '$lib/types';
+	import { Dialogue } from '$lib';
+	import type { DialogueTree } from '$lib';
 
 	type BranchKey = 'start';
 

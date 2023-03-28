@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { TransitionConfig } from 'svelte/transition';
-	import type { CharacterCollection } from './types';
-	import CharacterRenderer from './CharacterRenderer.svelte';
+	import type { CharacterCollection } from '../types';
+	import CharacterRenderer from '../CharacterRenderer.svelte';
 	export let text: string;
 	export let charInBubble = false;
 	export let character: string = '';
