@@ -2,7 +2,7 @@
 	import { Dialogue, type ChoiceLeaf, type ChoiceObject } from '$lib';
 	import type { DialogueTree } from '$lib';
 	import Instruction from '../Instruction.svelte';
-	import { CodeBlock } from '@skeletonlabs/skeleton';
+	import { CodeBlock, Tab, TabGroup } from '@skeletonlabs/skeleton';
 
 	const managers = [
 		{ name: 'npm', installation: 'npm install svelte-dialogue-tree' },
@@ -49,27 +49,34 @@
 			]
 		]
 	};
+
+	let tabSet = 0;
 </script>
 
-<main class="flex flex-col gap-4 p-4">
-	<h1>Installation</h1>
-	<Instruction />
-	<Dialogue
-		{tree}
-		containerClass="bg-transparent w-full h-96 flex flex-col gap-2 overflow-y-auto overflow-x-hidden"
-	/>
-	<h1 class="pt-12">Usage</h1>
-	<CodeBlock
-		language="svelte"
-		code={`// +layout.js
+<main class="p-4">
+	<TabGroup regionList="text-5xl font-heading-token" regionPanel="flex flex-col gap-4">
+		<Tab bind:group={tabSet} name="tab1" value={0}>Installation</Tab>
+		<Tab bind:group={tabSet} name="tab2" value={1}>Usage</Tab>
+		<!-- Tab Panels --->
+		<svelte:fragment slot="panel">
+			{#if tabSet === 0}
+				<Instruction />
+				<Dialogue
+					{tree}
+					containerClass="bg-transparent w-full h-96 flex flex-col gap-2 overflow-y-auto overflow-x-hidden"
+				/>
+			{:else if tabSet === 1}
+				<CodeBlock
+					language="svelte"
+					code={`// +layout.js
 <script>
 	import 'svelte-dialogue-tree/style.css';
 <\/script>
-	`}
-	/>
-	<CodeBlock
-		language="svelte"
-		code={`// +page.js
+		`}
+				/>
+				<CodeBlock
+					language="svelte"
+					code={`// +page.js
 <script>
 	import { Dialogue } from "svelte-dialogue-tree";
 
@@ -79,6 +86,13 @@
 <\/script>
 
 <Dialogue {tree} />
-`}
-	/>
+				`}
+				/>
+			{/if}
+		</svelte:fragment>
+	</TabGroup>
 </main>
+
+<!-- <main class="flex flex-col gap-4 p-4">
+	<h1>Installation</h1>
+</main> -->

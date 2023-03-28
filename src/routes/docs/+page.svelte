@@ -135,6 +135,8 @@
 	let narrationTab = 0;
 </script>
 
+<!-- TODO: Responsive entire website -->
+
 <!-- TODO: fix html rendering problem with anchor tags -->
 
 <div class="relative flex flex-row items-start justify-center gap-4">

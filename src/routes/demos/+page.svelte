@@ -4,6 +4,7 @@
 	import Html from './Html.svelte';
 	import Narration from './Narration.svelte';
 	import { RadioGroup, RadioItem, CodeBlock, Tab, TabGroup } from '@skeletonlabs/skeleton';
+	import Instruction from '../Instruction.svelte';
 
 	const demos = ['Restaurant', 'Roleplay', 'HTML', 'Narration'];
 
@@ -12,11 +13,7 @@
 
 <main class="flex flex-col gap-4 p-4">
 	<h1>Demos</h1>
-
-	<p class="pl-4">
-		Press <kbd class="kbd">Space</kbd> to continue the conversation
-	</p>
-
+	<Instruction />
 	<TabGroup regionPanel="flex h-[600px] w-full flex-col items-start p-4">
 		{#each demos as demo}
 			<Tab bind:group={currentExample} name={demo.toLowerCase()} value={demo.toLowerCase()}

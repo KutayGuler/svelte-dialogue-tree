@@ -6,7 +6,7 @@
 
 	let tree: DialogueTree<BranchKey> = {
 		start: [
-			`Check out my website <a style="color: red;" href="https://svelte.dev" target="_blank" rel="noreferrer">here</a>`
+			`Check out the repo <a style="color: red;" href="https://github.com/KutayGuler/svelte-dialogue-tree" target="_blank" rel="noreferrer">here</a>`
 		]
 	};
 </script>
