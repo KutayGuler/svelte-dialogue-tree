@@ -2,14 +2,15 @@
 
 A Svelte library to create and interact with a branching dialogue.
 
-[Docs 📚](https://svelte-dialogue-tree.vercel.app/docs) | [Demos 💬](https://svelte-dialogue-tree.vercel.app/demos)
+## [Docs 📚](https://svelte-dialogue-tree.vercel.app/docs) | [Demos 💬](https://svelte-dialogue-tree.vercel.app/demos)
 
 ## Features
 
 - Flexible tree schema 🎄
 - Conditional branching 🌵
-- Customizable Dialogue component 🎨
+- Styleable Dialogue component 🎨
 - Components as dialogue elements 🔶
+- Typesafe 💙
 - Characters 🧙
 - ** Narration ** 🎭
 

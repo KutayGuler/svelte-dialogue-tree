@@ -30,8 +30,11 @@
 </script>
 
 {#if !rolling}
-	<button transition:slide disabled={rolling} class="btn variant-filled-primary" on:click={rollDice}
-		>Roll dice!</button
+	<button
+		transition:slide|local
+		disabled={rolling}
+		class="btn variant-filled-primary"
+		on:click={rollDice}>Roll dice!</button
 	>
 {/if}
 

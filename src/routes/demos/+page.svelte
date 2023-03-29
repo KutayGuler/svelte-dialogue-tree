@@ -8,6 +8,8 @@
 	const demos = ['Restaurant', 'Roleplay', 'HTML'];
 
 	let currentExample = 'restaurant';
+	// TODO: WhatsApp group chat
+	// TODO: Cyberpunk
 </script>
 
 <main class="flex flex-col gap-4 rounded p-4">
