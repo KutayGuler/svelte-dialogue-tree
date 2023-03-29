@@ -1,7 +1,21 @@
 {
 	"name": "svelte-dialogue-tree",
-	"version": "0.0.1",
-	"private": true,
+	"version": "1.0.0",
+	"description": "A Svelte library to create and interact with a branching dialogue.",
+	"repository": {
+		"url": "https://github.com/KutayGuler/svelte-dialogue-tree",
+		"type": "git"
+	},
+	"keywords": [
+		"svelte",
+		"dialogue",
+		"tree",
+		"branch",
+		"rpg",
+		"visual novel"
+	],
+	"license": "MIT",
+	"homepage": "svelte-dialogue-tree.vercel.app",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
@@ -31,7 +45,6 @@
 	"type": "module",
 	"dependencies": {
 		"highlight.js": "^11.7.0",
-		"highlightjs-svelte": "^1.0.6",
-		"svhighlight": "^0.7.1"
+		"highlightjs-svelte": "^1.0.6"
 	}
 }

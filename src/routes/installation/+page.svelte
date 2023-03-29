@@ -70,6 +70,10 @@
 					language="svelte"
 					code={`// +layout.js
 <script>
+	/** 
+	 * If you want to use the default styles, 
+	 * import style.css in your layout file.
+	*/
 	import 'svelte-dialogue-tree/style.css';
 <\/script>
 		`}

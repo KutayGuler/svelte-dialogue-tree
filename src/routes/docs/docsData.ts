@@ -55,8 +55,7 @@ export const typesData: Array<{
 	},
 	{
 		title: 'TextObject.text',
-		description:
-			'The function that is assigned to <code>onSpawn</code> is executed when the <a href="#TextObject">TextObject<a/><span>enters the DOM<span/>',
+		description: 'The string that will be displayed.',
 		highlightLines: '12',
 		code: `
 let health = 100;

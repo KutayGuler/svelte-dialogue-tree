@@ -1,38 +1,55 @@
-# create-svelte
+# svelte-dialogue-tree
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+A Svelte library to create and interact with a branching dialogue.
 
-## Creating a project
+[Docs](https://svelte-dialogue-tree.vercel.app/docs) | [Demos](https://svelte-dialogue-tree.vercel.app/demos)
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Features
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+- Flexible tree schema
+- Conditional branching
+- Customizable Dialogue component
+- Components as dialogue elements
+- ** Narration **
 
-# create a new project in my-app
-npm create svelte@latest my-app
+## Installation
+
+```
+     npm install svelte-dialogue-tree
 ```
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+```
+    pnpm add svelte-dialogue-tree
 ```
 
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
+```
+    yarn add svelte-dialogue-tree
 ```
 
-You can preview the production build with `npm run preview`.
+```
+    bun install svelte-dialogue-tree
+```
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+## Usage
+
+> If you want to use the default styles, import style.css in your layout file.
+
+```
+    import 'svelte-dialogue-tree/style.css';
+```
+
+Start by importing Dialogue component into your application:
+
+```
+    import { Dialogue } from 'svelte-dialogue-tree';
+```
+
+Pass a tree prop to Dialogue component. Check the schema for tree [here](https://svelte-dialogue-tree.vercel.app/docs#schema/)
+
+```bash
+    <Dialogue {tree} />
+```
+
+## License
+
+MIT

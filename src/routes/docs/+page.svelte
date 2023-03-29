@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
-	import { CodeBlock, ProgressBar, Tab, TabGroup } from '@skeletonlabs/skeleton';
-	import Narration from '../demos/Narration.svelte';
+	import { CodeBlock, Tab, TabGroup } from '@skeletonlabs/skeleton';
 	import { TableOfContents } from '@skeletonlabs/skeleton';
 	import { SlideToggle } from '@skeletonlabs/skeleton';
 	import { typesData, propsData, eventsData } from './docsData';
@@ -136,7 +135,6 @@
 </script>
 
 <!-- TODO: Responsive entire website -->
-
 <!-- TODO: fix html rendering problem with anchor tags -->
 
 <div class="relative flex flex-row items-start justify-center gap-4">
@@ -258,7 +256,8 @@
 };`}
 						/>
 					{:else if narrationTab === 1}
-						<Narration />
+						<!-- <Narration /> -->
+						<!-- TODO: Narration demo -->
 					{/if}
 				</svelte:fragment>
 			</TabGroup>

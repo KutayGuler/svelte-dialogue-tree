@@ -3,7 +3,7 @@
 	import type { CharacterCollection } from './types';
 	import CharacterRenderer from './CharacterRenderer.svelte';
 	export let text: string;
-	export let charInBubble = false;
+	export let charInBubble = false; // TODO:
 	export let character: string = '';
 	export let characters: CharacterCollection<string> | undefined;
 	export let npcClass: string;
