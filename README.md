@@ -2,15 +2,16 @@
 
 A Svelte library to create and interact with a branching dialogue.
 
-[Docs](https://svelte-dialogue-tree.vercel.app/docs) | [Demos](https://svelte-dialogue-tree.vercel.app/demos)
+[Docs 📚](https://svelte-dialogue-tree.vercel.app/docs) | [Demos 💬](https://svelte-dialogue-tree.vercel.app/demos)
 
 ## Features
 
-- Flexible tree schema
-- Conditional branching
-- Customizable Dialogue component
-- Components as dialogue elements
-- ** Narration **
+- Flexible tree schema 🎄
+- Conditional branching 🌵
+- Customizable Dialogue component 🎨
+- Components as dialogue elements 🔶
+- Characters 🧙
+- ** Narration ** 🎭
 
 ## Installation
 
@@ -37,8 +38,6 @@ A Svelte library to create and interact with a branching dialogue.
 ```
     import 'svelte-dialogue-tree/style.css';
 ```
-
-Start by importing Dialogue component into your application:
 
 ```
     import { Dialogue } from 'svelte-dialogue-tree';

@@ -66,18 +66,21 @@
 					containerClass="bg-transparent w-full h-96 flex flex-col gap-2 overflow-y-auto overflow-x-hidden"
 				/>
 			{:else if tabSet === 1}
+				<blockquote>
+					If you want to use the default styles, import style.css in your layout file.
+				</blockquote>
 				<CodeBlock
 					language="svelte"
 					code={`// +layout.js
 <script>
-	/** 
-	 * If you want to use the default styles, 
-	 * import style.css in your layout file.
-	*/
 	import 'svelte-dialogue-tree/style.css';
 <\/script>
 		`}
 				/>
+				<p>
+					Pass a tree prop to Dialogue, check <a href="/docs/#schema">schema</a> to create an advanced
+					dialogue tree.
+				</p>
 				<CodeBlock
 					language="svelte"
 					code={`// +page.js

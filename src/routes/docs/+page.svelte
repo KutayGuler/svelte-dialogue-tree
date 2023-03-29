@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
 	import { CodeBlock, Tab, TabGroup } from '@skeletonlabs/skeleton';
+	// TODO: any way to style TOC elements?
 	import { TableOfContents } from '@skeletonlabs/skeleton';
 	import { SlideToggle } from '@skeletonlabs/skeleton';
 	import { typesData, propsData, eventsData } from './docsData';
@@ -132,10 +133,9 @@
 	$: _schemaCode = withGenerics ? schemaCodeT : schemaCode;
 
 	let narrationTab = 0;
-</script>
 
-<!-- TODO: Responsive entire website -->
-<!-- TODO: fix html rendering problem with anchor tags -->
+	// TODO: Responsive entire website
+</script>
 
 <div class="relative flex flex-row items-start justify-center gap-4">
 	<div id="toc-target" class="flex w-[768px] flex-col gap-24 py-4">
