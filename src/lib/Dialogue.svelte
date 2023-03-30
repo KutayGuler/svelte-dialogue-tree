@@ -24,9 +24,11 @@
 	export let containerClass = '';
 	export let choiceContainerClass = '';
 	export let choiceClass = '';
-	export let userClass = '';
-	export let npcClass = '';
+	export let playerTextClass = '';
 	export let narrationClass = '';
+	export let npcContainerClass = ''; // TODO: and this
+	export let npcTextClass = '';
+	// TODO: add these to docs
 	export let charContainerClass = '';
 	export let charAvatarClass = '';
 	export let charNameClass = '';
@@ -92,9 +94,9 @@
 	export let npcIn: (node: Element, params: object) => TransitionConfig = fly;
 	export let npcInOptions: object = { x: -200 };
 
-	// USER TEXT TRANSITION
-	export let userIn: (node: Element, params: object) => TransitionConfig = fly;
-	export let userInOptions: object = { x: 200 };
+	// PLAYER TEXT TRANSITION
+	export let playerIn: (node: Element, params: object) => TransitionConfig = fly;
+	export let playerInOptions: object = { x: 200 };
 
 	// CHOICE BUTTON TRANSITION
 	export let choiceIn: (node: Element, params: object) => TransitionConfig = scale;
@@ -140,7 +142,7 @@
 	let index = -1;
 	let key = '';
 	let history: Branch<string, string> = [''];
-	let userTextIndexes: Array<number> = [];
+	let playerTextIndexes: Array<number> = [];
 
 	function generateKey(): string {
 		let key = '_' + Math.random().toString(36).substring(7);
@@ -183,7 +185,7 @@
 
 	function makeChoice(e: SubmitEvent) {
 		let text = e.submitter?.dataset.text as string;
-		let userIndex = +(e.submitter?.dataset.userIndex || -1);
+		let playerIndex = +(e.submitter?.dataset.playerIndex || -1);
 		let siblingIndex = +(e.submitter?.dataset.siblingIndex || 0);
 		let choicesArray = tree[key].at(-1) as ChoiceLeaf<BranchKey, CharacterKey>;
 
@@ -215,7 +217,7 @@
 			return;
 		}
 
-		userTextIndexes.push(userIndex);
+		playerTextIndexes.push(playerIndex);
 		interacting = false;
 
 		/**
@@ -248,6 +250,8 @@
 
 <svelte:window on:keydown={(e) => handle(e.code)} />
 
+<!-- TODO: Add jump to bottom button -->
+
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
 	on:click|self={(e) => handle(e.type)}
@@ -255,7 +259,7 @@
 	class={containerClass || 'sdt-container'}
 >
 	{#each history as item, historyIndex (historyIndex)}
-		{@const isUser = userTextIndexes.includes(historyIndex)}
+		{@const isPlayer = playerTextIndexes.includes(historyIndex)}
 		{@const isChoice = Array.isArray(item) && item.length != 0}
 		{@const isNarration = typeof item == 'string' && item.includes('**')}
 		{#if index >= historyIndex}
@@ -286,7 +290,8 @@
 					<TextRenderer
 						{...item}
 						{npcIn}
-						{npcClass}
+						{npcContainerClass}
+						{npcTextClass}
 						{characters}
 						{npcInOptions}
 						{charContainerClass}
@@ -298,12 +303,16 @@
 				<div in:narrationIn={narrationInOptions} class={narrationClass || 'sdt-narration'}>
 					{@html item.replaceAll('**', '')}
 				</div>
-			{:else if isUser}
-				<div class={userClass || 'sdt-user'} in:userIn={userInOptions} out:userIn={{ duration: 0 }}>
+			{:else if isPlayer}
+				<div
+					class={playerTextClass || 'sdt-player'}
+					in:playerIn={playerInOptions}
+					out:playerIn={{ duration: 0 }}
+				>
 					{@html item}
 				</div>
 			{:else}
-				<div class={npcClass || 'sdt-npc'} in:npcIn={npcInOptions}>
+				<div class={npcTextClass || 'sdt-npc'} in:npcIn={npcInOptions}>
 					{@html item}
 				</div>
 			{/if}

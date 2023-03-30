@@ -8,7 +8,6 @@
 	const demos = ['Restaurant', 'Roleplay', 'HTML'];
 
 	let currentExample = 'restaurant';
-	// TODO: WhatsApp group chat
 	// TODO: Cyberpunk
 </script>
 

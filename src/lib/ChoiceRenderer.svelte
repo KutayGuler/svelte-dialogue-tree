@@ -24,7 +24,7 @@
 			}}
 			type="submit"
 			class={choiceClass || 'sdt-choice'}
-			data-user-index={historyIndex}
+			data-player-index={historyIndex}
 			data-sibling-index={siblingIndex}
 			data-text={choice.text}
 		>

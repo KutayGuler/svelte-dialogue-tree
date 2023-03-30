@@ -31,7 +31,7 @@
 	border-radius: 0.75rem;
 }
 
-.sdt-user {
+.sdt-player {
 	padding: 1rem;
 	background-color: var(--sdt-bubble-bg);
 	color: var(--sdt-bubble-color);
@@ -42,7 +42,7 @@
 
 /* CHARACTER */
 
-.sdt-char-and-text-container {
+.sdt-npc-container {
 	display: flex;
 	flex-direction: column;
 	gap: 0.5rem;

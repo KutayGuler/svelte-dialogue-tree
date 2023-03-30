@@ -2,7 +2,6 @@
 	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
 	import { CodeBlock, Tab, TabGroup } from '@skeletonlabs/skeleton';
-	// TODO: any way to style TOC elements?
 	import { TableOfContents } from '@skeletonlabs/skeleton';
 	import { SlideToggle } from '@skeletonlabs/skeleton';
 	import { typesData, propsData, eventsData } from './docsData';
@@ -27,14 +26,14 @@
 			// TextLeaf
 			// TextLeaf ✅ any number of TextLeafs can populate a branch
 		],
-		branch2: [
+		branch3: [
 			// TextLeaf
 			// ComponentLeaf
 			// TextLeaf
 			// ComponentLeaf
 			// ComponentLeaf ✅ any number of ComponentLeafs can be placed anywhere
 		],
-		branch3: [
+		branch4: [
 			// TextLeaf
 			// TextLeaf
 			// ChoiceLeaf ✅ ChoiceLeafs should always be at the end of branches
@@ -72,7 +71,7 @@
 	let schemaCodeT = `<script lang="ts">
 	import Dialogue from "svelte-dialogue-tree";
 	
-	type BranchKey = "branch1" | "branch2" | "branch3" | "invalid1" | "invalid2" ;
+	type BranchKey = "branch1" | "branch3" | "branch4" | "invalid1" | "invalid2" ;
 	type CharacterKey = "character1" | "character2";
 
 	const tree: DialogueTree<BranchKey, CharacterKey> = {
@@ -83,14 +82,14 @@
 			// TextLeaf,
 			// TextLeaf ✅ any number of TextLeafs can populate a branch
 		],
-		branch2: [
+		branch3: [
 			// TextLeaf
 			// ComponentLeaf
 			// TextLeaf
 			// ComponentLeaf
 			// ComponentLeaf ✅ any number of ComponentLeafs can be placed anywhere
 		],
-		branch3: [
+		branch4: [
 			// TextLeaf,
 			// TextLeaf,
 			// ChoiceLeaf ✅ ChoiceLeafs should always be at the end of branches
@@ -203,6 +202,54 @@
 				</table>
 			</div>
 		</Section>
+		<Section title="LAYOUT">
+			<main class="h-fit w-full p-4">
+				<div class="flex flex-col gap-2">
+					<div class="text-error-500">containerClass</div>
+					<div class="variant-ringed-error relative flex h-fit w-full flex-col gap-4 p-4">
+						<div class="flex w-1/3 flex-col gap-2">
+							<div class="text-primary-500">npcContainerClass</div>
+							<div class="variant-ringed-primary relative h-fit p-4">
+								<div class="flex flex-col gap-2">
+									<div class="flex flex-col gap-2">
+										<div class=" text-tertiary-500">charContainerClass</div>
+										<div class="variant-ringed-tertiary relative h-fit p-4">
+											<div class="flex flex-col gap-2">
+												<div class="text-secondary-500">charAvatarClass</div>
+												<div class="variant-ringed-secondary relative h-8" />
+											</div>
+											<div class="flex flex-col gap-2">
+												<div class=" text-secondary-500">charNameClass</div>
+												<div class="variant-ringed-secondary relative h-8" />
+											</div>
+										</div>
+									</div>
+									<div class="text-tertiary-500">npcTextClass</div>
+									<div class="variant-ringed-tertiary relative h-8 p-4" />
+								</div>
+							</div>
+						</div>
+						<div class="flex w-1/3 flex-col gap-2 self-end">
+							<div class="text-primary-500">playerTextClass</div>
+							<div class="variant-ringed-primary relative h-8 w-full self-end" />
+						</div>
+						<div class="flex w-full flex-col gap-2">
+							<div class="text-primary-500">narrationClass</div>
+							<div class="variant-ringed-primary h-8 w-full" />
+						</div>
+						<div class="flex flex-col gap-2">
+							<div class="text-primary-500">choiceContainerClass</div>
+							<div class="variant-ringed-primary relative flex h-fit w-full flex-row self-end p-4">
+								<div class="flex w-1/3 flex-col gap-2">
+									<div class="text-tertiary-500">choiceClass</div>
+									<div class="variant-ringed-tertiary relative h-8" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</main>
+		</Section>
 		<Section title="EVENTS">
 			<div class="table-container">
 				<!-- Native Table Element -->
@@ -271,11 +318,10 @@
 	</div>
 	<div class="sticky top-0 py-4">
 		<TableOfContents
-			regionList="p-1"
-			spacing="space-y-4"
+			regionList="gap-0"
 			target="#toc-target"
 			width="w-56"
-			allowedHeadings="h1, h2, h3"
+			allowedHeadings="h1, h4"
 		/>
 	</div>
 </div>

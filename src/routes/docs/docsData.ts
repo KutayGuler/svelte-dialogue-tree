@@ -358,14 +358,14 @@ export const propsData = [
 		required: false
 	},
 	{
-		name: 'userClass',
+		name: 'playerTextClass',
 		type: 'string',
 		value: '-',
-		description: 'Provide classes for user replies.',
+		description: 'Provide classes for player replies.',
 		required: false
 	},
 	{
-		name: 'npcClass',
+		name: 'npcTextClass',
 		type: 'string',
 		value: '-',
 		description: 'Provide classes for NPC (Non-Player Character) replies.',
@@ -393,17 +393,17 @@ export const propsData = [
 		required: false
 	},
 	{
-		name: 'userIn',
+		name: 'playerIn',
 		type: 'Function',
 		value: 'fly',
-		description: 'Provide intro functions for user replies.',
+		description: 'Provide intro functions for player replies.',
 		required: false
 	},
 	{
-		name: 'userInOptions',
+		name: 'playerInOptions',
 		type: 'object',
 		value: '{ x: 200 }',
-		description: 'Provide options object for the user intro function.',
+		description: 'Provide options object for the player intro function.',
 		required: false
 	},
 	{
