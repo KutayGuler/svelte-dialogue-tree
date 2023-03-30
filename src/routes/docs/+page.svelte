@@ -321,7 +321,7 @@
 			regionList="gap-0"
 			target="#toc-target"
 			width="w-56"
-			allowedHeadings="h1, h4"
+			allowedHeadings="h1, h3"
 		/>
 	</div>
 </div>

@@ -55,6 +55,7 @@ export const typesData: Array<{
 }
 `
 	},
+	// TODO: change code of this
 	{
 		title: 'TextObject.text',
 		description: 'The string that will be displayed.',
@@ -365,7 +366,7 @@ export const propsData = [
 		required: false
 	},
 	{
-		name: 'npcTextClass',
+		name: 'npcClass',
 		type: 'string',
 		value: '-',
 		description: 'Provide classes for NPC (Non-Player Character) replies.',

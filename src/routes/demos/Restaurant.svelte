@@ -39,7 +39,7 @@
 		return choices;
 	}
 
-	// TODO: might add character info here
+	// TODO: might add character info here (add this as a feature request)
 	// and orderable onSpawn
 	// onSpawn: [consumerOrderedItem, 5]
 	function bringOrderedItem() {
