@@ -20,7 +20,7 @@
 
 <section class="relative flex w-full flex-col gap-4">
 	{#if title.includes('.')}
-		<h4 id={title.replace('.', '')}>{title}</h4>
+		<h3 id={title.replace('.', '')} data-toc-ignore>{title}</h3>
 	{:else}
 		<h3 id={title}>{title}</h3>
 	{/if}

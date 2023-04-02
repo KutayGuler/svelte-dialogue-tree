@@ -29,84 +29,86 @@
 	}
 </script>
 
-{#if !rolling}
-	<button
-		transition:slide|local
-		disabled={rolling}
-		class="btn variant-filled-primary"
-		on:click={rollDice}>Roll dice!</button
-	>
-{/if}
+<div class="flex w-full flex-col py-8">
+	{#if !rolling}
+		<button
+			transition:slide|local
+			disabled={rolling}
+			class="btn variant-filled-primary self-center"
+			on:click={rollDice}>Roll dice!</button
+		>
+	{/if}
 
-<div class="relative flex flex-row gap-12 py-4">
-	<div id="dice1" class="dice show-{result1}">
-		<div id="dice-one-side-one" class="side one">
-			<div class="dot one-1" />
+	<div class="relative flex w-full flex-row items-center justify-center gap-12 py-4">
+		<div id="dice1" class="dice show-{result1}">
+			<div id="dice-one-side-one" class="side one">
+				<div class="dot one-1" />
+			</div>
+			<div id="dice-one-side-two" class="side two">
+				<div class="dot two-1" />
+				<div class="dot two-2" />
+			</div>
+			<div id="dice-one-side-three" class="side three">
+				<div class="dot three-1" />
+				<div class="dot three-2" />
+				<div class="dot three-3" />
+			</div>
+			<div id="dice-one-side-four" class="side four">
+				<div class="dot four-1" />
+				<div class="dot four-2" />
+				<div class="dot four-3" />
+				<div class="dot four-4" />
+			</div>
+			<div id="dice-one-side-five" class="side five">
+				<div class="dot five-1" />
+				<div class="dot five-2" />
+				<div class="dot five-3" />
+				<div class="dot five-4" />
+				<div class="dot five-5" />
+			</div>
+			<div id="dice-one-side-six" class="side six">
+				<div class="dot six-1" />
+				<div class="dot six-2" />
+				<div class="dot six-3" />
+				<div class="dot six-4" />
+				<div class="dot six-5" />
+				<div class="dot six-6" />
+			</div>
 		</div>
-		<div id="dice-one-side-two" class="side two">
-			<div class="dot two-1" />
-			<div class="dot two-2" />
-		</div>
-		<div id="dice-one-side-three" class="side three">
-			<div class="dot three-1" />
-			<div class="dot three-2" />
-			<div class="dot three-3" />
-		</div>
-		<div id="dice-one-side-four" class="side four">
-			<div class="dot four-1" />
-			<div class="dot four-2" />
-			<div class="dot four-3" />
-			<div class="dot four-4" />
-		</div>
-		<div id="dice-one-side-five" class="side five">
-			<div class="dot five-1" />
-			<div class="dot five-2" />
-			<div class="dot five-3" />
-			<div class="dot five-4" />
-			<div class="dot five-5" />
-		</div>
-		<div id="dice-one-side-six" class="side six">
-			<div class="dot six-1" />
-			<div class="dot six-2" />
-			<div class="dot six-3" />
-			<div class="dot six-4" />
-			<div class="dot six-5" />
-			<div class="dot six-6" />
-		</div>
-	</div>
-	<div id="dice2" class="dice show-{result2}">
-		<div id="dice-two-side-one" class="side one">
-			<div class="dot one-1" />
-		</div>
-		<div id="dice-two-side-two" class="side two">
-			<div class="dot two-1" />
-			<div class="dot two-2" />
-		</div>
-		<div id="dice-two-side-three" class="side three">
-			<div class="dot three-1" />
-			<div class="dot three-2" />
-			<div class="dot three-3" />
-		</div>
-		<div id="dice-two-side-four" class="side four">
-			<div class="dot four-1" />
-			<div class="dot four-2" />
-			<div class="dot four-3" />
-			<div class="dot four-4" />
-		</div>
-		<div id="dice-two-side-five" class="side five">
-			<div class="dot five-1" />
-			<div class="dot five-2" />
-			<div class="dot five-3" />
-			<div class="dot five-4" />
-			<div class="dot five-5" />
-		</div>
-		<div id="dice-two-side-six" class="side six">
-			<div class="dot six-1" />
-			<div class="dot six-2" />
-			<div class="dot six-3" />
-			<div class="dot six-4" />
-			<div class="dot six-5" />
-			<div class="dot six-6" />
+		<div id="dice2" class="dice show-{result2}">
+			<div id="dice-two-side-one" class="side one">
+				<div class="dot one-1" />
+			</div>
+			<div id="dice-two-side-two" class="side two">
+				<div class="dot two-1" />
+				<div class="dot two-2" />
+			</div>
+			<div id="dice-two-side-three" class="side three">
+				<div class="dot three-1" />
+				<div class="dot three-2" />
+				<div class="dot three-3" />
+			</div>
+			<div id="dice-two-side-four" class="side four">
+				<div class="dot four-1" />
+				<div class="dot four-2" />
+				<div class="dot four-3" />
+				<div class="dot four-4" />
+			</div>
+			<div id="dice-two-side-five" class="side five">
+				<div class="dot five-1" />
+				<div class="dot five-2" />
+				<div class="dot five-3" />
+				<div class="dot five-4" />
+				<div class="dot five-5" />
+			</div>
+			<div id="dice-two-side-six" class="side six">
+				<div class="dot six-1" />
+				<div class="dot six-2" />
+				<div class="dot six-3" />
+				<div class="dot six-4" />
+				<div class="dot six-5" />
+				<div class="dot six-6" />
+			</div>
 		</div>
 	</div>
 </div>

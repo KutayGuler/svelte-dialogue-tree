@@ -11,7 +11,7 @@
 	export let choiceStaggerGap: number;
 </script>
 
-<form class={choiceContainerClass || 'sdt-choice-container'} on:submit|preventDefault={makeChoice}>
+<form class={choiceContainerClass} on:submit|preventDefault={makeChoice}>
 	{#each choices as choice, siblingIndex}
 		{@const title = typeof choice.titleTag == 'function' ? choice.titleTag() : choice.titleTag}
 		{@const disabled = typeof choice.disabled == 'function' ? choice.disabled() : choice.disabled}
@@ -23,7 +23,7 @@
 				delay: siblingIndex * choiceStaggerGap
 			}}
 			type="submit"
-			class={choiceClass || 'sdt-choice'}
+			class={choiceClass}
 			data-player-index={historyIndex}
 			data-sibling-index={siblingIndex}
 			data-text={choice.text}

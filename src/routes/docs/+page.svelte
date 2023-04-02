@@ -218,13 +218,13 @@
 												<div class="text-secondary-500">charAvatarClass</div>
 												<div class="variant-ringed-secondary relative h-8" />
 											</div>
-											<div class="flex flex-col gap-2">
+											<div class="mt-4 flex flex-col gap-2">
 												<div class=" text-secondary-500">charNameClass</div>
 												<div class="variant-ringed-secondary relative h-8" />
 											</div>
 										</div>
 									</div>
-									<div class="text-tertiary-500">npcTextClass</div>
+									<div class="mt-4 text-tertiary-500">npcTextClass</div>
 									<div class="variant-ringed-tertiary relative h-8 p-4" />
 								</div>
 							</div>
@@ -233,7 +233,7 @@
 							<div class="text-primary-500">playerTextClass</div>
 							<div class="variant-ringed-primary relative h-8 w-full self-end" />
 						</div>
-						<div class="flex w-full flex-col gap-2">
+						<div class="flex w-1/3 flex-col gap-2 self-center">
 							<div class="text-primary-500">narrationClass</div>
 							<div class="variant-ringed-primary h-8 w-full" />
 						</div>
@@ -245,6 +245,10 @@
 									<div class="variant-ringed-tertiary relative h-8" />
 								</div>
 							</div>
+						</div>
+						<div class="flex w-1/3 flex-col gap-2 self-center">
+							<div class="text-primary-500">jumperClass</div>
+							<div class="variant-ringed-primary h-8 w-full" />
 						</div>
 					</div>
 				</div>
@@ -272,6 +276,10 @@
 					</tbody>
 				</table>
 			</div>
+		</Section>
+		<Section title="BINDINGS">
+			<!-- TODO: bind:this={dialogueComponent} -->
+			<!-- dialogueComponent.nextLine(); -->
 		</Section>
 		<Section title="NARRATION">
 			<p>

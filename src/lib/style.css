@@ -6,9 +6,12 @@
 	--sdt-choice-bg-hover: #b8d6a6;
 	--sdt-choice-color: var(--sdt-bubble-color);
 	--sdt-choice-color-hover: #4a6551;
+	--sdt-jumper-bg: #ea861a;
+	--sdt-jumper-color: var(--sdt-bubble-bg);
 }
 
 .sdt-container {
+	position: relative;
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
@@ -101,4 +104,17 @@
 	align-self: center;
 	padding: 0.5rem;
 	font-weight: 700;
+}
+
+/* JUMPER */
+
+.sdt-jumper {
+	position: sticky;
+	bottom: 0;
+	align-self: center;
+	background-color: var(--sdt-jumper-bg);
+	color: var(--sdt-jumper-color);
+	padding: 1rem;
+	width: fit-content;
+	border-radius: 0.75rem;
 }

@@ -78,7 +78,7 @@
 		`}
 				/>
 				<p>
-					Pass a tree prop to Dialogue, check <a href="/docs/#schema">schema</a> to create an advanced
+					Pass a tree prop to Dialogue, check the <a href="/docs/#schema">schema</a> to create an advanced
 					dialogue tree.
 				</p>
 				<CodeBlock

@@ -21,17 +21,18 @@
 	export let characters: CharacterCollection<CharacterKey> | undefined = {};
 
 	// CLASSES
-	export let containerClass = '';
-	export let choiceContainerClass = '';
-	export let choiceClass = '';
-	export let playerTextClass = '';
-	export let narrationClass = '';
-	export let npcContainerClass = ''; // TODO: and this
-	export let npcTextClass = '';
-	// TODO: add these to docs
-	export let charContainerClass = '';
-	export let charAvatarClass = '';
-	export let charNameClass = '';
+	export let containerClass = 'sdt-container';
+	export let choiceContainerClass = 'sdt-choice-container';
+	export let choiceClass = 'sdt-choice';
+	export let playerTextClass = 'sdt-player';
+	export let npcContainerClass = 'sdt-npc-container';
+	export let npcTextClass = 'sdt-npc';
+	export let charContainerClass = 'sdt-char-container';
+	export let charAvatarClass = 'sdt-char-avatar';
+	export let charNameClass = 'sdt-char-name';
+	export let narrationClass = 'sdt-narration';
+	export let jumperClass = 'sdt-jumper';
+	export let jumperText = 'JUMP TO BOTTOM';
 
 	// NEXT LINE STUFF
 	export let nextLineKey = 'Space';
@@ -128,14 +129,17 @@
 	const dispatch = createEventDispatcher();
 	let container: HTMLElement;
 	let autoscroll = false;
+	let showJumper = false;
 
 	beforeUpdate(() => {
 		autoscroll =
-			container && container.offsetHeight + container.scrollTop > container.scrollHeight - 32;
+			container && container.offsetHeight + container.scrollTop > container.scrollHeight - 64;
 	});
 
 	afterUpdate(() => {
-		if (autoscroll) container.scrollTo(0, container.scrollHeight);
+		if (autoscroll) {
+			container.scrollTo(0, container.scrollHeight);
+		}
 	});
 
 	let interacting = false;
@@ -250,13 +254,17 @@
 
 <svelte:window on:keydown={(e) => handle(e.code)} />
 
-<!-- TODO: Add jump to bottom button -->
-
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
+	on:scroll={() => {
+		showJumper =
+			container &&
+			container.scrollHeight != container.offsetHeight &&
+			container.offsetHeight + container.scrollTop < container.scrollHeight - 64;
+	}}
 	on:click|self={(e) => handle(e.type)}
 	bind:this={container}
-	class={containerClass || 'sdt-container'}
+	class={containerClass}
 >
 	{#each history as item, historyIndex (historyIndex)}
 		{@const isPlayer = playerTextIndexes.includes(historyIndex)}
@@ -300,22 +308,27 @@
 					/>
 				{/if}
 			{:else if isNarration}
-				<div in:narrationIn={narrationInOptions} class={narrationClass || 'sdt-narration'}>
+				<div in:narrationIn={narrationInOptions} class={narrationClass}>
 					{@html item.replaceAll('**', '')}
 				</div>
 			{:else if isPlayer}
-				<div
-					class={playerTextClass || 'sdt-player'}
-					in:playerIn={playerInOptions}
-					out:playerIn={{ duration: 0 }}
-				>
+				<div class={playerTextClass} in:playerIn={playerInOptions} out:playerIn={{ duration: 0 }}>
 					{@html item}
 				</div>
 			{:else}
-				<div class={npcTextClass || 'sdt-npc'} in:npcIn={npcInOptions}>
+				<div class={npcTextClass} in:npcIn={npcInOptions}>
 					{@html item}
 				</div>
 			{/if}
 		{/if}
 	{/each}
+	{#if showJumper}
+		<!-- "btn variant-filled-primary sticky bottom-0 self-center" -->
+		<button
+			class={jumperClass}
+			on:click={() => {
+				container.scrollTo(0, container.scrollHeight);
+			}}>{jumperText}</button
+		>
+	{/if}
 </div>

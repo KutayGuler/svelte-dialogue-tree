@@ -27,7 +27,7 @@ export const typesData: Array<{
 () => "something" 
 
 // function that returns a TextObject
-() => { text: "something", character: "jason" }}
+() => { text: "something", character: "jason" }
 `
 	},
 	{
@@ -55,24 +55,17 @@ export const typesData: Array<{
 }
 `
 	},
-	// TODO: change code of this
 	{
 		title: 'TextObject.text',
 		description: 'The string that will be displayed.',
 		highlightLines: '12',
 		code: `
-let health = 100;
-
-function fallFromCliff() {
-  health -= 50;
-}
-
 const tree = {
   start: [
-    "** You wake up near a cliff. **",
+    "Hello",
     { 
-      text: "** You panic and fall from the cliff. **", 
-      onSpawn: fallFromCliff 
+      text: "world", 
+      onSpawn: () => console.log("spawned world")
     }
   ]
 }`
@@ -99,6 +92,7 @@ const tree = {
   ]
 }`
 	},
+	// TODO: Add Character type
 	{
 		title: 'TextObject.character',
 		highlightLines: '13',
@@ -340,43 +334,85 @@ export const propsData = [
 	{
 		name: 'containerClass',
 		type: 'string',
-		value: '-',
+		value: 'sdt-container',
 		description: 'Provide classes for the container of Dialogue component.',
 		required: false
 	},
 	{
 		name: 'choiceContainerClass',
 		type: 'string',
-		value: '-',
+		value: 'sdt-choice-container',
 		description: 'Provide classes for the container of choices.',
 		required: false
 	},
 	{
 		name: 'choiceClass',
 		type: 'string',
-		value: '-',
+		value: 'sdt-choice',
 		description: 'Provide classes for individual choice buttons.',
+		required: false
+	},
+	{
+		name: 'npcContainerClass',
+		type: 'string',
+		value: 'sdt-npc-container',
+		description: 'Provide classes for the container of npcText and charContainer.',
+		required: false
+	},
+	{
+		name: 'npcTextClass',
+		type: 'string',
+		value: 'sdt-npc',
+		description: 'Provide classes for NPC replies.',
+		required: false
+	},
+	{
+		name: 'charContainerClass',
+		type: 'string',
+		value: 'sdt-char-container',
+		description: 'Provide classes for the container of charName and charAvatar',
+		required: false
+	},
+	{
+		name: 'charNameClass',
+		type: 'string',
+		value: 'sdt-char-name',
+		description: 'Provide classes for NPC names.',
+		required: false
+	},
+	{
+		name: 'charAvatarClass',
+		type: 'string',
+		value: 'sdt-char-avatar',
+		description: 'Provide classes for NPC avatars (<img> element).',
 		required: false
 	},
 	{
 		name: 'playerTextClass',
 		type: 'string',
-		value: '-',
+		value: 'sdt-player',
 		description: 'Provide classes for player replies.',
-		required: false
-	},
-	{
-		name: 'npcClass',
-		type: 'string',
-		value: '-',
-		description: 'Provide classes for NPC (Non-Player Character) replies.',
 		required: false
 	},
 	{
 		name: 'narrationClass',
 		type: 'string',
-		value: '-',
+		value: 'sdt-narration',
 		description: 'Provide classes for narration texts.',
+		required: false
+	},
+	{
+		name: 'jumperClass',
+		type: 'string',
+		value: 'sdt-jumper',
+		description: 'Provide classes for the jumper. Jumper appears when the dialogue is scrolled up.',
+		required: false
+	},
+	{
+		name: 'jumperText',
+		type: 'string',
+		value: 'JUMP TO BOTTOM',
+		description: 'The text that will appear on jumper button.',
 		required: false
 	},
 	{
