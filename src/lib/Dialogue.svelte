@@ -239,13 +239,13 @@
 	/**
 	 * Handle click or keyboard events
 	 */
-	function handle(codeOrType: string) {
+	function handle(code: string) {
 		if (interacting || Array.isArray(history[index])) {
 			interacting = true;
 			return;
 		}
 
-		if (codeOrType == nextLineKey || codeOrType == 'click') {
+		if (code == nextLineKey) {
 			nextLine();
 		}
 
@@ -257,13 +257,17 @@
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
+	on:click={(e) => {
+		// TODO: extend html ts declarations
+		if (e.target.nodeName == 'BUTTON') return;
+		handle(nextLineKey);
+	}}
 	on:scroll={() => {
 		showJumper =
 			container &&
 			container.scrollHeight != container.offsetHeight &&
 			container.offsetHeight + container.scrollTop < container.scrollHeight - 64;
 	}}
-	on:click|self={(e) => handle(e.type)}
 	bind:this={container}
 	class={containerClass}
 >

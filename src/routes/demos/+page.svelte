@@ -9,6 +9,7 @@
 	const demos = ['Restaurant', 'Roleplay', 'HTML', 'Cyberpunk'];
 
 	let currentExample = 'restaurant';
+	// TODO: add code
 </script>
 
 <main class="flex flex-col gap-4 rounded p-4">
@@ -16,13 +17,12 @@
 	<Instruction />
 	<TabGroup regionPanel="flex h-[600px] w-full flex-col items-start">
 		{#each demos as demo}
-			<Tab bind:group={currentExample} name={demo.toLowerCase()} value={demo.toLowerCase()}
-				>{demo}</Tab
-			>
+			{@const value = demo.toLowerCase()}
+			<Tab bind:group={currentExample} name={value} {value}>{demo}</Tab>
 		{/each}
 		<!-- Tab Panels --->
 		<svelte:fragment slot="panel">
-			<div class="absolute -z-10 h-full w-full bg-surface-700" />
+			<div class="absolute -z-10 h-full w-full" />
 			{#if currentExample == 'restaurant'}
 				<Restaurant />
 			{:else if currentExample == 'roleplay'}

@@ -114,34 +114,46 @@
 	};
 </script>
 
-<div class="h-96">
-	<Dialogue
-		{tree}
-		{characters}
-		containerClass="cyberpunk-container flex flex-col h-full w-full p-4"
-		charNameClass="cyberpunk-char-name"
-		npcContainerClass="flex flex-row gap-2 "
-		npcTextClass="bg-transparent"
-		playerTextClass="bg-transparent self-end mr-4"
-		charAvatarClass="w-8 h-8 border border-black"
-		narrationClass="text-[#f9f002] self-center"
-	/>
-</div>
+<Dialogue
+	{tree}
+	{characters}
+	containerClass="cyberpunk-container flex flex-col h-full w-full p-4"
+	charNameClass="cyberpunk-char-name"
+	npcContainerClass="flex flex-row gap-2 "
+	npcTextClass="bg-transparent"
+	playerTextClass="bg-transparent self-end mr-4"
+	charAvatarClass="w-8 h-8 border border-black"
+	narrationClass="text-[#f9f002] self-center py-4"
+	choiceContainerClass="flex flex-col gap-2 items-center"
+	choiceClass="cyberpunk-choice bg-[#f9f002]"
+	on:dialogueEnd={() => alert('dialogue ended.')}
+/>
 
 <style>
-	:root {
-		--red: #fc3047;
-		--blue: #37ebf3;
-	}
-
 	:global(.cyberpunk-container) {
+		--blue: #37ebf3;
 		font-family: Cyberpunk;
 		font-size: 1.5rem;
 		color: var(--blue);
 	}
 
 	:global(.cyberpunk-char-name) {
+		--red: #fc3047;
 		text-shadow: 0 0 7px var(--red), 0 0 10px var(--red), 0 0 21px var(--red);
 		color: var(--red);
+	}
+
+	:global(.cyberpunk-choice) {
+		--bg: #f9f002;
+		color: black;
+		font-weight: 600;
+		border-right: black 2px solid;
+		border-bottom: black 2px solid;
+		width: 33%;
+	}
+
+	:global(.cyberpunk-choice:hover, .cyberpunk-choice:focus) {
+		box-shadow: 0 0 7px var(--bg), 0 0 10px var(--bg), 0 0 21px var(--bg);
+		outline: none;
 	}
 </style>
