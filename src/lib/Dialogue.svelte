@@ -132,6 +132,7 @@
 	let showJumper = false;
 
 	beforeUpdate(() => {
+		// TODO: might calculate 64 ( height of two text containers )
 		autoscroll =
 			container && container.offsetHeight + container.scrollTop > container.scrollHeight - 64;
 	});

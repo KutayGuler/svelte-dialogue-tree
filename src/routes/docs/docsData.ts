@@ -92,7 +92,6 @@ const tree = {
   ]
 }`
 	},
-	// TODO: Add Character type
 	{
 		title: 'TextObject.character',
 		highlightLines: '13',
@@ -134,6 +133,25 @@ const tree = {
     { text: "Wake up, manling.", character: "gotrek" }
   ]
 }`
+	},
+	{
+		title: 'Character',
+		description: 'A Character requires a name and can have an optional avatarSrc.',
+		code: `
+		const gotrek = {
+	name: "Gotrek the Trollslayer",
+	avatarSrc: "gotrek.jpg"
+}
+
+const felix = {
+	name: "Felix Jaeger",
+	// avatarSrc is optinal
+}
+
+const characters = {
+	gotrek, felix
+}
+`
 	},
 	{
 		title: 'ComponentLeaf',

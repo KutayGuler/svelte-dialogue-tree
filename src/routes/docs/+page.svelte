@@ -7,6 +7,8 @@
 	import { typesData, propsData, eventsData } from './docsData';
 	import TypeSection from './TypeSection.svelte';
 	import Section from './Section.svelte';
+	import Narration from './Narration.svelte';
+	import Binding from './Binding.svelte';
 
 	let mounted = false;
 
@@ -132,6 +134,7 @@
 	$: _schemaCode = withGenerics ? schemaCodeT : schemaCode;
 
 	let narrationTab = 0;
+	let bindingTab = 0;
 
 	// TODO: Responsive entire website
 </script>
@@ -233,7 +236,7 @@
 							<div class="text-primary-500">playerTextClass</div>
 							<div class="variant-ringed-primary relative h-8 w-full self-end" />
 						</div>
-						<div class="flex w-1/3 flex-col gap-2 self-center">
+						<div class="flex w-full flex-col gap-2">
 							<div class="text-primary-500">narrationClass</div>
 							<div class="variant-ringed-primary h-8 w-full" />
 						</div>
@@ -278,8 +281,43 @@
 			</div>
 		</Section>
 		<Section title="BINDINGS">
-			<!-- TODO: bind:this={dialogueComponent} -->
-			<!-- dialogueComponent.nextLine(); -->
+			<p>You can call <code>nextLine</code> by binding the Dialogue component to a variable</p>
+			<!-- TODO: might need to update importing code after publishing -->
+
+			<TabGroup>
+				<Tab bind:group={bindingTab} name="tab1" value={0}>Code</Tab>
+				<Tab bind:group={bindingTab} name="tab2" value={1}>Preview</Tab>
+				<!-- Tab Panels --->
+				<svelte:fragment slot="panel">
+					{#if bindingTab === 0}
+						<CodeBlock
+							language="svelte"
+							code={`<script>
+	import Dialogue from '$lib/Dialogue.svelte';
+
+	const tree = {
+		start: ['hello', 'world', 'what', 'is', 'up']
+	};
+
+	let dialogueComponent;
+
+	function nextLine() {
+		dialogueComponent.nextLine();
+	}
+<\/script>
+	
+<Dialogue {tree} bind:this={dialogueComponent} />
+
+<button class="..." on:click={nextLine}>NEXT LINE</button>
+				`}
+						/>
+					{:else if bindingTab === 1}
+						<div class="h-72">
+							<Binding />
+						</div>
+					{/if}
+				</svelte:fragment>
+			</TabGroup>
 		</Section>
 		<Section title="NARRATION">
 			<p>
@@ -304,15 +342,16 @@
 		'** You wake up near a cliff. **',
 		{
 			text: '** You panic and fall from the cliff. ** npc text',
-			onSpawn: fallFromCliff
+			onSpawn: () => console.log("fell from cliff")
 		},
 		'** narration ** npc text ** narration **'
 	]
 };`}
 						/>
 					{:else if narrationTab === 1}
-						<!-- <Narration /> -->
-						<!-- TODO: Narration demo -->
+						<div class="h-72">
+							<Narration />
+						</div>
 					{/if}
 				</svelte:fragment>
 			</TabGroup>

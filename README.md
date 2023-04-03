@@ -6,13 +6,13 @@ A Svelte library to create and interact with a branching dialogue.
 
 ## Features
 
-- Flexible tree schema 🎄
-- Conditional branching 🌵
-- Styleable Dialogue component 🎨
-- Components as dialogue elements 🔶
-- Typesafety option with generics 💙
-- Characters 🧙
-- ** Narration ** 🎭
+- 🎄 Flexible tree schema
+- 🌵 Conditional branching
+- 🎨 Styleable Dialogue component
+- 🔶 Components as dialogue elements
+- 💙 Typesafety option with generics
+- 🧙 Characters
+- 🎭 ** Narration **
 
 ## Installation
 

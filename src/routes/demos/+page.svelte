@@ -4,11 +4,11 @@
 	import Html from './Html.svelte';
 	import { Tab, TabGroup } from '@skeletonlabs/skeleton';
 	import Instruction from '../Instruction.svelte';
+	import Cyberpunk from './Cyberpunk.svelte';
 
-	const demos = ['Restaurant', 'Roleplay', 'HTML'];
+	const demos = ['Restaurant', 'Roleplay', 'HTML', 'Cyberpunk'];
 
 	let currentExample = 'restaurant';
-	// TODO: Cyberpunk
 </script>
 
 <main class="flex flex-col gap-4 rounded p-4">
@@ -29,6 +29,8 @@
 				<Roleplay />
 			{:else if currentExample == 'html'}
 				<Html />
+			{:else if currentExample == 'cyberpunk'}
+				<Cyberpunk />
 			{/if}
 		</svelte:fragment>
 	</TabGroup>
