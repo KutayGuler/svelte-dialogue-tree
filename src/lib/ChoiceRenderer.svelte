@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { TransitionConfig } from 'svelte/transition';
-	import type { ChoiceObject } from './types';
+	import type { ChoiceObject } from './types.js';
 	export let choices: Array<ChoiceObject<string, string>>;
 	export let choiceContainerClass: string;
 	export let choiceClass: string;

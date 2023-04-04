@@ -6,10 +6,9 @@
 		ChoiceLeaf,
 		TextObject,
 		WithOnSpawn
-	} from './types';
-	import { beforeUpdate, afterUpdate } from 'svelte';
+	} from './types.js';
+	import { beforeUpdate, afterUpdate, createEventDispatcher, onMount } from 'svelte';
 	import { fly, scale, type TransitionConfig } from 'svelte/transition';
-	import { createEventDispatcher, onMount } from 'svelte';
 	import TextRenderer from './TextRenderer.svelte';
 	import ChoiceRenderer from './ChoiceRenderer.svelte';
 

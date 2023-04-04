@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { TransitionConfig } from 'svelte/transition';
-	import type { CharacterCollection } from './types';
+	import type { CharacterCollection } from './types.js';
 	export let text: string;
 	export let character = '';
 	export let characters: CharacterCollection<string> | undefined;

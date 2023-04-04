@@ -10,5 +10,4 @@ export type { ChoiceLeaf } from './types';
 export type { ChoiceObject } from './types';
 export type { ComponentLeaf } from './types';
 
-// @ts-expect-error
 export { default as Dialogue } from './Dialogue.svelte';

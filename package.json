@@ -16,6 +16,15 @@
 	],
 	"license": "MIT",
 	"homepage": "svelte-dialogue-tree.vercel.app",
+	"files": [
+		"dist"
+	],
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"svelte": "./dist/index.js"
+		}
+	},
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
