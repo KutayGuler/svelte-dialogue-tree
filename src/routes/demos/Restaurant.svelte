@@ -3,7 +3,7 @@
 	import { Dialogue } from '$lib';
 
 	let menu = ['🥧', '🍕', '🥣', '🍔'];
-	let inventory = ['🥧']; // "🍕", "🥣", "🍔"
+	let inventory = ['🥧', '🍕']; //  "🥣", "🍔"
 	let orderedItem = '';
 
 	function itemExists(item: string): boolean {
@@ -39,9 +39,6 @@
 		return choices;
 	}
 
-	// TODO: might add character info here (add this as a feature request)
-	// and orderable onSpawn
-	// onSpawn: [consumerOrderedItem, 5]
 	function bringOrderedItem() {
 		return {
 			text: `** A few minutes pass ** Your order is ready. Bon appetite! **Puts ${orderedItem} on the table **`,
@@ -63,14 +60,14 @@
 	type BranchKey = 'start' | 'success' | 'failure' | 'cancel';
 	type CharacterKey = 'cook';
 
-	let characters: CharacterCollection<CharacterKey> = {
+	const characters: CharacterCollection<CharacterKey> = {
 		cook: {
 			name: 'Cook',
 			avatarSrc: 'https://picsum.photos/200/300'
 		}
 	};
 
-	let tree: DialogueTree<BranchKey, CharacterKey> = {
+	const tree: DialogueTree<BranchKey, CharacterKey> = {
 		start: [{ text: 'What would you like to have?', character: 'cook' }, listAvailableItems],
 		success: [{ text: 'Coming right up!', character: 'cook' }, bringOrderedItem, orderOrLeave],
 		failure: [
@@ -90,4 +87,4 @@
 	};
 </script>
 
-<Dialogue {tree} {characters} on:dialogueEnd={() => alert('dialogue ended')} />
+<Dialogue {tree} {characters} on:dialogueEnd={() => console.log('dialogue ended')} />

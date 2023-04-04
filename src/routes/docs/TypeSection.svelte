@@ -1,5 +1,8 @@
 <script lang="ts">
+	import ChoiceRenderer from '$lib/ChoiceRenderer.svelte';
 	import { CodeBlock } from '@skeletonlabs/skeleton';
+	import { onMount } from 'svelte';
+	import Cyberpunk from '../demos/Cyberpunk.svelte';
 
 	export let title: string;
 	export let description: string;
@@ -20,7 +23,7 @@
 
 <section class="relative flex w-full flex-col gap-4">
 	{#if title.includes('.')}
-		<h3 id={title.replace('.', '')} data-toc-ignore>{title}</h3>
+		<h3 data-toc-ignore>{title}</h3>
 	{:else}
 		<h3 id={title}>{title}</h3>
 	{/if}

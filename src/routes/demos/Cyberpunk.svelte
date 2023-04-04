@@ -126,7 +126,7 @@
 	narrationClass="text-[#f9f002] self-center py-4"
 	choiceContainerClass="flex flex-col gap-2 items-center"
 	choiceClass="cyberpunk-choice bg-[#f9f002]"
-	on:dialogueEnd={() => alert('dialogue ended.')}
+	on:dialogueEnd={() => console.log('dialogue ended')}
 />
 
 <style>
@@ -135,6 +135,8 @@
 		font-family: Cyberpunk;
 		font-size: 1.5rem;
 		color: var(--blue);
+		overflow-y: auto;
+		overflow-x: hidden;
 	}
 
 	:global(.cyberpunk-char-name) {

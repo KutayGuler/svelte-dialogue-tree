@@ -10,10 +10,19 @@
 	import Narration from './Narration.svelte';
 	import Binding from './Binding.svelte';
 
-	let mounted = false;
-
+	/**
+	 * Required because of html rendering bug
+	 * this code transforms the anchor tags
+	 * without links into span tags
+	 */
 	onMount(() => {
-		mounted = true;
+		let links = [...document.getElementsByTagName('a')];
+		links = links.filter((a) => !a.href);
+		for (let link of links) {
+			let span = document.createElement('span');
+			span.innerHTML = link.innerHTML;
+			link.parentNode?.replaceChild(span, link);
+		}
 	});
 
 	let withGenerics = false;

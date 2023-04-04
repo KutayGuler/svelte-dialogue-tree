@@ -19,7 +19,7 @@
 
 <Dialogue
 	{tree}
-	on:dialogueEnd={() => alert('dialogue ended')}
+	on:dialogueEnd={() => console.log('dialogue ended')}
 	on:componentEnd={(e) => {
 		diceResult = e.detail.result;
 	}}

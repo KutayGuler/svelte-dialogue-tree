@@ -132,9 +132,10 @@
 	let showJumper = false;
 
 	beforeUpdate(() => {
-		// TODO: might calculate 64 ( height of two text containers )
 		autoscroll =
-			container && container.offsetHeight + container.scrollTop > container.scrollHeight - 64;
+			container &&
+			container.offsetHeight + container.scrollTop >
+				container.scrollHeight - container.offsetHeight * 0.1;
 	});
 
 	afterUpdate(() => {
@@ -236,9 +237,6 @@
 		node.remove();
 	}
 
-	/**
-	 * Handle click or keyboard events
-	 */
 	function handle(code: string) {
 		if (interacting || Array.isArray(history[index])) {
 			interacting = true;
@@ -251,22 +249,24 @@
 
 		checkForEnd();
 	}
+
+	function handleClick(e: MouseEvent) {
+		if ((e.target as HTMLButtonElement)?.nodeName == 'BUTTON') return;
+		handle(nextLineKey);
+	}
 </script>
 
 <svelte:window on:keydown={(e) => handle(e.code)} />
 
 <!-- svelte-ignore a11y-click-events-have-key-events -->
 <div
-	on:click={(e) => {
-		// TODO: extend html ts declarations
-		if (e.target.nodeName == 'BUTTON') return;
-		handle(nextLineKey);
-	}}
+	on:click={handleClick}
 	on:scroll={() => {
 		showJumper =
 			container &&
 			container.scrollHeight != container.offsetHeight &&
-			container.offsetHeight + container.scrollTop < container.scrollHeight - 64;
+			container.offsetHeight + container.scrollTop <
+				container.scrollHeight - container.offsetHeight * 0.1;
 	}}
 	bind:this={container}
 	class={containerClass}
