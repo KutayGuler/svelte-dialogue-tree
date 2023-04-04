@@ -35,10 +35,6 @@
 
 	// NEXT LINE STUFF
 	export let nextLineKey = 'Space';
-	/**
-	 * This function mutates history
-	 * before the data is presented
-	 */
 	export const nextLine = () => {
 		let upcoming = history[index + 1];
 		if (typeof upcoming == 'string' && upcoming.includes('**')) {
