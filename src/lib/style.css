@@ -20,7 +20,6 @@
 	height: 100%;
 	background-color: var(--sdt-container-bg);
 	padding: 1rem;
-	border-radius: 1rem;
 	overflow-y: auto;
 	overflow-x: hidden;
 	gap: 0.5rem;
