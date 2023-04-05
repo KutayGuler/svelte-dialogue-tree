@@ -27,7 +27,7 @@
 }
 
 .sdt-container * {
-	color: (--sdt-npc-color);
+	color: var(--sdt-npc-color);
 }
 
 .sdt-npc {
