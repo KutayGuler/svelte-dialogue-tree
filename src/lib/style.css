@@ -1,20 +1,22 @@
 :root {
 	--sdt-container-bg: #2f2925;
-	--sdt-bubble-bg: #26211d;
-	--sdt-bubble-color: #fbe7d1;
+	--sdt-npc-bg: #26211d;
+	--sdt-npc-color: #fbe7d1;
 	--sdt-choice-bg: #b06514;
 	--sdt-choice-bg-hover: #b8d6a6;
-	--sdt-choice-color: var(--sdt-bubble-color);
+	--sdt-choice-color: var(--sdt-npc-color);
 	--sdt-choice-color-hover: #4a6551;
 	--sdt-jumper-bg: #ea861a;
-	--sdt-jumper-color: var(--sdt-bubble-bg);
+	--sdt-jumper-color: var(--sdt-npc-bg);
 }
 
 .sdt-container {
+	color: (--sdt-npc-color);
 	position: relative;
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
+	box-sizing: border-box;
 	width: 100%;
 	height: 100%;
 	background-color: var(--sdt-container-bg);
@@ -23,21 +25,18 @@
 	overflow-y: auto;
 	overflow-x: hidden;
 	gap: 0.5rem;
-	border-radius: 0.25rem;
 }
 
 .sdt-npc {
 	padding: 1rem;
-	background-color: var(--sdt-bubble-bg);
-	color: var(--sdt-bubble-color);
+	background-color: var(--sdt-npc-bg);
 	max-width: 20rem;
 	border-radius: 0.75rem;
 }
 
 .sdt-player {
 	padding: 1rem;
-	background-color: var(--sdt-bubble-bg);
-	color: var(--sdt-bubble-color);
+	background-color: var(--sdt-npc-bg);
 	align-self: flex-end;
 	max-width: 20rem;
 	border-radius: 0.75rem;
