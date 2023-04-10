@@ -28,7 +28,7 @@
 	let withGenerics = false;
 
 	let schemaCode = `<script lang="ts">
-	import Dialogue from "svelte-dialogue-tree";
+	import { Dialogue } from "svelte-dialogue-tree";
 	const tree = {
 		branch1: [ // 📌 dialogue starts from the tree's first key 
 			// TextLeaf
@@ -80,7 +80,7 @@
 `;
 
 	let schemaCodeT = `<script lang="ts">
-	import Dialogue from "svelte-dialogue-tree";
+	import { Dialogue } from "svelte-dialogue-tree";
 	
 	type BranchKey = "branch1" | "branch3" | "branch4" | "invalid1" | "invalid2" ;
 	type CharacterKey = "character1" | "character2";
@@ -144,12 +144,10 @@
 
 	let narrationTab = 0;
 	let bindingTab = 0;
-
-	// TODO: Responsive entire website
 </script>
 
 <div class="relative flex flex-row items-start justify-center gap-4">
-	<div id="toc-target" class="flex w-[768px] flex-col gap-24 py-4">
+	<div id="toc-target" class="flex w-[400px] flex-col gap-24 py-4 md:w-[600px] lg:w-[768px]">
 		<Section title="SCHEMA">
 			<div>
 				<SlideToggle active="bg-success-500" name="generics" bind:checked={withGenerics}>
@@ -291,7 +289,6 @@
 		</Section>
 		<Section title="BINDINGS">
 			<p>You can call <code>nextLine</code> by binding the Dialogue component to a variable</p>
-			<!-- TODO: might need to update importing code after publishing -->
 
 			<TabGroup>
 				<Tab bind:group={bindingTab} name="tab1" value={0}>Code</Tab>
@@ -302,7 +299,7 @@
 						<CodeBlock
 							language="svelte"
 							code={`<script>
-	import Dialogue from '$lib/Dialogue.svelte';
+	import { Dialogue } from 'svelte-dialogue-tree';
 
 	const tree = {
 		start: ['hello', 'world', 'what', 'is', 'up']
@@ -372,7 +369,7 @@
 			</div>
 		</Section>
 	</div>
-	<div class="sticky top-0 py-4">
+	<div class="sticky top-0 hidden py-4 lg:flex">
 		<TableOfContents
 			regionList="gap-0"
 			target="#toc-target"

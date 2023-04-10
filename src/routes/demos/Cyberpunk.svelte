@@ -151,7 +151,8 @@
 		font-weight: 600;
 		border-right: black 2px solid;
 		border-bottom: black 2px solid;
-		width: 33%;
+		width: 320px;
+		padding: 8px;
 	}
 
 	:global(.cyberpunk-choice:hover, .cyberpunk-choice:focus) {

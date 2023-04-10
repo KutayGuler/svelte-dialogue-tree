@@ -1,5 +1,3 @@
-// TODO: fix html rendering problem with anchor tags
-
 export const typesData: Array<{
 	title: string;
 	description: string;

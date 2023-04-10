@@ -22,17 +22,20 @@
 		drawerStore
 	} from '@skeletonlabs/skeleton';
 	import Navigation from './Navigation.svelte';
+	import { page } from '$app/stores';
 
 	function drawerOpen(): void {
 		drawerStore.open({});
 	}
+
+	// $: classesSidebar = $page.url.pathname === '/' ? 'w-0' : '';
 </script>
 
 <Drawer>
 	<Navigation />
 </Drawer>
 
-<AppShell slotSidebarLeft="bg-surface-500/5 w-0 lg:w-64 p-4">
+<AppShell slotSidebarLeft="bg-surface-500/5 p-4 w-0 lg:w-64 ">
 	<svelte:fragment slot="header">
 		<AppBar>
 			<svelte:fragment slot="lead">
@@ -76,7 +79,7 @@
 				<h3>Dialogue Tree</h3>
 			</a>
 			<svelte:fragment slot="trail">
-				<div class="flex flex-row items-center gap-4">
+				<div class="hidden flex-row items-center gap-4 lg:flex">
 					<a class="hover:text-primary-500" href="/installation">Installation</a>
 					<a class="hover:text-primary-500" href="/docs">Docs</a>
 					<a class="hover:text-primary-500" href="/demos">Demos</a>

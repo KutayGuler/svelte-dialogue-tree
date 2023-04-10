@@ -1,6 +1,6 @@
 export const restaurantCode = `<script lang="ts">
-  import type { CharacterCollection, ChoiceObject, DialogueTree } from '$lib';
-  import { Dialogue } from '$lib';
+  import type { CharacterCollection, ChoiceObject, DialogueTree } from 'svelte-dialogue-tree';
+  import { Dialogue } from 'svelte-dialogue-tree';
 
   let menu = ['🥧', '🍕', '🥣', '🍔'];
   let inventory = ['🥧', '🍕']; //  "🥣", "🍔"
@@ -91,8 +91,8 @@ export const restaurantCode = `<script lang="ts">
 `;
 
 export const roleplayCode = `<script lang="ts">
-  import { Dialogue } from '$lib';
-  import type { DialogueTree } from '$lib';
+  import { Dialogue } from 'svelte-dialogue-tree';
+  import type { DialogueTree } from 'svelte-dialogue-tree';
   import Roll from './Roll.svelte';
 
   type BranchKey = 'start' | 'success' | 'failure';
@@ -119,8 +119,8 @@ export const roleplayCode = `<script lang="ts">
 `;
 
 export const htmlCode = `<script lang="ts">
-  import { Dialogue } from '$lib';
-  import type { DialogueTree } from '$lib';
+  import { Dialogue } from 'svelte-dialogue-tree';
+  import type { DialogueTree } from 'svelte-dialogue-tree';
 
   let tree: DialogueTree<'start'> = {
     start: [
@@ -133,7 +133,7 @@ export const htmlCode = `<script lang="ts">
 `;
 
 export const cyberpunkCode = `<script lang="ts">
-  import { Dialogue, type CharacterCollection, type DialogueTree } from '$lib';
+  import { Dialogue, type CharacterCollection, type DialogueTree } from 'svelte-dialogue-tree';
 
   type BranchKey = 'start' | 'showChip' | 'sentByShawn' | 'drawWeapon' | 'moveIt';
   type CharacterKey = 'royce' | 'jackie' | 'dumdum';
