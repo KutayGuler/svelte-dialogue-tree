@@ -81,6 +81,7 @@
 
 	let schemaCodeT = `<script lang="ts">
 	import { Dialogue } from "svelte-dialogue-tree";
+	import type { DialogueTree, CharacterCollection } from "svelte-dialogue-tree";
 	
 	type BranchKey = "branch1" | "branch3" | "branch4" | "invalid1" | "invalid2" ;
 	type CharacterKey = "character1" | "character2";
