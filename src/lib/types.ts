@@ -16,7 +16,7 @@ export type TextObject = { text: string };
 export type WithOnSpawn = { onSpawn: Function };
 export type WithCharacter<CharacterKey> = { character: CharacterKey };
 
-export type TextLeaf<CharacterKey extends string> =
+export type TextLeaf<CharacterKey> =
 	| string
 	| (TextObject & WithOnSpawn)
 	| (TextObject & WithCharacter<CharacterKey>)
@@ -26,7 +26,7 @@ export type TextLeaf<CharacterKey extends string> =
 	| (() => TextObject & WithCharacter<CharacterKey>)
 	| (() => TextObject & WithOnSpawn & WithCharacter<CharacterKey>);
 
-export interface ChoiceObject<BranchKey, CharacterKey extends string = ''> {
+export interface ChoiceObject<BranchKey, CharacterKey> {
 	label: string;
 	text: string;
 	next: BranchKey | Branch<BranchKey, CharacterKey> | (() => BranchKey);
@@ -34,11 +34,11 @@ export interface ChoiceObject<BranchKey, CharacterKey extends string = ''> {
 	disabled?: boolean | (() => boolean);
 }
 
-export type ChoiceLeaf<BranchKey, CharacterKey extends string> =
+export type ChoiceLeaf<BranchKey, CharacterKey> =
 	| Array<ChoiceObject<BranchKey, CharacterKey>>
 	| (() => Array<ChoiceObject<BranchKey, CharacterKey>>);
 
-export type Branch<BranchKey, CharacterKey extends string> =
+export type Branch<BranchKey, CharacterKey> =
 	| Array<TextLeaf<CharacterKey> | ComponentLeaf>
 	| [
 			...texts: Array<TextLeaf<CharacterKey> | ComponentLeaf>,

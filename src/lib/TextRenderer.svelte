@@ -21,7 +21,7 @@
 				<img class={charAvatarClass} src={avatarSrc} alt="avatar" />
 			{/if}
 			<div class={charNameClass}>
-				{@html name}
+				{name}
 			</div>
 		</div>
 	{/if}

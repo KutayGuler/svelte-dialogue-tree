@@ -28,7 +28,7 @@
 			data-sibling-index={siblingIndex}
 			data-text={choice.text}
 		>
-			{@html choice.label}
+			{choice.label}
 		</button>
 	{/each}
 </form>
