@@ -13,8 +13,8 @@
 
 <form class={choiceContainerClass} on:submit|preventDefault={makeChoice}>
 	{#each choices as choice, siblingIndex}
-		{@const title = typeof choice.titleTag == 'function' ? choice.titleTag() : choice.titleTag}
-		{@const disabled = typeof choice.disabled == 'function' ? choice.disabled() : choice.disabled}
+		{@const title = typeof choice.titleTag === 'function' ? choice.titleTag() : choice.titleTag}
+		{@const disabled = typeof choice.disabled === 'function' ? choice.disabled() : choice.disabled}
 		<button
 			{title}
 			{disabled}

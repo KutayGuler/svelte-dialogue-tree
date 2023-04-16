@@ -5,7 +5,9 @@
 		CharacterCollection,
 		ChoiceLeaf,
 		TextObject,
-		WithOnSpawn
+		WithOnSpawn,
+		TextLeaf,
+		ComponentLeaf
 	} from './types.js';
 	import { beforeUpdate, afterUpdate, createEventDispatcher, onMount } from 'svelte';
 	import { fly, scale, type TransitionConfig } from 'svelte/transition';
@@ -37,17 +39,17 @@
 	export let nextLineKey = 'Space';
 	export const nextLine = () => {
 		let upcoming = history[index + 1];
-		if (typeof upcoming == 'string' && upcoming.includes('**')) {
+		if (typeof upcoming === 'string' && upcoming.includes('**')) {
 			let splittedText = splitText(upcoming);
 			if (splittedText.length > 0) {
 				history.splice(index + 1, 1, ...splittedText);
 			}
-		} else if (typeof upcoming == 'function') {
+		} else if (typeof upcoming === 'function') {
 			const ret = upcoming();
 			if (Array.isArray(ret)) {
 				history[index + 1] = ret;
 				interacting = true;
-			} else if (typeof ret == 'string') {
+			} else if (typeof ret === 'string') {
 				/**
 				 * add branch to the history if ret is
 				 * a BranchKey
@@ -57,13 +59,12 @@
 					 * removing function from history
 					 */
 					history.pop();
-					// @ts-expect-error
-					history = [...history, ...tree[ret]];
+					history = [...(history as Array<TextLeaf<CharacterKey> | ComponentLeaf>), ...tree[ret]];
 				} else {
 					history[index + 1] = ret;
 				}
 				// @ts-expect-error
-			} else if (typeof ret == 'object' && !ret.component) {
+			} else if (typeof ret === 'object' && !ret.component) {
 				let splittedText = splitText((ret as TextObject).text);
 				if (splittedText.length > 0) {
 					history.splice(index + 1, 1, ...splittedText);
@@ -72,7 +73,8 @@
 					(ret as TextObject & WithOnSpawn).onSpawn();
 				}
 			}
-		} else if (!Array.isArray(upcoming) && typeof upcoming == 'object' && !upcoming.component) {
+			// @ts-expect-error
+		} else if (!Array.isArray(upcoming) && typeof upcoming === 'object' && !upcoming.component) {
 			let splittedText = splitText((upcoming as TextObject).text);
 			if (splittedText.length > 0) {
 				history.splice(index + 1, 1, ...splittedText);
@@ -111,14 +113,14 @@
 		let splitted = text.split('*');
 
 		for (let i = 0; i < splitted.length; i++) {
-			if (i == 0 || i == splitted.length - 1) continue;
-			if (splitted[i - 1] == '' && splitted[i + 1] == '') {
+			if (i === 0 || i === splitted.length - 1) continue;
+			if (splitted[i - 1] === '' && splitted[i + 1] === '') {
 				let narration = '**'.concat(splitted[i], '**');
 				splitted.splice(i - 1, 3, narration);
 			}
 		}
 
-		return splitted.filter((s) => !s.split('').every((x) => x == '' || x == ' '));
+		return splitted.filter((s) => !s.split('').every((x) => x === '' || x === ' '));
 	}
 
 	const dispatch = createEventDispatcher();
@@ -164,6 +166,7 @@
 			for (let choice of choices) {
 				if (!Array.isArray(choice.next)) continue;
 				let generatedKey = generateKey();
+				// @ts-expect-error
 				tree[generatedKey] = choice.next;
 				choice.next = generatedKey;
 				flatten(generatedKey);
@@ -190,7 +193,7 @@
 		let siblingIndex = +(e.submitter?.dataset.siblingIndex || 0);
 		let choicesArray = tree[key].at(-1) as ChoiceLeaf<BranchKey, CharacterKey>;
 
-		if (typeof choicesArray == 'function') {
+		if (typeof choicesArray === 'function') {
 			choicesArray = choicesArray();
 		}
 
@@ -205,14 +208,14 @@
 		 */
 		history.pop();
 
-		if (typeof next == 'string') {
+		if (typeof next === 'string') {
 			key = next;
-			history.push(text, ...(tree[key] as any));
-		} else if (typeof next == 'function') {
+			history.push(text, ...tree[key]);
+		} else if (typeof next === 'function') {
 			key = next();
-			history.push(text, ...(tree[key] as any));
+			history.push(text, ...tree[key]);
 		} else if (Array.isArray(next)) {
-			history.push(text, ...(next as any));
+			history.push(text, ...next);
 		} else {
 			dispatch('dialogueEnd');
 			return;
@@ -238,7 +241,7 @@
 			return;
 		}
 
-		if (code == nextLineKey) {
+		if (code === nextLineKey) {
 			nextLine();
 		}
 
@@ -246,7 +249,7 @@
 	}
 
 	function handleClick(e: MouseEvent) {
-		if ((e.target as HTMLButtonElement)?.nodeName == 'BUTTON') return;
+		if ((e.target as HTMLButtonElement)?.nodeName === 'BUTTON') return;
 		handle(nextLineKey);
 	}
 </script>
@@ -269,7 +272,7 @@
 	{#each history as item, historyIndex (historyIndex)}
 		{@const isPlayer = playerTextIndexes.includes(historyIndex)}
 		{@const isChoice = Array.isArray(item) && item.length != 0}
-		{@const isNarration = typeof item == 'string' && item.includes('**')}
+		{@const isNarration = typeof item === 'string' && item.includes('**')}
 		{#if index >= historyIndex}
 			{#if isChoice}
 				<ChoiceRenderer
@@ -282,7 +285,7 @@
 					{choiceStaggerGap}
 					{choiceContainerClass}
 				/>
-			{:else if typeof item == 'object'}
+			{:else if typeof item === 'object'}
 				{#if item.component}
 					<span use:spawnedComponent />
 					<svelte:component
@@ -323,7 +326,6 @@
 		{/if}
 	{/each}
 	{#if showJumper}
-		<!-- "btn variant-filled-primary sticky bottom-0 self-center" -->
 		<button
 			class={jumperClass}
 			on:click={() => {

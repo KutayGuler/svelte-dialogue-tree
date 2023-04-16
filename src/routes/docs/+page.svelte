@@ -289,7 +289,7 @@
 			</div>
 		</Section>
 		<Section title="BINDINGS">
-			<p>You can call <code>nextLine</code> by binding the Dialogue component to a variable</p>
+			<p>You can call <code>nextLine</code> by binding the Dialogue component to a variable.</p>
 
 			<TabGroup>
 				<Tab bind:group={bindingTab} name="tab1" value={0}>Code</Tab>

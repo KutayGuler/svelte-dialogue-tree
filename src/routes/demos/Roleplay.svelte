@@ -10,7 +10,7 @@
 		return diceResult > 6 ? 'success' : 'failure';
 	}
 
-	let tree: DialogueTree<BranchKey> = {
+	const tree: DialogueTree<BranchKey> = {
 		start: ['** You fall off from a cliff. **', { component: Roll }, branchDialogue],
 		success: ['** You survived. **'],
 		failure: ['** You died. **']

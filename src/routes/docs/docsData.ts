@@ -7,7 +7,7 @@ export const typesData: Array<{
 	{
 		title: 'TextLeaf',
 		description:
-			'A TextLeaf can be in following types: <code>string</code>, <a href="#TextObject">TextObject<a/>, a function that returns a <code>string</code>, a function that returns a <a href="#TextObject">TextObject<a/>',
+			'A TextLeaf can be in following types: <code>string</code>, <a href="#TextObject">TextObject<a/>, a function that returns a <code>string</code>, a function that returns a <a href="#TextObject">TextObject<a/>.',
 		code: `
 // string
 "something"
@@ -31,7 +31,7 @@ export const typesData: Array<{
 	{
 		title: 'TextObject',
 		description:
-			'A TextObject requires a <code>text</code> property and at least one (1) additional property.<br/> Additional properties are: <a href="#TextObject.onSpawn">onSpawn<a/> and <a href="#TextObject.character">character<a/>',
+			'A TextObject requires a <code>text</code> property and at least one (1) additional property.<br/> Additional properties are: <a href="#TextObject.onSpawn">onSpawn<a/> and <a href="#TextObject.character">character<a/>.',
 		code: `
 // TextObject  
 { 
@@ -71,7 +71,7 @@ const tree = {
 	{
 		title: 'TextObject.onSpawn',
 		description:
-			'The function that is assigned to <code>onSpawn</code> is executed when the <a href="#TextObject">TextObject<a/><span>enters the DOM<span/>',
+			'The function that is assigned to <code>onSpawn</code> is executed when the <a href="#TextObject">TextObject<a/><span> enters the DOM.<span/>',
 		highlightLines: '12',
 		code: `
 let health = 100;
@@ -94,7 +94,7 @@ const tree = {
 		title: 'TextObject.character',
 		highlightLines: '13',
 		description:
-			'<code>character</code> should be a key of a <a  href="#CharacterCollection">CharacterCollection<a/>',
+			'<code>character</code> should be a key of a <a  href="#CharacterCollection">CharacterCollection<a/>.',
 		code: `
 const characters = {
   gotrek: {
@@ -116,7 +116,7 @@ const tree = {
 	{
 		title: 'CharacterCollection',
 		description:
-			'<code>CharacterCollection</code> is an object which holds CharacterKeys as keys and Characters as values',
+			'<code>CharacterCollection</code> is an object which holds CharacterKeys as keys and <a href="#Character">Character</a>s as values.',
 		code: `
 const characters = {
   gotrek: {
@@ -143,11 +143,7 @@ const tree = {
 
 const felix = {
 	name: "Felix Jaeger",
-	// avatarSrc is optinal
-}
-
-const characters = {
-	gotrek, felix
+	// avatarSrc is optional
 }
 `
 	},
@@ -171,7 +167,7 @@ import { Component } from "./Component.svelte";
 	{
 		title: 'ChoiceLeaf',
 		description:
-			'A ChoiceLeaf can be an array of <a  href="#ChoiceObject">ChoiceObject<a/>s or a function that returns an array of <a  href="#ChoiceObject">ChoiceObject<a/>s',
+			'A ChoiceLeaf can be an array of <a  href="#ChoiceObject">ChoiceObject<a/>s or a function that returns an array of <a  href="#ChoiceObject">ChoiceObject<a/>s.',
 		code: `
 // ChoiceLeaf
 [
@@ -295,7 +291,7 @@ import { Component } from "./Component.svelte";
 	{
 		title: 'ChoiceObject.titleTag',
 		description:
-			'<code>titleTag</code> is the title that will appear when a mouse is hovered over the choice button.',
+			'<code>titleTag</code> is the title that will appear when a mouse is hovered over the choice button. It can be a string or a function that returns a string.',
 		code: `
 
 // a string

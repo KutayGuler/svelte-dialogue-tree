@@ -102,7 +102,7 @@ export const roleplayCode = `<script lang="ts">
     return diceResult > 6 ? 'success' : 'failure';
   }
 
-  let tree: DialogueTree<BranchKey> = {
+  const tree: DialogueTree<BranchKey> = {
     start: ['** You fall off from a cliff. **', { component: Roll }, branchDialogue],
     success: ['** You survived. **'],
     failure: ['** You died. **']
@@ -122,7 +122,7 @@ export const htmlCode = `<script lang="ts">
   import { Dialogue } from 'svelte-dialogue-tree';
   import type { DialogueTree } from 'svelte-dialogue-tree';
 
-  let tree: DialogueTree<'start'> = {
+  const tree: DialogueTree<'start'> = {
     start: [
       \`Check out the repo <a style="color: red;" href="https://github.com/KutayGuler/svelte-dialogue-tree" target="_blank" rel="noreferrer">here</a>\`
     ]

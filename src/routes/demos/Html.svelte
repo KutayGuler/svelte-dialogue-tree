@@ -2,7 +2,7 @@
 	import { Dialogue } from '$lib';
 	import type { DialogueTree } from '$lib';
 
-	let tree: DialogueTree<'start'> = {
+	const tree: DialogueTree<'start'> = {
 		start: [
 			`Check out the repo <a style="color: red;" href="https://github.com/KutayGuler/svelte-dialogue-tree" target="_blank" rel="noreferrer">here</a>`
 		]
