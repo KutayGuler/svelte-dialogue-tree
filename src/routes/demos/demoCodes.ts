@@ -133,7 +133,7 @@ export const htmlCode = `<script lang="ts">
 `;
 
 export const cyberpunkCode = `<script lang="ts">
-import { Dialogue, type CharacterCollection, type DialogueTree } from '$lib';
+import { Dialogue, type CharacterCollection, type DialogueTree } from 'svelte-dialogue-tree';
 
 type BranchKey = 'start' | 'showChip' | 'sentByShawn' | 'drawWeapon' | 'moveIt';
 type CharacterKey = 'royce' | 'jackie' | 'dumdum';

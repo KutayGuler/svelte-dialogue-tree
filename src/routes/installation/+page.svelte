@@ -19,7 +19,7 @@
 
 	type BranchKey = 'start' | 'done';
 
-	function listAvailableManagers(): Array<ChoiceObject<BranchKey>> {
+	function listAvailableManagers(): Array<ChoiceObject<BranchKey, string>> {
 		let choices = [];
 		for (let { name, installation } of managers) {
 			choices.push({
