@@ -130,9 +130,11 @@
 />
 
 <style>
+	@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500&display=swap');
+
 	:global(.cyberpunk-container) {
 		--blue: #37ebf3;
-		font-family: Cyberpunk;
+		font-family: 'Rajdhani';
 		font-size: 1.5rem;
 		color: var(--blue);
 		overflow-y: auto;
