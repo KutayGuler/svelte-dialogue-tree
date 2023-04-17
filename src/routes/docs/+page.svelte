@@ -356,7 +356,7 @@
 };`}
 						/>
 					{:else if narrationTab === 1}
-						<div class="h-72">
+						<div class="h-64">
 							<Narration />
 						</div>
 					{/if}

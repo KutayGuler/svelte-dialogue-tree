@@ -6,32 +6,61 @@ export interface ComponentLeaf {
 	 */
 	component: ComponentType;
 	/**
-	 * TODO: args
+	 * Arguments that will be passed to the component.
 	 */
 	args?: object;
 }
 
 /**
+ * An object that holds the information about characters.
  * @typeParam CharacterKey - String literals that are the keys of the CharacterCollection
+ *
+ * @example
+ * ```
+ * const characters: CharacterCollection<CharacterKey> = {
+ * 	royce: {
+ * 		name: 'Royce:',
+ * 		avatarSrc: 'royce2.png'
+ * 	},
+ * 	jackie: {
+ * 		name: 'Jackie:',
+ * 		avatarSrc: 'jackie.png'
+ * 	},
+ * }
+ * ```
  */
 export type CharacterCollection<CharacterKey extends string> = {
-	[id in CharacterKey]: Character;
+	[key in CharacterKey]: Character;
 };
 
 export interface Character {
 	/**
-	 * TODO:
+	 * Name of the character.
+	 *
+	 * @example ```name: "Gotrek the Trollslayer"```
 	 */
 	name: string;
 	/**
-	 * TODO:
+	 * URL source of the image.
+	 *
+	 * @example ```avatarSrc: "gotrek.png"```
 	 */
 	avatarSrc?: string;
 }
 
 export type TextObject = { text: string };
-export type WithOnSpawn = { onSpawn: Function };
-export type WithCharacter<CharacterKey> = { character: CharacterKey };
+export type WithOnSpawn = {
+	/**
+	 * The function that will be fired when TextObject enters the dom.
+	 */
+	onSpawn: Function;
+};
+export type WithCharacter<CharacterKey> = {
+	/**
+	 * One of the keys of CharacterCollection object.
+	 */
+	character: CharacterKey;
+};
 
 export type TextLeaf<CharacterKey> =
 	| string
@@ -45,15 +74,16 @@ export type TextLeaf<CharacterKey> =
 
 export interface ChoiceObject<BranchKey, CharacterKey> {
 	/**
-	 * the text that will appear on the choice button.
+	 * The text that will appear on the choice button.
 	 */
 	label: string;
 	/**
-	 * the content that will appear on the dialogue after choice is made.
+	 * The content that will appear on the dialogue after choice is made.
 	 */
 	text: string;
 	/**
-	 *  the key of the branch dialogue will jump to. It can be a BranchKey, a function that returns a BranchKey or a nested branch.
+	 * The branch dialogue will jump to. It can be a BranchKey, a function that returns a BranchKey or a nested branch.
+	 *
 	 * @example
 	 * ```
 	 * next: "yesBranch"
@@ -75,7 +105,8 @@ export interface ChoiceObject<BranchKey, CharacterKey> {
 	 */
 	next: BranchKey | Branch<BranchKey, CharacterKey> | (() => BranchKey) | [];
 	/**
-	 * the title that will appear when a mouse is hovered over the choice button. It can be a string or a function that returns a string.
+	 * The title that will appear when a mouse is hovered over the choice button. It can be a string or a function that returns a string.
+	 *
 	 * @example
 	 * ```
 	 * titleTag: "some title",
@@ -86,7 +117,8 @@ export interface ChoiceObject<BranchKey, CharacterKey> {
 	 */
 	titleTag?: string | (() => string);
 	/**
-	 * disabled determines whether the choice button is disabled or not. Can be boolean or a function that returns a boolean.
+	 * Disabled determines whether the choice button is disabled or not. Can be boolean or a function that returns a boolean.
+	 *
 	 * @example
 	 * ```
 	 * disabled: true
@@ -108,6 +140,8 @@ export type Branch<BranchKey, CharacterKey> = [
 ];
 
 /**
+ * The prop that will be passed to the Dialogue component.
+ *
  * @typeParam BranchKey - String literals that are the keys of the DialogueTree
  * @typeParam CharacterKey - String literals that are the keys of the CharacterCollection
  */

@@ -3,10 +3,7 @@
 	import type { DialogueTree } from '$lib';
 	import Dialogue from '$lib/Dialogue.svelte';
 	import { onMount } from 'svelte';
-
-	// TODO: Fix vercel font thing
-	// TODO: tsdocs
-
+	
 	function gotoDocs() {
 		goto('/docs');
 		return 'start';
