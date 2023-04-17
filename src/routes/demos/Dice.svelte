@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte/internal';
-	import { slide } from 'svelte/transition';
+	import { scale, slide } from 'svelte/transition';
 	const dispatch = createEventDispatcher();
 	let rolling = false;
 

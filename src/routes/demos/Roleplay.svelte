@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Dialogue } from '$lib';
 	import type { DialogueTree } from '$lib';
-	import Roll from './Roll.svelte';
+	import Dice from './Dice.svelte';
 
 	type BranchKey = 'start' | 'success' | 'failure';
 	let diceResult = 0;
@@ -11,7 +11,7 @@
 	}
 
 	const tree: DialogueTree<BranchKey> = {
-		start: ['** You fall off from a cliff. **', { component: Roll }, branchDialogue],
+		start: ['** You fall off from a cliff. **', { component: Dice }, branchDialogue],
 		success: ['** You survived. **'],
 		failure: ['** You died. **']
 	};

@@ -249,18 +249,18 @@ const tree: DialogueTree<BranchKey, CharacterKey> = {
 </script>
 
 <Dialogue
-{tree}
-{characters}
-containerClass="cyberpunk-container flex flex-col h-full w-full p-4"
-charNameClass="cyberpunk-char-name"
-npcContainerClass="flex flex-row gap-2 "
-npcTextClass="bg-transparent"
-playerTextClass="bg-transparent self-end mr-4"
-charAvatarClass="w-8 h-8 border border-black"
-narrationClass="text-[#f9f002] self-center py-4"
-choiceContainerClass="flex flex-col gap-2 items-center"
-choiceClass="cyberpunk-choice bg-[#f9f002]"
-on:dialogueEnd={() => console.log('dialogue ended')}
+  {tree}
+  {characters}
+  containerClass="cyberpunk-container flex flex-col h-full w-full p-4"
+  charNameClass="cyberpunk-char-name"
+  npcContainerClass="flex flex-row gap-2 "
+  npcTextClass="bg-transparent"
+  playerTextClass="bg-transparent self-end mr-4"
+  charAvatarClass="w-8 h-8 border border-black"
+  narrationClass="text-[#f9f002] self-center py-4"
+  choiceContainerClass="flex flex-col gap-2 items-center"
+  choiceClass="cyberpunk-choice bg-[#f9f002]"
+  on:dialogueEnd={() => console.log('dialogue ended')}
 />
 
 <style>
